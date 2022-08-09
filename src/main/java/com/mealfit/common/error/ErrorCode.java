@@ -21,7 +21,6 @@ public enum ErrorCode implements ErrorModel {
     private int status;
     private String code;
     private String message;
-    private String detail;
 
     ErrorCode(int status, String code, String message) {
         this.status = status;

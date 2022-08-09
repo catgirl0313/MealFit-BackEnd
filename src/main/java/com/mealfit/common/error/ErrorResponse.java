@@ -14,14 +14,24 @@ public class ErrorResponse {
     private String message;
     private String detail;
 
-    public ErrorResponse(ErrorCode code) {
+    private ErrorResponse(ErrorCode code) {
         this.status = code.getStatus();
         this.code = code.getCode();
         this.message = code.getMessage();
-        this.detail = code.getDetail();
+    }
+
+    private ErrorResponse(ErrorCode code, String detail) {
+        this.status = code.getStatus();
+        this.code = code.getCode();
+        this.message = code.getMessage();
+        this.detail = detail;
     }
 
     public static ErrorResponse of(ErrorCode code) {
         return new ErrorResponse(code);
+    }
+
+    public static ErrorResponse of(ErrorCode code, String message) {
+        return new ErrorResponse(code, message);
     }
 }
