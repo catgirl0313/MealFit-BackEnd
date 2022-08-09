@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.web.cors.CorsUtils;
 
 @EnableWebSecurity
@@ -17,6 +18,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.httpBasic().disable();
         http.cors(withDefaults());
+
+        // h2-console 설정
+        http.headers().addHeaderWriter(new XFrameOptionsHeaderWriter(
+              XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
+
+        // jwt 설정
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http
