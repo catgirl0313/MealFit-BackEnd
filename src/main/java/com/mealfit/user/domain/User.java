@@ -7,6 +7,8 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -64,6 +66,11 @@ public class User extends BaseEntity {
     @Column
     private LocalTime endFasting;
 
+    @Setter
+    @Column
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -91,5 +98,6 @@ public class User extends BaseEntity {
         this.goalWeight = goalWeight;
         this.startFasting = startFasting;
         this.endFasting = endFasting;
+        this.userStatus = UserStatus.NOT_VALID;
     }
 }

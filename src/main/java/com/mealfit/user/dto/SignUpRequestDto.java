@@ -26,8 +26,8 @@ public class SignUpRequestDto implements Serializable {
     private MultipartFile profileImage;
     @NotNull private double currentWeight;
     @NotNull private double goalWeight;
-    @NotNull private LocalTime startFasting;
-    @NotNull private LocalTime endFasting;
+    private LocalTime startFasting;
+    private LocalTime endFasting;
 
     public User toEntity() {
         return new User(username, password, nickname, email, currentWeight, goalWeight,

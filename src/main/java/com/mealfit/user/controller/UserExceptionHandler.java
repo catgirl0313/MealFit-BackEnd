@@ -11,8 +11,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class UserExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> exception(
-          IllegalArgumentException exception) {
+    public ResponseEntity<ErrorResponse> exception(IllegalArgumentException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(ErrorResponse.of(ErrorCode.INVALID_CODE, exception.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> exception(IllegalStateException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body(ErrorResponse.of(ErrorCode.INVALID_CODE, exception.getMessage()));
     }
