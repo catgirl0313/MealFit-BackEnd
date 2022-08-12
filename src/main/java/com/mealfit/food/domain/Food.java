@@ -14,12 +14,14 @@ public class Food extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double calories;
+    private String foodName; // 음식 이름
 
-    private double carbs;
+    private double calories; // 칼로리
 
-    private double protein;
+    private double carbs; // 탄수화물
 
-    private double fat;
+    private double protein; // 단백질
+
+    private double fat; // 지방
 
 }
