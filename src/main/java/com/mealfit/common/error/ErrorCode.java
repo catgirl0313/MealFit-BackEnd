@@ -16,7 +16,11 @@ public enum ErrorCode implements ErrorModel {
     EXPIRED_CODE(400, "C003", "Expired Code"),
 
     // AWS
-    AWS_ERROR(400, "A001", "aws client error");
+    AWS_ERROR(400, "A001", "aws client error"),
+
+    // javax.validation
+    NOT_NULL(400, "V001", "필수값이 비었습니다."),
+    NOT_BLANK(400, "V001", "필수 인풋값이 비었습니다.");
 
     private int status;
     private String code;
