@@ -1,4 +1,4 @@
-package com.mealfit.email;
+package com.mealfit.common.email;
 
 import javax.mail.internet.MimeMessage;
 

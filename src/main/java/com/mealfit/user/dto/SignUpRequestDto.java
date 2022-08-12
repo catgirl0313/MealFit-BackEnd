@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter @Setter
@@ -26,7 +27,10 @@ public class SignUpRequestDto implements Serializable {
     private MultipartFile profileImage;
     @NotNull private double currentWeight;
     @NotNull private double goalWeight;
+
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime startFasting;
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime endFasting;
 
     public User toEntity() {
