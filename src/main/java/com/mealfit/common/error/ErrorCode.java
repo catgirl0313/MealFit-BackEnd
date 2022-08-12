@@ -32,6 +32,17 @@ public enum ErrorCode implements ErrorModel {
         this.code = code;
     }
 
+    public static ErrorCode of(String code) {
+        switch (code){
+            case "NotNull":
+                return ErrorCode.NOT_NULL;
+            case "NotBlank":
+                return ErrorCode.NOT_BLANK;
+            default:
+                throw new IllegalArgumentException("지원하지 않는 코드입니다.");
+        }
+    }
+
     @Override
     public String getKey() {
         return this.code;

@@ -48,16 +48,8 @@ public class UserExceptionHandler {
 
             String bindResultCode = bindingResult.getFieldError().getCode();
 
-            switch (bindResultCode){
-                case "NotNull":
-                    code = ErrorCode.NOT_NULL.getCode();
-                    description = ErrorCode.NOT_NULL.getMessage();
-                    break;
-                case "NotBlank":
-                    code = ErrorCode.NOT_BLANK.getCode();
-                    description = ErrorCode.NOT_BLANK.getMessage();
-                    break;
-            }
+            ErrorCode errorCode = ErrorCode.of(bindResultCode);
+            return ErrorResponse.of(errorCode, detail);
         }
 
         return ErrorResponse.of(ErrorCode.INVALID_CODE, detail);
