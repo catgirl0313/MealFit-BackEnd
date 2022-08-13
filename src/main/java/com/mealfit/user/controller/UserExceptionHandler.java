@@ -38,8 +38,6 @@ public class UserExceptionHandler {
     }
 
     private ErrorResponse makeErrorResponse(BindingResult bindingResult){
-        String code = "";
-        String description = "";
         String detail = "";
 
         //에러가 있다면
