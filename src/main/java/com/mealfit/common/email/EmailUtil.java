@@ -1,4 +1,4 @@
-package com.mealfit.email;
+package com.mealfit.common.email;
 
 import java.util.Properties;
 import javax.mail.Message;
@@ -51,8 +51,7 @@ public class EmailUtil {
             Transport.send(message);
 
         } catch (MessagingException e) {
-            log.info("이메일 발송 실패!");
-            e.printStackTrace();
+            throw new IllegalArgumentException("이메일 발송에 실패했습니다. " + e.getMessage());
         }
     }
 }

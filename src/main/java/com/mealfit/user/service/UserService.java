@@ -1,7 +1,8 @@
 package com.mealfit.user.service;
 
-import com.mealfit.email.EmailUtil;
-import com.mealfit.email.SignUpEmail;
+import com.mealfit.common.email.EmailUtil;
+import com.mealfit.common.email.FindPasswordEmail;
+import com.mealfit.common.email.SignUpEmail;
 import com.mealfit.user.domain.EmailCertification;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
@@ -43,7 +44,7 @@ public class UserService {
         if (dto.getProfileImage() != null) {
             // TODO 사진 저장 로직
         }
-        createCertificationCode(dto.getEmail(), dto.getUsername(), domainURL);
+        sendValidLink(dto.getEmail(), dto.getUsername(), domainURL);
         userRepository.save(user);
     }
 
@@ -72,7 +73,7 @@ public class UserService {
         }
     }
 
-    private void createCertificationCode(String email, String username, String url) {
+    private void sendValidLink(String email, String username, String url) {
         //TODO javax.email 전송 -> AWS SNS
         String certificationCode = UUID.randomUUID().toString();
         emailUtil.sendEmail(email, new SignUpEmail(url, username, certificationCode));
@@ -103,5 +104,28 @@ public class UserService {
         if (!password.equals(passwordCheck)) {
             throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
         }
+    }
+
+    public void findUsername(String url, String email) {
+        if (!userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("잘못된 이메일입니다.");
+        }
+
+        String authKey = UUID.randomUUID().toString();
+
+        emailUtil.sendEmail(email, new FindPasswordEmail(url, email, authKey));
+    }
+
+    public void findPassword(String url, String email, String username) {
+        User user = userRepository.findByEmail(email)
+              .orElseThrow(() -> new IllegalArgumentException("잘못된 이메일입니다."));
+
+        if (!user.getUsername().equals(username)) {
+            throw new IllegalArgumentException("요청정보가 일치하지 않습니다.");
+        }
+
+        String authKey = UUID.randomUUID().toString();
+
+        emailUtil.sendEmail(email, new FindPasswordEmail(url, email, authKey));
     }
 }

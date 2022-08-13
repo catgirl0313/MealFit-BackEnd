@@ -27,14 +27,13 @@ public class UserController {
         userService.signup(extractDomainRoot(request), dto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-              .body("생성완료!");
+              .body("가입 완료!");
     }
-
 
     /**
      * 검증 부분
      */
-    @PostMapping("/id")
+    @PostMapping("/username")
     public ResponseEntity<String> validateUsername(@RequestBody String username) {
         userService.validateUsername(username);
 
@@ -61,9 +60,9 @@ public class UserController {
     /**
      * 이메일 인증
      */
-    @GetMapping("/validate/email")
-    public ResponseEntity<String> checkEmail(String email, String authKey) {
-        userService.checkValidLink(email, authKey);
+    @GetMapping("/validate")
+    public ResponseEntity<String> checkEmail(String username, String authKey) {
+        userService.checkValidLink(username, authKey);
 
         return ResponseEntity.status(HttpStatus.CREATED)
               .body("이메일이 성공적으로 인증되었습니다.");
@@ -71,5 +70,19 @@ public class UserController {
 
     private String extractDomainRoot(HttpServletRequest request) {
         return request.getRequestURL().toString().replace(request.getRequestURI().toString(), "");
+    }
+
+    @GetMapping("/find/username")
+    public ResponseEntity<String> findUsername(HttpServletRequest request, @RequestBody String email) {
+        userService.findUsername(extractDomainRoot(request), email);
+        return ResponseEntity.status(HttpStatus.OK)
+              .body("전송완료");
+    }
+
+    @GetMapping("/find/password")
+    public ResponseEntity<String> findPassword(HttpServletRequest request, @RequestBody String email, String username) {
+        userService.findPassword(extractDomainRoot(request), email, username);
+        return ResponseEntity.status(HttpStatus.OK)
+              .body("전송완료");
     }
 }
