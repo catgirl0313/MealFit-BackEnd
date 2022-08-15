@@ -1,18 +1,28 @@
 package com.mealfit.diet.dto;
 
-import lombok.*;
+import com.mealfit.diet.domain.DietStatus;
+import com.mealfit.food.domain.Food;
 
-import java.util.List;
-
-@Getter
-@NoArgsConstructor
-@Builder
 public class DietResponseDto {
-    private List<FoodListDto> foodList;
-    private UserGoalDto userGoal;
 
-    public DietResponseDto(List<FoodListDto> foodList, UserGoalDto userGoal) {
-        this.foodList = foodList;
-        this.userGoal = userGoal;
+    private DietStatus dietStatus;
+    private Long foodId;
+    private String foodName;
+    private double Kcal;
+    private double carbs;
+    private double protein;
+    private double fat;
+    private double foodWeight;
+
+    public DietResponseDto(DietStatus dietStatus, Food food, double foodWeight) {
+        this.dietStatus = dietStatus;
+        this.foodId = food.getId();
+        this.foodName = food.getFoodName();
+        this.Kcal = food.getKcal();
+        this.carbs = food.getCarbs();
+        this.protein = food.getProtein();
+        this.fat = food.getFat();
+        this.foodWeight = foodWeight;
     }
+
 }
