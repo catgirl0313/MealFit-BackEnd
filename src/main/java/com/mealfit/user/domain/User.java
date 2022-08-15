@@ -71,6 +71,15 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
+    // 추후 변경 예정
+    private double kcal;
+
+    private double carbs;
+
+    private double protein;
+
+    private double fat;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -88,8 +97,9 @@ public class User extends BaseEntity {
         return Objects.hash(id);
     }
 
-    public User(String username, String password, String nickname, String email, double currentWeight, double goalWeight
-        , LocalTime startFasting, LocalTime endFasting) {
+    public User(String username, String password, String nickname, String email,
+          double currentWeight, double goalWeight
+          , LocalTime startFasting, LocalTime endFasting) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;

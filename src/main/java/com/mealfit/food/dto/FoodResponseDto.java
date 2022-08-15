@@ -1,16 +1,16 @@
 package com.mealfit.food.dto;
 
+import com.mealfit.food.domain.Food;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@Builder
 public class FoodResponseDto {
     private String foodName; // 음식 이름
 
-    private double Kcal; // 칼로리
+    private double kCal; // 칼로리
 
     private double carbs; // 탄수화물
 
@@ -18,11 +18,11 @@ public class FoodResponseDto {
 
     private double fat; // 지방
 
-    public FoodResponseDto(String foodName, double kcal, double carbs, double protein, double fat) {
-        this.foodName = foodName;
-        Kcal = kcal;
-        this.carbs = carbs;
-        this.protein = protein;
-        this.fat = fat;
+    public FoodResponseDto(Food food) {
+        this.foodName = food.getFoodName();
+        this.kCal = food.getKCal();
+        this.carbs = food.getCarbs();
+        this.protein = food.getProtein();
+        this.fat = food.getFat();
     }
 }
