@@ -2,7 +2,7 @@ package com.mealfit.diet.controller;
 
 import com.mealfit.diet.dto.DietCUDResponseDto;
 import com.mealfit.diet.dto.DietRequestDto;
-import com.mealfit.diet.dto.DietResponseDto;
+import com.mealfit.diet.dto.DietListResponseDto;
 import com.mealfit.diet.dto.PostRequestDto;
 import com.mealfit.diet.service.DietService;
 import com.mealfit.user.domain.User;
@@ -23,12 +23,13 @@ public class DietController {
 
     //식단 조회
     @GetMapping("/diet")
-    public ResponseEntity<DietResponseDto> getDiet(
+    public ResponseEntity<DietListResponseDto> getDiet(
             @RequestParam("date")
             @DateTimeFormat(pattern = "yyyy-MM-dd")
-            LocalDate date){
+            LocalDate date,
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(dietService.getDiet(date));
+                .body(dietService.getDiet(date,userDetailsImpl.getUser()));
 
     }
     //식단 입력

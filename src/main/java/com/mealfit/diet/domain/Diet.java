@@ -2,10 +2,13 @@ package com.mealfit.diet.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
 import com.mealfit.diet.dto.PostRequestDto;
+import com.mealfit.food.domain.Food;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 
@@ -30,7 +33,11 @@ public class Diet extends BaseEntity {
     @Column(nullable = false)
     private Long foodId;
 
+    @Column(nullable = false)
     private Long foodWeight;
+
+    @OneToMany(mappedBy = "diet",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Food> foods = new ArrayList<>();
 
     public Diet(Long foodId, DietStatus status, Long foodWeight, LocalDate dietDate) {
         this.foodId = foodId;
@@ -46,6 +53,8 @@ public class Diet extends BaseEntity {
     public void settingUserInfo(Long userId) {
         this.userId = userId;
     }
+
+
     public void update(PostRequestDto postRequestDto) {
 
     }

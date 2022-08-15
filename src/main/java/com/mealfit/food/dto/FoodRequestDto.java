@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Builder
-public class FoodResponseDto {
-    private String foodName; // 음식 이름
+public class FoodRequestDto {
+
+    private String food; // 음식 이름
+
+    private double foodWeight; // 음식 중량
 
     private double Kcal; // 칼로리
 
@@ -18,8 +21,9 @@ public class FoodResponseDto {
 
     private double fat; // 지방
 
-    public FoodResponseDto(String foodName, double kcal, double carbs, double protein, double fat) {
-        this.foodName = foodName;
+    public FoodRequestDto(String food, double foodWeight, double kcal, double carbs, double protein, double fat) {
+        this.food = food;
+        this.foodWeight = foodWeight;
         Kcal = kcal;
         this.carbs = carbs;
         this.protein = protein;

@@ -1,11 +1,10 @@
 package com.mealfit.diet.service;
 
 import com.mealfit.diet.domain.Diet;
-import com.mealfit.diet.dto.DietCUDResponseDto;
-import com.mealfit.diet.dto.DietRequestDto;
-import com.mealfit.diet.dto.DietResponseDto;
-import com.mealfit.diet.dto.PostRequestDto;
+import com.mealfit.diet.dto.*;
 import com.mealfit.diet.repository.DietRepository;
+import com.mealfit.food.domain.Food;
+import com.mealfit.food.repository.FoodRepository;
 import com.mealfit.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,19 +22,23 @@ import java.time.LocalDate;
 public class DietService {
 
     private final DietRepository dietRepository;
-    private final UserRepository userRepository;
+    private final FoodRepository foodRepository;
 
     //식단 조회
-    public DietResponseDto getDiet(LocalDate date) {
-        Diet diet = dietRepository.findByDate(date)
-                .orElseThrow(() -> new IllegalArgumentException("기록한 식단이 없습니다."));
+    public DietListResponseDto getDiet(LocalDate date, User user) {
+        List<Diet> dietList = dietRepository.findByDietDateAndUserId(date, user.getId()); // 얘도 여러개니까 리스트로
+        List<DietResponseDto> dietResponseDtoList = new ArrayList<>();
 
-        User user = userRepository.findById(diet.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("없는 회원정보입니다."));
+        for (Diet diet : dietList) {
+            Food food = foodRepository.findById(diet.getFoodId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
+            DietResponseDto dietResponseDto = new DietResponseDto(diet.getStatus(),food,diet.getFoodWeight());
+            dietResponseDtoList.add(dietResponseDto);
+        }
 
-        return DietResponseDto.builder()
-                .foodList(diet.get)
+        UserGoalDto userGoalDto = new UserGoalDto(user);
 
+        return new DietListResponseDto(dietResponseDtoList, userGoalDto);
     }
 
 

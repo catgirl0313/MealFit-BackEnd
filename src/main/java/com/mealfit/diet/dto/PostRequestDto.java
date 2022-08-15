@@ -1,9 +1,8 @@
 package com.mealfit.diet.dto;
 
-import com.mealfit.diet.domain.DietStatus;
-import lombok.*;
-
-import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
