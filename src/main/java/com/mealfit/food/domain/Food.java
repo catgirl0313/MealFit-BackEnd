@@ -19,7 +19,7 @@ public class Food extends BaseEntity {
 
     private String foodName; // 음식 이름
 
-    private double Kcal; // 칼로리
+    private double kCal; // 칼로리
 
     private double carbs; // 탄수화물
 

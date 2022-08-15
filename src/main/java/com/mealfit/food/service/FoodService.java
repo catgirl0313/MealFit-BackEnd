@@ -5,12 +5,12 @@ import com.mealfit.food.dto.FoodRequestDto;
 import com.mealfit.food.dto.FoodResponseDto;
 import com.mealfit.food.repository.FoodRepository;
 import com.mealfit.user.domain.User;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,17 +19,15 @@ import java.util.List;
 public class FoodService {
 
     private final FoodRepository foodRepository;
-    public FoodResponseDto getFood(String food, User user) {
-        List<Food> searchFood = foodRepository.findByFoodName(food);
+    public List<FoodResponseDto> getFood(String foodName, User user) {
+        List<Food> searchFood = foodRepository.findByFoodName(foodName);
 
-        return FoodResponseDto.builder()  // 여러개니까 리스트로..!
-                .foodName(searchFood.getFoodName())
-                .Kcal(searchFood.getKcal())
-                .carbs(searchFood.getCarbs())
-                .protein(searchFood.getProtein())
-                .fat(searchFood.getFat())
-                .build();
+        return searchFood.stream()
+              // 람다식 -> 메서드 참조 (method Reference)
+              .map(FoodResponseDto::new)        //(타입 -> 다른 타입으로 변경)
+              .collect(Collectors.toList());    // List에 담아주기
     }
+
 
     public void createFood(FoodRequestDto requestDto, User user) {
 

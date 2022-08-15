@@ -8,7 +8,7 @@ public class DietResponseDto {
     private DietStatus dietStatus;
     private Long foodId;
     private String foodName;
-    private double Kcal;
+    private double kCal;
     private double carbs;
     private double protein;
     private double fat;
@@ -18,7 +18,7 @@ public class DietResponseDto {
         this.dietStatus = dietStatus;
         this.foodId = food.getId();
         this.foodName = food.getFoodName();
-        this.Kcal = food.getKcal();
+        this.kCal = food.getKCal();
         this.carbs = food.getCarbs();
         this.protein = food.getProtein();
         this.fat = food.getFat();

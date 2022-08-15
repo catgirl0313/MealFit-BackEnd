@@ -80,7 +80,7 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
         String jwtToken = JWT.create()
                 .withSubject("cos토큰")
                 .withExpiresAt(new Date(System.currentTimeMillis()+(60000*10)))
-                .withClaim("username", userDetails.getMember().getUsername())
+                .withClaim("username", userDetails.getUser().getUsername())
                 .sign(Algorithm.HMAC512(secretKey));
 
         response.addHeader("Authorization", jwtToken); //헤더에 토큰을 넣어줘.
