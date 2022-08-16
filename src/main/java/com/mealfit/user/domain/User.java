@@ -1,13 +1,25 @@
 package com.mealfit.user.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
-import com.mealfit.common.crypt.CryptoConverter;
-import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
+import com.mealfit.config.security.OAuth.ProviderType;
 import java.time.LocalTime;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @AllArgsConstructor
 @Builder
@@ -26,7 +38,7 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Convert(converter = CryptoConverter.class)
+//    @Convert(converter = CryptoConverter.class)
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -37,7 +49,7 @@ public class User extends BaseEntity {
     private String nickname;
 
     // 개인을 특정할 수 있는 정보들은 모두 암호화를 해야 합니다.
-    @Convert(converter = CryptoConverter.class)
+//    @Convert(converter = CryptoConverter.class)
     private String email;
 
     @Setter
@@ -63,7 +75,7 @@ public class User extends BaseEntity {
     @Setter
     @Column(updatable = false)
     @Enumerated(EnumType.STRING)
-    private OAuthType oAuthType;
+    private ProviderType providerType;
 
     // 추후 변경 예정
     private double kcal;
@@ -91,7 +103,7 @@ public class User extends BaseEntity {
         return Objects.hash(id);
     }
 
-    public User(String username, String password, String nickname, String email,
+    private User(String username, String password, String nickname, String email,
           double currentWeight, double goalWeight
           , LocalTime startFasting, LocalTime endFasting) {
         this.username = username;
@@ -103,10 +115,10 @@ public class User extends BaseEntity {
         this.startFasting = startFasting;
         this.endFasting = endFasting;
         this.userStatus = UserStatus.NOT_VALID;
-        this.oAuthType = OAuthType.NONE;
+        this.providerType = ProviderType.LOCAL;
     }
 
-    public User(String username, String password, String nickname, String email, String oauthType) {
+    private User(String username, String password, String nickname, String email, ProviderType providerType) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
@@ -116,12 +128,18 @@ public class User extends BaseEntity {
         this.startFasting = null;
         this.endFasting = null;
         this.userStatus = UserStatus.SIGNUP_SOCIAL;
-        this.oAuthType = OAuthType.valueOf(oauthType);
+        this.providerType = providerType;
     }
 
-    public static User of(String username, String password, String nickname, String email,
-          String oauthType) {
-        return new User(username, password, nickname, email, oauthType);
+    public static User createLocalUser(String username, String password, String nickname, String email,
+          double currentWeight, double goalWeight
+          , LocalTime startFasting, LocalTime endFasting) {
+        return new User(username, password, nickname, email, currentWeight, goalWeight, startFasting, endFasting);
+    }
+
+    public static User createSocialUser(String username, String password, String nickname, String email,
+          ProviderType providerType) {
+        return new User(username, password, nickname, email, providerType);
     }
 
     public User update(String nickname, String picture) {

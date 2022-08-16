@@ -34,7 +34,7 @@ public class SignUpRequestDto implements Serializable {
     private LocalTime endFasting;
 
     public User toEntity() {
-        return new User(username, password, nickname, email, currentWeight, goalWeight,
+        return User.createLocalUser(username, password, nickname, email, currentWeight, goalWeight,
               startFasting, endFasting);
     }
 }

@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // jwt 설정
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests()  //request -> request
+        http.authorizeRequests()
               .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
               .antMatchers("/user/login/auth").authenticated()
               .anyRequest().permitAll();
