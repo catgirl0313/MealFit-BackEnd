@@ -2,24 +2,15 @@ package com.mealfit.user.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
 import com.mealfit.common.crypt.CryptoConverter;
-import java.time.LocalTime;
-import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.persistence.*;
+import java.time.LocalTime;
+import java.util.Objects;
+
+@AllArgsConstructor
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
@@ -109,5 +100,13 @@ public class User extends BaseEntity {
         this.startFasting = startFasting;
         this.endFasting = endFasting;
         this.userStatus = UserStatus.NOT_VALID;
+    }
+
+
+    //이상함. 수정필요.
+    public Object update(String name, String picture) {
+        this.nickname=name;
+        this.profileImage=picture;
+        return null;
     }
 }

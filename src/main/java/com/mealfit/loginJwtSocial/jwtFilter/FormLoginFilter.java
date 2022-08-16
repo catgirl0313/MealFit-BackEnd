@@ -73,7 +73,8 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         System.out.println("successfulAuthentication 실행됨: 인증이 완료.");
-        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal(); //?
+
 
         //JWT 토큰 발급
         //RSA방식은 아니고 Hash암호 방식 //jwts : 무슨 문법?

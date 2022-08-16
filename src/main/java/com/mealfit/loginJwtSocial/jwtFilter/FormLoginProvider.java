@@ -33,6 +33,8 @@ public class FormLoginProvider implements AuthenticationProvider {
         }
     }
 
+
+
     @Override //프로바이더를 탈려면 이게 있어야해.  폼로그인필터에서 authentication 만들면, authentication 값이 만들어지면 provider를 탄다.
     public boolean supports(Class<?> authentication) {  //token 타입에 따라서 언제 provider를 사용할지 조건을 지정할 수 있다.
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication); //provider의 supports 값이 false를 리턴하면, provider의 authenticate 메소드가 호출되지 않는다.

@@ -11,7 +11,7 @@ import java.util.Collections;
 //기본 필요한 값 유저네임, 페스워드를 토큰에 넣어주면 db 조회하지 않고 token 에서 쓸 수 있으므로 효율성 짱.-스파르타 심화 강의.!
 //스프링 시큐리티가 로그인 요청을 가로채서 로그인 진행 완료가 되면userdetails타입의 오브젝트를 스프링 시큐리티의 고유한 세션저장소에 UserDetailsImpl 저장 해준다.
 public class UserDetailsImpl implements UserDetails {
-    private final User user;  //콤포지션 -user로 바꿀예정
+    private final User user;  //콤포지션 member -> user로 변경
     //alt+shift+s? 오버라이드해.
 
     public UserDetailsImpl(User user) {
