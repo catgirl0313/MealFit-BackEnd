@@ -35,7 +35,7 @@ public class FoodController {
                                                          @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         foodService.createFood(requestDto, userDetailsImpl.getUser());
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body("음식 입력 완료");
     }
 

@@ -18,13 +18,13 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class DietService {
 
     private final DietRepository dietRepository;
     private final FoodRepository foodRepository;
 
     //식단 조회
+    @Transactional
     public DietListResponseDto getDiet(LocalDate date, User user) {
         List<Diet> dietList = dietRepository.findByDietDateAndUserId(date, user.getId()); // 얘도 여러개니까 리스트로
         List<DietResponseDto> dietResponseDtoList = new ArrayList<>();
