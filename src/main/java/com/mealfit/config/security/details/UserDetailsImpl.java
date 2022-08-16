@@ -1,4 +1,4 @@
-package com.mealfit.loginJwtSocial.auth;
+package com.mealfit.config.security.details;
 
 import com.mealfit.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;

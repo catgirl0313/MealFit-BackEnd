@@ -3,9 +3,8 @@ package com.mealfit.user.service;
 import com.mealfit.common.email.EmailUtil;
 import com.mealfit.common.email.FindPasswordEmail;
 import com.mealfit.common.email.SignUpEmail;
-import com.mealfit.loginJwtSocial.auth.UserDetailsImpl;
-import com.mealfit.loginJwtSocial.dto.LoginIdCheckDto;
 import com.mealfit.user.domain.EmailCertification;
+import com.mealfit.user.domain.OAuthType;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
 import com.mealfit.user.dto.SignUpRequestDto;
@@ -42,10 +41,12 @@ public class UserService {
         User user = dto.toEntity();
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setOAuthType(OAuthType.NONE);
 
         if (dto.getProfileImage() != null) {
             // TODO 사진 저장 로직
         }
+
         sendValidLink(dto.getEmail(), dto.getUsername(), domainURL);
         userRepository.save(user);
     }
@@ -129,13 +130,5 @@ public class UserService {
         String authKey = UUID.randomUUID().toString();
 
         emailUtil.sendEmail(email, new FindPasswordEmail(url, email, authKey));
-    }
-
-    //로그인 유저 정보 반환
-    public LoginIdCheckDto userInfo(UserDetailsImpl userDetails) {
-        String username = userDetails.getUsername();
-        String usernickname = userDetails.getMember().getNickname();
-        LoginIdCheckDto userinfo = new LoginIdCheckDto(username, usernickname);
-        return userinfo;
     }
 }

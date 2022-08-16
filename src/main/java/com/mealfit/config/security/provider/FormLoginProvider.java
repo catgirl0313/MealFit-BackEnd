@@ -1,7 +1,7 @@
-package com.mealfit.loginJwtSocial.jwtFilter;
+package com.mealfit.config.security.provider;
 
-import com.mealfit.loginJwtSocial.auth.UserDetailsImpl;
-import com.mealfit.loginJwtSocial.auth.UserDetailsServiceImpl;
+import com.mealfit.config.security.details.UserDetailsImpl;
+import com.mealfit.config.security.details.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
