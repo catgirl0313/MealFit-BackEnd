@@ -43,8 +43,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         log.info("=== JWT AUTH FILTER ===");
 
+        String accessToken = null;
         //해더에서 추출
-        String accessToken = extractTokenFromHeader(request, HttpHeaders.AUTHORIZATION);
+        try {
+            accessToken = extractTokenFromHeader(request, HttpHeaders.AUTHORIZATION);
+        } catch (IllegalArgumentException e) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         VerifyResult verifyResult = jwtUtils.verifyToken(accessToken);
 
@@ -71,8 +77,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // TODO: REFRESH_TOKEN Verify 후 재발급 또는 로그아웃 예정
         } else {
             // Access_Token 유효하지 않은 토큰인 경우
-            logger.error("유효하지 않은 JWT 발송 감지: {}" + accessToken);
-            throw new DeniedJwtException("유효하지 않은 JWT 발송 감지: {}" + accessToken);
+            logger.error("유효하지 않은 JWT 발송 감지: " + accessToken);
+            throw new DeniedJwtException("유효하지 않은 JWT 발송 감지: " + accessToken);
         }
     }
 
@@ -80,8 +86,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String headerValue = request.getHeader(tokenType);
 
         //JWT 토큰을 검증을 해서 정상적인 사용자인지 확인 (폼로그인필터에서 발급한 토큰 시크릿키 ->)
-        if (headerValue == null || !headerValue.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("잘못된 토큰 입니다.");
+        if (headerValue == null || headerValue.isBlank() || !headerValue.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("토큰이 없습니다.");
         }
         return headerValue.substring("Bearer ".length());
     }

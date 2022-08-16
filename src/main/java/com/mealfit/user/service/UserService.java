@@ -4,7 +4,6 @@ import com.mealfit.common.email.EmailUtil;
 import com.mealfit.common.email.FindPasswordEmail;
 import com.mealfit.common.email.SignUpEmail;
 import com.mealfit.user.domain.EmailCertification;
-import com.mealfit.user.domain.OAuthType;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
 import com.mealfit.user.dto.SignUpRequestDto;
@@ -41,7 +40,6 @@ public class UserService {
         User user = dto.toEntity();
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setOAuthType(OAuthType.NONE);
 
         if (dto.getProfileImage() != null) {
             // TODO 사진 저장 로직
