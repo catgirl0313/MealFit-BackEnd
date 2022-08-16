@@ -15,10 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class FoodService {
-
     private final FoodRepository foodRepository;
+
+    // 음식 검색
+    // @Transactional
     public List<FoodResponseDto> getFood(String foodName, User user) {
         List<Food> searchFood = foodRepository.findByFoodName(foodName);
 
@@ -28,10 +29,18 @@ public class FoodService {
               .collect(Collectors.toList());    // List에 담아주기
     }
 
-
+    // 음식 입력
+    @Transactional
     public void createFood(FoodRequestDto requestDto, User user) {
 
-
-
+        Food food = Food.builder()
+                .foodName(requestDto.getFood())
+                .foodWeight(requestDto.getFoodWeight())
+                .kCal(requestDto.getKCal())
+                .carbs(requestDto.getCarbs())
+                .protein(requestDto.getProtein())
+                .fat(requestDto.getFat())
+                .build();
+        foodRepository.save(food);
     }
 }

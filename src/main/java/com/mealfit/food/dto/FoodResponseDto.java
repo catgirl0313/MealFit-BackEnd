@@ -1,7 +1,6 @@
 package com.mealfit.food.dto;
 
 import com.mealfit.food.domain.Food;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
