@@ -62,16 +62,14 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
-    @Column
-    private String oauth; //소셜 이렇게 로그인 추가 가능?
+    // 추후 변경 예정
+    private double kcal;
 
-    public User(String username, String password, String email, String oauth) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.oauth = oauth;
+    private double carbs;
 
-    }
+    private double protein;
+
+    private double fat;
 
     @Override
     public boolean equals(Object o) {
@@ -90,8 +88,9 @@ public class User extends BaseEntity {
         return Objects.hash(id);
     }
 
-    public User(String username, String password, String nickname, String email, double currentWeight, double goalWeight
-        , LocalTime startFasting, LocalTime endFasting) {
+    public User(String username, String password, String nickname, String email,
+          double currentWeight, double goalWeight
+          , LocalTime startFasting, LocalTime endFasting) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;

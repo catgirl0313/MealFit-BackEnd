@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/user")
@@ -33,24 +34,24 @@ public class UserController {
     /**
      * 검증 부분
      */
-    @PostMapping("/username")
-    public ResponseEntity<String> validateUsername(@RequestBody String username) {
+    @GetMapping("/username")
+    public ResponseEntity<String> validateUsername(@RequestParam String username) {
         userService.validateUsername(username);
 
         return ResponseEntity.status(HttpStatus.OK)
               .body("검증완료!");
     }
 
-    @PostMapping("/email")
-    public ResponseEntity<String> validateEmail(@RequestBody String email) {
+    @GetMapping("/email")
+    public ResponseEntity<String> validateEmail(@RequestParam String email) {
         userService.validateEmail(email);
 
         return ResponseEntity.status(HttpStatus.OK)
               .body("검증완료!");
     }
 
-    @PostMapping("/nickname")
-    public ResponseEntity<String> validateNickname(@RequestBody String nickname) {
+    @GetMapping("/nickname")
+    public ResponseEntity<String> validateNickname(@RequestParam String nickname) {
         userService.validateNickname(nickname);
 
         return ResponseEntity.status(HttpStatus.OK)
