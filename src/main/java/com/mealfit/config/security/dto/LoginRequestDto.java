@@ -1,4 +1,4 @@
-package com.mealfit.loginJwtSocial.dto;
+package com.mealfit.config.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

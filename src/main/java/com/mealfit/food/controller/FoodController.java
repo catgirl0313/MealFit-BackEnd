@@ -4,7 +4,7 @@ package com.mealfit.food.controller;
 import com.mealfit.food.dto.FoodRequestDto;
 import com.mealfit.food.dto.FoodResponseDto;
 import com.mealfit.food.service.FoodService;
-import com.mealfit.loginJwtSocial.auth.UserDetailsImpl;
+import com.mealfit.config.security.details.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

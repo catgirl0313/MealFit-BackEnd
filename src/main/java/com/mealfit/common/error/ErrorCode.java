@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 @JsonFormat(shape = Shape.OBJECT)
 public enum ErrorCode implements ErrorModel {
 
+    // SUCCESS
+    SUCCESS(200, "S001", "성공"),
+
     // COMMON
     INVALID_CODE(400, "C001", "Invalid Code"),
     RESOURCE_NOT_FOUND(204, "C002", "Resource not found"),

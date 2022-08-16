@@ -5,7 +5,7 @@ import com.mealfit.diet.dto.DietListResponseDto;
 import com.mealfit.diet.dto.DietRequestDto;
 import com.mealfit.diet.dto.PostRequestDto;
 import com.mealfit.diet.service.DietService;
-import com.mealfit.loginJwtSocial.auth.UserDetailsImpl;
+import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.user.domain.User;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
