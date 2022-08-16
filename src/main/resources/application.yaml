@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: DEV, KEY
+  main:
+    allow-bean-definition-overriding: true
 
   jackson:
     time-zone: Asia/Seoul
@@ -20,3 +22,4 @@ management:
   endpoint:
     info:
       enabled: true
+

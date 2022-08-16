@@ -3,7 +3,7 @@ package com.mealfit.loginJwtSocial.social;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-//@Generated("jsonschema2pojo")
+
 @JsonIgnoreProperties(ignoreUnknown=true)
 @Data
 public class  KakaoProfile {

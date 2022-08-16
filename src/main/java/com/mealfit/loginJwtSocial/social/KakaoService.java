@@ -6,8 +6,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mealfit.loginJwtSocial.auth.UserDetailsImpl;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.dto.SignUpRequestDto;
 import com.mealfit.user.repository.UserRepository;
+import com.mealfit.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -19,51 +19,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class KakaoService {
-
-
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-
+    private final UserService userService;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
-
-
-    //회원찾기
-    @Transactional(readOnly = true)
-    public User findByUser(String username) {
-        User socialUser = userRepository.findByUsername(username).orElseThrow();
-        return socialUser;
-    }
-
-    //신규 카카오 회원가입
-    @Transactional
-    public ResponseEntity<String> signupSocialUser(User socialUser) {
-        String username = socialUser.getUsername();
-        String password = socialUser.getPassword();
-        String oauth = socialUser.getOauth();
-
-        // 패스워드 인코딩
-        password = passwordEncoder.encode(password);
-        socialUser.setPassword(password);
-
-        User user = new User(username, password, oauth);
-        userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("가입 완료!");
-    }
 
     //카카오 사용자 로그인요청
     public ResponseEntity<String> requestKakao(String code, HttpServletResponse response) {
@@ -78,10 +48,8 @@ public class KakaoService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         // 실제 코드를 쓸 시 아래의 값들을 변수화 해서 쓰는 것이 더 좋다.
         params.add("grant_type", "authorization_code");
-//        params.add("client_id", "ddb938f8fed6079e90564fca875e2903");
-        params.add("client_id", "811b32c1569bba53dd9f8984c4dd9ac3");
-//        params.add("redirect_uri", "http://localhost:3000/auth/kakao/callback");
-        params.add("redirect_uri", "http://localhost:8080/auth/kakao/callback");
+        params.add("client_id", "e51136f184950f9ec0ccb7d4e1aad610");
+        params.add("redirect_uri", "http://localhost:8080/login/oauth2/code/kakao");
         params.add("code", code);
 
         //HttpHeader와 HttpBdoy를 하나의 오브젝트에 담기
@@ -97,22 +65,22 @@ public class KakaoService {
         );
         //Gson, Json Simple, ObjectMapper 중 하나로 json 데이터를 담는다
         ObjectMapper objectMapper = new ObjectMapper();
-        KakaoOAuthToken kakaoOAuthToken = null;
+        OAuthToken oauthToken = null;
         try {
-            kakaoOAuthToken = objectMapper.readValue(responseEntity.getBody(), KakaoOAuthToken.class);
-            System.out.println(kakaoOAuthToken); //oauthToken 값 확인해 보기
+            oauthToken = objectMapper.readValue(responseEntity.getBody(), OAuthToken.class);
+            System.out.println(oauthToken); //oauthToken 값 확인해 보기
         } catch (
                 JsonProcessingException e) {
             e.printStackTrace();
         }
         //엑세스 토큰만 뽑아서 확인
-        System.out.println("카카오 엑세스 토큰 : " + kakaoOAuthToken.getAccess_token());
+        System.out.println("카카오 엑세스 토큰 : " + oauthToken.getAccess_token());
 
         RestTemplate rt2 = new RestTemplate();
 
         //Httpheader 오브젝트 생성
         HttpHeaders headers2 = new HttpHeaders();
-        headers2.add("Authorization", "Bearer " + kakaoOAuthToken.getAccess_token());
+        headers2.add("Authorization", "Bearer " + oauthToken.getAccess_token());
         headers2.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8"); //내가 전송한 body의 내용이 key=value 임을 알림.
 
         //HttpHeader와 HttpBdoy를 하나의 오브젝트에 담기
@@ -120,6 +88,7 @@ public class KakaoService {
                 new HttpEntity<>(headers2); //아래의 exchange가 HttpEntity 오브젝트를 받게 되어있다.
 
         //Http요청하기 - Post방식으로 - 그리고 responseEntity 변수의 응답 받음.
+        //사용자 정보를 post로 요청함
         ResponseEntity<String> response2 = rt2.exchange(
                 "https://kapi.kakao.com/v2/user/me",
                 HttpMethod.POST,
@@ -136,6 +105,7 @@ public class KakaoService {
             e.printStackTrace();
         }
 
+
         //User 오브젝트 : username, password
         System.out.println("카카오 아이디(번호) :" + kakaoProfile.getId());
         System.out.println("카카오 이메일 :" + kakaoProfile.getKakao_account().getEmail());
@@ -145,6 +115,7 @@ public class KakaoService {
         UUID tempPassword = UUID.randomUUID(); //임시 패스워드. garbage
         System.out.println("밀핏서버 패스워드 :" + tempPassword);
 
+
         User socialUser = User.builder()
                 .username("Kakaoname" + kakaoProfile.getId())
                 .password(kakaoProfile.getId().toString()) //임시 비밀번호
@@ -153,6 +124,7 @@ public class KakaoService {
                 .build();
 
         // 가입자 혹은 비가입자 체크 해서 처리
+//        Member originMember = findByUser(kakaoMember.getUsername());
         User originUser = findByUser(socialUser.getUsername());
 
         if (originUser.getUsername() == null) {
@@ -184,5 +156,31 @@ public class KakaoService {
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .body("로그인 완료!");
+
+    }
+
+
+    @Transactional
+    public ResponseEntity<String> signupSocialUser(User socialUser) {
+        String username = socialUser.getUsername();
+        String password = socialUser.getPassword();
+        String email = socialUser.getEmail();
+        String oauth = socialUser.getOauth();
+
+        // 패스워드 인코딩
+        password = passwordEncoder.encode(password);
+        socialUser.setPassword(password);
+
+        User user = new User(username, password, email, oauth);
+        userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("카카오로 가입 완료!");
+    }
+
+    //회원찾기
+    @Transactional(readOnly = true)
+    public User findByUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+        return user;
     }
 }

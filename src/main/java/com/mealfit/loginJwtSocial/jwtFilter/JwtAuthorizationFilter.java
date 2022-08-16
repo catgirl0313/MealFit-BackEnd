@@ -3,6 +3,7 @@ package com.mealfit.loginJwtSocial.jwtFilter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.mealfit.loginJwtSocial.auth.UserDetailsImpl;
+import com.mealfit.loginJwtSocial.auth.UserDetailsServiceImpl;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,10 +31,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
+    private final UserDetailsServiceImpl userDetailsService;
     private final UserRepository userRepository;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService, UserRepository userRepository) {
         super(authenticationManager);
+        this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
     }
 
@@ -53,11 +56,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        //JWT 토큰을 검증을 해서 정상적인 사용자인지 확인 (폼로그인필터에서 발급한 토큰 시크릿키 ->이슬기시크릿키확인)
+        //JWT 토큰을 검증을 해서 정상적인 사용자인지 확인 (폼로그인필터에서 발급한 토큰 시크릿키 ->)
         String jwtToken = request.getHeader("Authorization");
 
         String username =
-                JWT.require(Algorithm.HMAC512(secretKey)).build().verify(jwtToken).getClaim("username").asString();
+                JWT.require(Algorithm.HMAC512("A134qwelkjfcmn341123")).build().verify(jwtToken).getClaim("username").asString();
 
         //서명이 정상적으로 됨.
         if(username != null) {
@@ -65,6 +68,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     ()-> new IllegalArgumentException("username이 없습니다.")
             );
 
+//            UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
             UserDetailsImpl userDetails = new UserDetailsImpl(userEntity);
 
             //Jwt 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 만들어 준다.
