@@ -9,16 +9,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtUtils jwtUtils;
+
+    @Value("${common.redirect-url}")
+    private String redirectUrl;
 
     public OAuth2SuccessHandler(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
@@ -41,7 +46,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
               (String) attributes.get("nickname"),
               (String) attributes.get("picture"));
 
+        String url = UriComponentsBuilder.fromUriString(redirectUrl)
+              .queryParam("accessToken", accessToken)
+              .queryParam("refreshToken", refreshToken)
+              .build().toUriString();
+
         response.getOutputStream().write(objectMapper.writeValueAsBytes(loginResponseDto));
-        getRedirectStrategy().sendRedirect(request, response, "https://localhost:3000/oauth2/redirect");
+        getRedirectStrategy().sendRedirect(request, response, url);
     }
 }

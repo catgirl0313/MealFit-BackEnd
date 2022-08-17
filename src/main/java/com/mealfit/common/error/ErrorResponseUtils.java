@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 
 public class ErrorResponseUtils {
 
-    public static void sendError(HttpServletResponse response, CommonResponse message)
+    public static void sendError(HttpServletResponse response, ErrorResponse message)
           throws IOException {
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());

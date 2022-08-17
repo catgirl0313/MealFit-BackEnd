@@ -41,7 +41,7 @@ public class JwtUtils {
 
     // TODO 리프레시 토큰 생성 예정
     public String issueRefreshToken(String username) {
-//        RefreshTokenRedis refreshToken = createRefreshToken(username);
+//        String refreshToken = createRefreshToken(username);
 //        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
 //        operations.set(username, refreshToken.getToken());
         return createRefreshToken(username);
