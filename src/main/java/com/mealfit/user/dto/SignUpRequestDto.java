@@ -19,17 +19,31 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignUpRequestDto implements Serializable {
 
-    @NotBlank private String username;
-    @NotBlank @Email private String email;
-    @NotBlank private String password;
-    @NotBlank private String passwordCheck;
-    @NotBlank private String nickname;
+    @NotBlank(message = "아이디는 필수로 입력해주세요")
+    private String username;
+
+    @NotBlank(message = "이메일은 필수로 입력해주세요")
+    @Email(message = "이메일 형식을 확인해 주세요")
+    private String email;
+
+    @NotBlank(message = "비밀번호는 필수로 입력해주세요")
+    private String password;
+
+    @NotBlank(message = "비밀번호 재확인을 필수로 입력해주세요")
+    private String passwordCheck;
+
+    @NotBlank(message = "닉네임을 필수로 입력해주세요")
+    private String nickname;
+
     private MultipartFile profileImage;
+
     @NotNull private double currentWeight;
+
     @NotNull private double goalWeight;
 
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime startFasting;
+
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime endFasting;
 
