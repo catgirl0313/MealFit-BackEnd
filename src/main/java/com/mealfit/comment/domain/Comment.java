@@ -1,6 +1,8 @@
 package com.mealfit.comment.domain;
 
+import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.common.baseEntity.BaseEntity;
+
 import lombok.Getter;
 
 
@@ -24,9 +26,25 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private Long userId;
 
-    // Self Join
+    @Column(nullable = false)
+    private String profileImage;
+    // Self Join???
     private Long reCommentId;
 
 
+    public Comment(String content) {
+        this.content = content;
+        this.likeIt = 0;
     }
+
+    public Comment() {
+    }
+    public void settingUserInfo(Long userId,String profileImage) {
+        this.userId = userId;
+        this.profileImage = profileImage;
+    }
+
+    public void update(CommentRequestDto commentDto) {
+    }
+}
 
