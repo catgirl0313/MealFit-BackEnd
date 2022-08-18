@@ -5,7 +5,6 @@ import com.mealfit.comment.dto.CommentCUDResponseDto;
 import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.comment.dto.CommentResponseDto;
 import com.mealfit.comment.repository.CommentRepository;
-import com.mealfit.config.security.UserDetailsImpl;
 import com.mealfit.post.domain.Post;
 import com.mealfit.post.repository.PostRepository;
 import com.mealfit.user.domain.User;
