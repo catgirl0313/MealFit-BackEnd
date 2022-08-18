@@ -1,26 +1,35 @@
 package com.mealfit.config.security.details;
 
+import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 //멤버조회 하려면 디비 조회애야해. 그러면 토큰이 비효율적임.
 //기본 필요한 값 유저네임, 페스워드를 토큰에 넣어주면 db 조회하지 않고 token 에서 쓸 수 있으므로 효율성 짱.-스파르타 심화 강의.!
 //스프링 시큐리티가 로그인 요청을 가로채서 로그인 진행 완료가 되면userdetails타입의 오브젝트를 스프링 시큐리티의 고유한 세션저장소에 UserDetailsImpl 저장 해준다.
-public class UserDetailsImpl implements UserDetails {
-    private final User user;  //콤포지션 member -> user로 변경
-    //alt+shift+s? 오버라이드해.
 
-    public UserDetailsImpl(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
-    }
+@Setter
+@Getter
+@ToString
+@NoArgsConstructor
+public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
+    private User user;
+    private ProviderType providerType;
+    private Collection<GrantedAuthority> authorities;
+    private Map<String, Object> attributes;
 
     @Override
     public String getPassword() {
@@ -30,6 +39,11 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return user.getUsername();
+    }
+
+    @Override
+    public String getName() {
+        return user.getNickname();
     }
 
     //계정이 만료되지 않았는지 리턴턴
@@ -64,17 +78,51 @@ public class UserDetailsImpl implements UserDetails {
 //        collectors.add(()->{return "ROLE_" + user.getRole();});
 //        return collectors;
         return Collections.emptyList();
-
     }
 
+    private UserDetailsImpl(User user, ProviderType providerType,
+          Collection<GrantedAuthority> authorities) {
+        this.user = user;
+        this.providerType = providerType;
+        this.authorities = authorities;
+    }
 
-//        UserRoleEnum role = member.getRole();
-//        String authority = role.getAuthority();rnjsgksdjqtdjehehlsl wldnj
+    private UserDetailsImpl(User user, ProviderType providerType,
+          Collection<GrantedAuthority> authorities, Map<String, Object> attributes) {
+        this.user = user;
+        this.providerType = providerType;
+        this.authorities = authorities;
+        this.attributes = attributes;
+    }
 
-//        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
-        //        authorities.add(simpleGrantedAuthority);
-//        return Collections.emptyList();
-//     return new ArrayList<>();
-//
+    public static UserDetailsImpl create(User user) {
+        return new UserDetailsImpl(
+              user,
+              user.getProviderType(),
+              Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+    }
+
+    public static UserDetailsImpl create(User user, Map<String, Object> attributes) {
+        UserDetailsImpl userDetailsImpl = create(user);
+        userDetailsImpl.setAttributes(attributes);
+        return userDetailsImpl;
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        return null;
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        return null;
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        return null;
+    }
+
 
 }

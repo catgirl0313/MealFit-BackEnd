@@ -33,6 +33,10 @@ dependencies {
     //JWT
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // Amazon S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'com.amazonaws:aws-java-sdk-s3'
+
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-web'
     runtimeOnly 'com.h2database:h2'

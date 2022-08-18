@@ -10,12 +10,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter @Setter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignUpRequestDto implements Serializable {
 
@@ -37,9 +35,11 @@ public class SignUpRequestDto implements Serializable {
 
     private MultipartFile profileImage;
 
-    @NotNull private double currentWeight;
+    @NotNull(message = "현재 몸무게를 입력해주세요")
+    private double currentWeight;
 
-    @NotNull private double goalWeight;
+    @NotNull (message = "목표 몸무게를 입력해주세요")
+    private double goalWeight;
 
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime startFasting;

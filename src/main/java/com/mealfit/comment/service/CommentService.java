@@ -1,9 +1,11 @@
 package com.mealfit.comment.service;
 
 import com.mealfit.comment.domain.Comment;
+import com.mealfit.comment.dto.CommentCUDResponseDto;
 import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.comment.dto.CommentResponseDto;
-//import com.mealfit.comment.repository.CommentRepository;
+import com.mealfit.comment.repository.CommentRepository;
+import com.mealfit.config.security.UserDetailsImpl;
 import com.mealfit.post.domain.Post;
 import com.mealfit.post.repository.PostRepository;
 import com.mealfit.user.domain.User;
@@ -20,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentService {
 
-//    private final CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
 

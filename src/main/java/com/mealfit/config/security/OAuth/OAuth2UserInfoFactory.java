@@ -4,6 +4,7 @@ import com.mealfit.config.security.OAuth.OAuth2UserInfo.GoogleUserInfo;
 import com.mealfit.config.security.OAuth.OAuth2UserInfo.KakaoUserInfo;
 import com.mealfit.config.security.OAuth.OAuth2UserInfo.NaverUserInfo;
 import com.mealfit.config.security.OAuth.OAuth2UserInfo.OAuth2UserInfo;
+import com.mealfit.user.domain.ProviderType;
 import java.util.Map;
 
 public class OAuth2UserInfoFactory {
