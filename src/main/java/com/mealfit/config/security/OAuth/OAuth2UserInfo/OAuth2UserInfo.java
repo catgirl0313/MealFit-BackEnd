@@ -5,8 +5,11 @@ import com.mealfit.user.domain.User;
 public interface OAuth2UserInfo {
 
     String getId();
+
     String getNickname();
+
     String getEmail();
+
     String getImageUrl();
 
     User toEntity();

@@ -1,6 +1,7 @@
-package com.mealfit.config.security.handler;
+package com.mealfit.config.security.OAuth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.config.security.dto.LoginResponseDto;
 import com.mealfit.config.security.jwt.JwtUtils;
 import java.io.IOException;
@@ -11,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -35,12 +35,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        Map<String, Object> attributes = oAuth2User.getAttributes();
+        Map<String, Object> attributes = userDetails.getAttributes();
 
-        String accessToken = jwtUtils.issueAccessToken((String) attributes.get("username"));
-        String refreshToken = jwtUtils.issueRefreshToken((String) attributes.get("username"));
+        String accessToken = jwtUtils.issueAccessToken(userDetails.getUsername());
+        String refreshToken = jwtUtils.issueRefreshToken(userDetails.getUsername());
 
         LoginResponseDto loginResponseDto = new LoginResponseDto(accessToken, refreshToken,
               (String) attributes.get("nickname"),

@@ -12,11 +12,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
 
-    public JwtAuthenticationToken(Object principal) {
-        super(null);
-        this.principal = principal;
-    }
-
     public JwtAuthenticationToken(Object principal, Object credentials) {
         super(null);
         this.principal = principal;

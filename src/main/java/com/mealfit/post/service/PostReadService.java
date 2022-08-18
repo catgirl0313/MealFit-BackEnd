@@ -9,16 +9,14 @@ import com.mealfit.post.dto.PostResponseDto;
 import com.mealfit.post.dto.PostsResponseDto;
 import com.mealfit.post.repository.PostReadRepository;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.domain.repository.UserRepository;
+import com.mealfit.user.repository.UserRepository;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor

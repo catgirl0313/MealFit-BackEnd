@@ -41,8 +41,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
           FilterChain chain)
           throws IOException, ServletException {
 
-        log.info("=== JWT AUTH FILTER ===");
-
         String accessToken = null;
         //해더에서 추출
         try {

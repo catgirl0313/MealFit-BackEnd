@@ -20,7 +20,6 @@ public class UserDetailsServiceImpl implements UserDetailsService{
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Can't find " + username));
 
-        return new UserDetailsImpl(user); //시큐리티의 세션의 유저 정보가 저장이 됨.
-//        return UserPrincipal.create(user);
+        return UserDetailsImpl.create(user); //시큐리티의 세션의 유저 정보가 저장이 됨.
     }
 }

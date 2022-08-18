@@ -3,13 +3,13 @@ package com.mealfit.config.security;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import com.mealfit.config.security.OAuth.CustomOAuth2UserService;
+import com.mealfit.config.security.OAuth.handler.OAuth2SuccessHandler;
+import com.mealfit.config.security.details.UserDetailsServiceImpl;
 import com.mealfit.config.security.filter.FormLoginFilter;
 import com.mealfit.config.security.filter.JwtAuthorizationFilter;
-import com.mealfit.config.security.handler.OAuth2SuccessHandler;
 import com.mealfit.config.security.jwt.JwtUtils;
 import com.mealfit.config.security.provider.FormLoginProvider;
 import com.mealfit.config.security.provider.JwtAuthorizationProvider;
-import com.mealfit.config.security.details.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -59,8 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(formLoginProvider);
         auth.authenticationProvider(jwtAuthProvider);
-        auth.userDetailsService(userDetailsService)
-              .passwordEncoder(encodePassword()); //userdetailsservice. null자리 오브젝트한테 알려줘야해. 만들러가기~
+        auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -78,8 +77,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
               .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-              .antMatchers("/user/login/auth").authenticated()
-              .anyRequest().permitAll();
+              .antMatchers("/",
+                    "/user/signup",
+                    "/user/username", "/user/email", "/user/email", "/user/nickname",
+                    "/user/validate",
+                    "/find/**").permitAll()
+              .anyRequest().authenticated();
 
         http.addFilterBefore(new FormLoginFilter(authenticationManager(), jwtUtils),
                     UsernamePasswordAuthenticationFilter.class)

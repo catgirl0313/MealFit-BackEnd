@@ -1,7 +1,6 @@
 package com.mealfit.user.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
-import com.mealfit.config.security.OAuth.ProviderType;
 import java.time.LocalTime;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -127,7 +126,7 @@ public class User extends BaseEntity {
         this.goalWeight = 0;
         this.startFasting = null;
         this.endFasting = null;
-        this.userStatus = UserStatus.SIGNUP_SOCIAL;
+        this.userStatus = UserStatus.FIRST_SOCIAL_LOGIN;
         this.providerType = providerType;
     }
 
