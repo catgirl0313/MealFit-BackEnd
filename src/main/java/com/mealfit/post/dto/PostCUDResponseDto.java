@@ -13,14 +13,14 @@ import java.util.List;
 
 public class PostCUDResponseDto {
 
-    private Long postID;
+    private Long postId;
     private Member member;
     private String content;
     private int likeCnt;
     private List<String> imageUrls;
 
     public PostCUDResponseDto(Post post, User user, List<String> images) {
-        this.postID = post.getId();
+        this.postId = post.getId();
         this.member = new Member(
                 user.getUsername(),
                 user.getNickname(),
