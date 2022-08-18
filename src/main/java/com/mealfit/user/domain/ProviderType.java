@@ -1,4 +1,4 @@
-package com.mealfit.config.security.OAuth;
+package com.mealfit.user.domain;
 
 import lombok.Getter;
 

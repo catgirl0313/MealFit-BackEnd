@@ -1,6 +1,6 @@
 package com.mealfit.config.security.OAuth.OAuth2UserInfo;
 
-import com.mealfit.config.security.OAuth.ProviderType;
+import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
 import java.util.Map;
 
