@@ -87,7 +87,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             chain.doFilter(request, response);
         } else if (verifyResult.getTokenStatus() == TokenStatus.EXPIRED) {
             // TODO: REFRESH_TOKEN Verify 후 재발급 또는 로그아웃 예정
-
             String refreshToken = extractTokenFromHeader(request);
 
             // 반드시 만료된 토큰이 있는 상태에서 refresh_token 이 있어야 함.
