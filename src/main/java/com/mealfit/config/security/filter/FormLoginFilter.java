@@ -1,20 +1,22 @@
 package com.mealfit.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mealfit.config.security.jwt.JwtUtils;
 import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.config.security.dto.LoginRequestDto;
-import java.io.IOException;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.mealfit.config.security.dto.LoginResponseDto;
+import com.mealfit.config.security.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 //스프링 시큐리티에서 UsernamePasswordAuthenticationFilter 가 있음.
 // /login 요청해서 username, password 전송하면 (psot)
@@ -24,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtUtils jwtUtils;
+    private final ObjectMapper objectMapper = new ObjectMapper(); //final로 만드는게 좋은건가? //밖에 써도 괜찮아?
 
     public FormLoginFilter(AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
 
@@ -41,8 +44,8 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
         // PrincipalDetailsService의 loadUserByUsername()함수가 실행된 후 정상이면 authentication이 리턴됨.
         // DB에 있는 username과 password가 일치한다.
         try {
-            ObjectMapper om = new ObjectMapper();
-            LoginRequestDto loginRequestDto = om.readValue(request.getInputStream(), LoginRequestDto.class); //유저정보 담기
+//            ObjectMapper om = new ObjectMapper();
+            LoginRequestDto loginRequestDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class); //유저정보 담기
             log.info("loginRequestDto = {}", loginRequestDto); //입력된 값 확인
             log.info("==============================================================");
 
@@ -52,11 +55,10 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
             log.info("authenticationToken = {}", authenticationToken);
 
             return getAuthenticationManager().authenticate(authenticationToken);
-
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // throw new IllegalArgumentException() 와 다른점은?
         }
-        return null;
+        return null; //다른점? [return null 과 throw new IllegalArgumentException();]
     }
 
     //attemptAuthentication실행 후 인증이 정상적으로 되었으면 successfulAuthentication 함수가 실행됨.
@@ -65,13 +67,21 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("successfulAuthentication 실행됨: FormLoginProvider 인증 완료.");
-        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal(); //?
-        
-        //JWT 토큰 발급
-        //RSA방식은 아니고 Hash암호 방식 //jwts : 무슨 문법?
-        String jwtToken = jwtUtils.issueAccessToken(userDetails.getUsername());
 
-        response.addHeader("Authorization", jwtToken); //헤더에 토큰을 넣어줘.
+        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
+
+        String accessToken = jwtUtils.issueAccessToken(userDetails.getUsername());
+        String refreshToken = jwtUtils.issueRefreshToken(userDetails.getUsername());
+
+        // ↓이렇게 하지 않아도 되나요?
+        //UserInfoDto userInfoDto = new UserInfoDto(userDetails.getUser());
+//
+        LoginResponseDto loginResponseDto = new LoginResponseDto(accessToken, refreshToken, userDetails);
+
+
+        response.getOutputStream().write(objectMapper.writeValueAsBytes(loginResponseDto));
+
+//        response.addHeader("Authorization", jwtToken); //헤더에 토큰을 넣어줘.
     }
 
     //로그인 실패시 예외 처리

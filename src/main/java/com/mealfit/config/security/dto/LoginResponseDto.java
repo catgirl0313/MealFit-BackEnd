@@ -14,18 +14,18 @@ import lombok.Setter;
 public class LoginResponseDto {
 
     private TokenBox tokenBox;
-    private UserInfo userInfo;
+    private UserInfoDto userInfoDto;
 
     public LoginResponseDto(String accessToken, String refreshToken,
           UserDetailsImpl userDetails) {
         this.tokenBox = new TokenBox(accessToken, refreshToken);
-        this.userInfo = new UserInfo(userDetails.getUser());
+        this.userInfoDto = new UserInfoDto(userDetails.getUser());
     }
 
     public LoginResponseDto(String accessToken, String refreshToken,
           String nickname, String profile) {
         this.tokenBox = new TokenBox(accessToken, refreshToken);
-        this.userInfo = new UserInfo(nickname, profile);
+        this.userInfoDto = new UserInfoDto(nickname, profile);
     }
 
     @Setter
@@ -41,12 +41,12 @@ public class LoginResponseDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    static class UserInfo {
+    static class UserInfoDto {
 
         private String nickname;
         private String profile;
 
-        public UserInfo(User user) {
+        public UserInfoDto(User user) {
             this.nickname = nickname;
             this.profile = profile;
         }

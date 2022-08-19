@@ -1,10 +1,9 @@
 package com.mealfit.comment.controller;
 
-import com.mealfit.comment.dto.CommentCUDResponseDto;
 import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.comment.dto.CommentResponseDto;
 import com.mealfit.comment.service.CommentService;
-import com.mealfit.config.security.UserDetailsImpl;
+import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;

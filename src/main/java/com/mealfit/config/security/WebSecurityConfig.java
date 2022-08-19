@@ -86,7 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(new FormLoginFilter(authenticationManager(), jwtUtils),
                     UsernamePasswordAuthenticationFilter.class)
-              .addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), jwtUtils),
+              .addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), jwtUtils, userDetailsService),
                     UsernamePasswordAuthenticationFilter.class);
 
         http.oauth2Login()
