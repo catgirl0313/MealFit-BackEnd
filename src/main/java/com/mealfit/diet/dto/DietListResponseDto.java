@@ -1,8 +1,10 @@
 package com.mealfit.diet.dto;
 
-import lombok.*;
-
+import com.mealfit.user.dto.UserInfoChangeRequestDto.UserNutritionGoalDto;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -10,10 +12,11 @@ import java.util.List;
 public class DietListResponseDto {
 
     private List<DietResponseDto> dietResponseDto;
-    private UserGoalDto userGoal;
+    private UserNutritionGoalDto userNutritionGoalDto;
 
-    public DietListResponseDto(List<DietResponseDto> dietResponseDto, UserGoalDto userGoal) {
+    public DietListResponseDto(List<DietResponseDto> dietResponseDto,
+          UserNutritionGoalDto userNutritionGoalDto) {
         this.dietResponseDto = dietResponseDto;
-        this.userGoal = userGoal;
+        this.userNutritionGoalDto = userNutritionGoalDto;
     }
 }
