@@ -5,6 +5,7 @@ import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.repository.UserRepository;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -51,10 +52,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User loginOrSignUp(OAuth2UserInfo userInfo) {
-        User user = userRepository.findByUsername(userInfo.getId())
-              .map(userEntity -> userEntity.updateProfile(userInfo.getNickname(),
-                    userInfo.getImageUrl()))
-              .orElse(userInfo.toEntity());
+        Optional<User> userOptional = userRepository.findByUsername(userInfo.getId());
+
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        }
+
+        User user = userInfo.toEntity();
 
         return userRepository.save(user);
     }
