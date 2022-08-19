@@ -52,7 +52,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private User loginOrSignUp(OAuth2UserInfo userInfo) {
         User user = userRepository.findByUsername(userInfo.getId())
-              .map(userEntity -> userEntity.update(userInfo.getNickname(),
+              .map(userEntity -> userEntity.updateProfile(userInfo.getNickname(),
                     userInfo.getImageUrl()))
               .orElse(userInfo.toEntity());
 

@@ -2,12 +2,16 @@ package com.mealfit.user.service;
 
 import com.mealfit.common.email.EmailUtil;
 import com.mealfit.common.email.FindPasswordEmail;
+import com.mealfit.common.s3.S3Service;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
+import com.mealfit.user.dto.UserInfoChangeRequestDto;
+import com.mealfit.user.dto.UserInfoChangeRequestDto.UserNutritionGoalDto;
 import com.mealfit.user.repository.EmailCertificationRepository;
 import com.mealfit.user.repository.UserRepository;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -15,12 +19,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailUtil emailUtil;
     private final EmailCertificationRepository emailCertificationRepository;
+    private final S3Service s3Service;
 
     public UserService(UserRepository userRepository, EmailUtil emailUtil,
-          EmailCertificationRepository emailCertificationRepository) {
+          EmailCertificationRepository emailCertificationRepository, S3Service s3Service) {
         this.userRepository = userRepository;
         this.emailUtil = emailUtil;
         this.emailCertificationRepository = emailCertificationRepository;
+        this.s3Service = s3Service;
     }
 
     public void findUsername(String url, String email) {
@@ -60,5 +66,28 @@ public class UserService {
         }
 
         user.setUserStatus(UserStatus.FIRST_LOGIN);
+    }
+
+    @Transactional
+    public void changeUserInfo(String username, UserInfoChangeRequestDto dto) {
+        User user = userRepository.findByUsername(username)
+              .orElseThrow(() -> new IllegalArgumentException("다시 로그인해주세요"));
+
+        UserNutritionGoalDto userNutrition = dto.getUserNutritionGoalDto();
+
+        String imageUrl = null;
+
+        // TODO: S3 연결 이후 변경
+//        if (dto.getProfileImage() != null) {
+//            imageUrl = s3Service.uploadOne(dto.getProfileImage(), "PROFILE");
+//        }
+
+        user.updateInfo(dto.getNickname(), imageUrl);
+        user.setUserStatus(UserStatus.NORMAL);
+        user.changeFastingTime(dto.getStartFasting(), dto.getEndFasting());
+        user.updateUserNutrition(userNutrition.getKcal(),
+              userNutrition.getCarbs(),
+              userNutrition.getProtein(),
+              userNutrition.getFat());
     }
 }
