@@ -63,7 +63,7 @@ public class DietController {
 
     //식단 삭제
     @DeleteMapping("/diet")
-    public Long deleteDiet(Long dietId, @AuthenticationPrincipal User user) {
+    public Long deleteDiet(@RequestBody Long dietId, @AuthenticationPrincipal User user) {
         return dietService.deleteDiet(dietId, user);
     }
 

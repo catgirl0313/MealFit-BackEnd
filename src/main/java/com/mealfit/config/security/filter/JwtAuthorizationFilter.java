@@ -85,7 +85,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 조금만 더 공부하면~? 숙제까지 내주심 짱짱맨. 유저디테일즈 정보를 토큰에 넣어 디비 조회 안할 수 있음.
 
             //만약 return 주면 return 에서 함수가 끝나는데 do로 다음 filter로 넘겨 작동시키기 위함.
-//            chain.doFilter(request, response);
         } else if (verifyResult.getTokenStatus() == TokenStatus.EXPIRED) {
             // TODO: REFRESH_TOKEN Verify 후 재발급 또는 로그아웃 예정
             String refreshToken = extractTokenFromHeader(request);

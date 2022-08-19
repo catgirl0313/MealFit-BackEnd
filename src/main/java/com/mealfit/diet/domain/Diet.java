@@ -53,9 +53,11 @@ public class Diet extends BaseEntity {
     }
 
 
-    public void update(PostRequestDto postRequestDto) {
-
+    public void update(PostRequestDto postDto) {
+        this.foodId = postDto.getChangeTo();
+        this.foodWeight = postDto.getFoodWeight();
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
