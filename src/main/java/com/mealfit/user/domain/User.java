@@ -1,9 +1,12 @@
 package com.mealfit.user.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
+import com.mealfit.common.crypt.CryptoConverter;
 import java.time.LocalTime;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -37,7 +40,6 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Convert(converter = CryptoConverter.class)
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -48,7 +50,7 @@ public class User extends BaseEntity {
     private String nickname;
 
     // 개인을 특정할 수 있는 정보들은 모두 암호화를 해야 합니다.
-//    @Convert(converter = CryptoConverter.class)
+    @Convert(converter = CryptoConverter.class)
     private String email;
 
     @Setter
@@ -76,14 +78,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
-    // 추후 변경 예정
-    private double kcal;
-
-    private double carbs;
-
-    private double protein;
-
-    private double fat;
+    @Embedded
+    private UserNutritionGoal userNutritionGoal;
 
     @Override
     public boolean equals(Object o) {
@@ -104,7 +100,7 @@ public class User extends BaseEntity {
 
     private User(String username, String password, String nickname, String email,
           double currentWeight, double goalWeight
-          , LocalTime startFasting, LocalTime endFasting) {
+          , LocalTime startFasting, LocalTime endFasting, UserNutritionGoal userNutritionGoal) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
@@ -115,9 +111,14 @@ public class User extends BaseEntity {
         this.endFasting = endFasting;
         this.userStatus = UserStatus.NOT_VALID;
         this.providerType = ProviderType.LOCAL;
+        this.userNutritionGoal = userNutritionGoal;
     }
 
-    private User(String username, String password, String nickname, String email, ProviderType providerType) {
+    private User(String username, String password,
+          String nickname, String email,
+          ProviderType providerType,
+          UserNutritionGoal userNutritionGoal) {
+
         this.username = username;
         this.password = password;
         this.nickname = nickname;
@@ -128,22 +129,42 @@ public class User extends BaseEntity {
         this.endFasting = null;
         this.userStatus = UserStatus.FIRST_SOCIAL_LOGIN;
         this.providerType = providerType;
+        this.userNutritionGoal = userNutritionGoal;
     }
 
-    public static User createLocalUser(String username, String password, String nickname, String email,
+    public static User createLocalUser(String username, String password, String nickname,
+          String email,
           double currentWeight, double goalWeight
           , LocalTime startFasting, LocalTime endFasting) {
-        return new User(username, password, nickname, email, currentWeight, goalWeight, startFasting, endFasting);
+        return new User(username, password, nickname, email,
+              currentWeight, goalWeight, startFasting, endFasting,
+              new UserNutritionGoal(0, 0, 0, 0));
     }
 
-    public static User createSocialUser(String username, String password, String nickname, String email,
+    public static User createSocialUser(String username, String password, String nickname,
+          String email,
           ProviderType providerType) {
-        return new User(username, password, nickname, email, providerType);
+        return new User(username, password, nickname, email, providerType,
+              new UserNutritionGoal(0, 0, 0, 0));
     }
 
-    public User update(String nickname, String picture) {
+    public User updateProfile(String nickname, String picture) {
         this.nickname = nickname;
         this.profileImage = picture;
         return this;
+    }
+
+    public void updateInfo(String nickname, String picture) {
+        this.nickname = nickname;
+        this.profileImage = picture;
+    }
+
+    public void updateUserNutrition(double kcal, double carbs, double protein, double fat) {
+        userNutritionGoal.updateUserNutritionGoal(kcal, carbs, protein, fat);
+    }
+
+    public void changeFastingTime(LocalTime startFasting, LocalTime endFasting) {
+        this.startFasting = startFasting;
+        this.endFasting = endFasting;
     }
 }

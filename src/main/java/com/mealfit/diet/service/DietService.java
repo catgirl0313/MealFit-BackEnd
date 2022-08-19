@@ -6,6 +6,8 @@ import com.mealfit.diet.repository.DietRepository;
 import com.mealfit.food.domain.Food;
 import com.mealfit.food.repository.FoodRepository;
 import com.mealfit.user.domain.User;
+import com.mealfit.user.domain.UserNutritionGoal;
+import com.mealfit.user.dto.UserInfoChangeRequestDto.UserNutritionGoalDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class DietService {
             dietResponseDtoList.add(dietResponseDto);
         }
 
-        UserGoalDto userGoalDto = new UserGoalDto(user);
+        UserNutritionGoalDto userGoalDto = new UserNutritionGoalDto(user);
 
         return new DietListResponseDto(dietResponseDtoList, userGoalDto);
     }
