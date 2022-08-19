@@ -47,22 +47,23 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
           throws IOException, ServletException {
 
         log.info("=== JWT AUTH FILTER ===");
+//        String accessToken = null;
         String accessHeader = request.getHeader(HttpHeaders.AUTHORIZATION);//
+//
         if (accessHeader == null || !accessHeader.startsWith("Bearer ")) { //
             chain.doFilter(request, response);
             return;
         }
-        String accessToken = accessHeader.substring("Bearer ".length()); //
-
+//        String accessToken = accessHeader.substring("Bearer ".length()); //
 //        String accessToken = null;
 //        //해더에서 추출
 //        try {
-//            accessToken = extractTokenFromHeader(request, HttpHeaders.AUTHORIZATION);
+//             accessToken = extractTokenFromHeader(request, HttpHeaders.AUTHORIZATION);//,
 //        } catch (IllegalArgumentException e) {
 //            chain.doFilter(request, response);
 //            return;
 //        }
-//        String accessToken = accessHeader.substring("Bearer ".length()); //
+        String accessToken = accessHeader.substring("Bearer ".length()); //
 
         VerifyResult verifyResult = jwtUtils.verifyToken(accessToken);
 
