@@ -25,7 +25,7 @@ public class KakaoUserInfo implements OAuth2UserInfo {
             return null;
         }
 
-        return (String) profiles.get("profile_nickname");
+        return (String) profiles.get("nickname");
     }
 
     @Override
@@ -39,7 +39,7 @@ public class KakaoUserInfo implements OAuth2UserInfo {
             return null;
         }
 
-        return (String) profiles.get("profile_image_url");
+        return (String) profiles.get("profile_image");
     }
 
 
