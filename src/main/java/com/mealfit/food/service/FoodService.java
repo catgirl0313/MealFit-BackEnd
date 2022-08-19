@@ -34,7 +34,7 @@ public class FoodService {
     public void createFood(FoodRequestDto requestDto, User user) {
 
         Food food = Food.builder()
-                .foodName(requestDto.getFood())
+                .foodName(requestDto.getFoodName())
                 .foodWeight(requestDto.getFoodWeight())
                 .kCal(requestDto.getKCal())
                 .carbs(requestDto.getCarbs())

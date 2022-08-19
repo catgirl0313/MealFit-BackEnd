@@ -2,7 +2,11 @@ package com.mealfit.diet.dto;
 
 import com.mealfit.diet.domain.DietStatus;
 import com.mealfit.food.domain.Food;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class DietResponseDto {
 
     private DietStatus dietStatus;
