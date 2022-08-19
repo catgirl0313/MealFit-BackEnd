@@ -1,7 +1,6 @@
 package com.mealfit.comment.service;
 
 import com.mealfit.comment.domain.Comment;
-import com.mealfit.comment.dto.CommentCUDResponseDto;
 import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.comment.dto.CommentResponseDto;
 import com.mealfit.comment.repository.CommentRepository;
