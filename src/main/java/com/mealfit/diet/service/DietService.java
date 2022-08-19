@@ -71,7 +71,6 @@ public class DietService {
         diet.update(postDto);
     }
 
-    // 어차피 로그인 한 사람만의 기록이니까 이게 필요할까요...?
     private static void validateUser(User user, Diet diet) {
         Long postUserId = diet.getUserId();
         if (!user.getId().equals(postUserId)) {

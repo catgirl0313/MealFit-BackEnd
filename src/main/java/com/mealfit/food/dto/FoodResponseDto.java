@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class FoodResponseDto {
+    private Long foodId; // 음식 ID
     private String foodName; // 음식 이름
 
     private double kCal; // 칼로리
@@ -17,7 +18,10 @@ public class FoodResponseDto {
 
     private double fat; // 지방
 
+
+
     public FoodResponseDto(Food food) {
+        this.foodId = food.getId();
         this.foodName = food.getFoodName();
         this.kCal = food.getKCal();
         this.carbs = food.getCarbs();

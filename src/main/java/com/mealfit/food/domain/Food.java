@@ -22,7 +22,7 @@ public class Food extends BaseEntity {
     private String foodName; // 음식 이름
 
     @Column(nullable = false)
-    private double foodWeight; // 음식 중량
+    private double foodWeight; // 1회 제공량
 
     @Column(nullable = false)
     private double kCal; // 칼로리
