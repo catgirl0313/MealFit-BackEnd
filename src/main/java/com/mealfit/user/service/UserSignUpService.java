@@ -4,7 +4,7 @@ import com.mealfit.common.email.EmailUtil;
 import com.mealfit.common.email.SignUpEmail;
 import com.mealfit.user.domain.EmailCertification;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.dto.SignUpRequestDto;
+import com.mealfit.user.dto.request.SignUpRequestDto;
 import com.mealfit.user.repository.EmailCertificationRepository;
 import com.mealfit.user.repository.UserRepository;
 import java.util.UUID;
@@ -43,6 +43,7 @@ public class UserSignUpService {
             // TODO 사진 저장 로직
         }
 
+        // 분리하고 싶었으나 트랜잭션 전파때문에 어쩔 수 없이 한곳에 묶음.
         sendValidLink(dto.getEmail(), dto.getUsername(), domainURL);
         userRepository.save(user);
     }

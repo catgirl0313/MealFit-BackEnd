@@ -81,7 +81,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/user/signup",
                     "/user/username", "/user/email", "/user/email", "/user/nickname",
                     "/user/validate",
-                    "/find/**", "/h2-console/**").permitAll()
+                    "/find/**",
+                    "/h2-console/**",
+                    "/test/error").permitAll()
               .anyRequest().authenticated();
 
         http.addFilterBefore(new FormLoginFilter(authenticationManager(), jwtUtils),

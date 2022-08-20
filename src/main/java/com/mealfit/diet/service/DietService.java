@@ -1,21 +1,23 @@
 package com.mealfit.diet.service;
 
 import com.mealfit.diet.domain.Diet;
-import com.mealfit.diet.dto.*;
+import com.mealfit.diet.dto.DietCUDResponseDto;
+import com.mealfit.diet.dto.DietListResponseDto;
+import com.mealfit.diet.dto.DietRequestDto;
+import com.mealfit.diet.dto.DietResponseDto;
+import com.mealfit.diet.dto.PostRequestDto;
 import com.mealfit.diet.repository.DietRepository;
 import com.mealfit.food.domain.Food;
 import com.mealfit.food.repository.FoodRepository;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.domain.UserNutritionGoal;
-import com.mealfit.user.dto.UserInfoChangeRequestDto.UserNutritionGoalDto;
+import com.mealfit.user.dto.response.UserNutritionGoalResponseDto;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +40,7 @@ public class DietService {
             dietResponseDtoList.add(dietResponseDto);
         }
 
-        UserNutritionGoalDto userGoalDto = new UserNutritionGoalDto(user);
+        UserNutritionGoalResponseDto userGoalDto = new UserNutritionGoalResponseDto(user);
 
         return new DietListResponseDto(dietResponseDtoList, userGoalDto);
     }

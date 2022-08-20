@@ -5,8 +5,8 @@ import com.mealfit.common.email.FindPasswordEmail;
 import com.mealfit.common.s3.S3Service;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
-import com.mealfit.user.dto.UserInfoChangeRequestDto;
-import com.mealfit.user.dto.UserInfoChangeRequestDto.UserNutritionGoalDto;
+import com.mealfit.user.dto.request.UserInfoChangeRequestDto;
+import com.mealfit.user.dto.response.UserInfoResponseDto;
 import com.mealfit.user.repository.EmailCertificationRepository;
 import com.mealfit.user.repository.UserRepository;
 import java.util.UUID;
@@ -73,8 +73,6 @@ public class UserService {
         User user = userRepository.findByUsername(username)
               .orElseThrow(() -> new IllegalArgumentException("다시 로그인해주세요"));
 
-        UserNutritionGoalDto userNutrition = dto.getUserNutritionGoalDto();
-
         String imageUrl = null;
 
         // TODO: S3 연결 이후 변경
@@ -85,9 +83,17 @@ public class UserService {
         user.updateInfo(dto.getNickname(), imageUrl);
         user.setUserStatus(UserStatus.NORMAL);
         user.changeFastingTime(dto.getStartFasting(), dto.getEndFasting());
-        user.updateUserNutrition(userNutrition.getKcal(),
-              userNutrition.getCarbs(),
-              userNutrition.getProtein(),
-              userNutrition.getFat());
+        user.updateUserNutrition(dto.getKcal(),
+              dto.getCarbs(),
+              dto.getProtein(),
+              dto.getFat());
+    }
+
+    @Transactional(readOnly = true)
+    public UserInfoResponseDto findUserInfo(String username) {
+        User user = userRepository.findByUsername(username)
+              .orElseThrow(() -> new IllegalArgumentException("다시 로그인해주세요"));
+
+        return new UserInfoResponseDto(user);
     }
 }

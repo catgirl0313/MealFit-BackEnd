@@ -34,7 +34,7 @@ public class PostService {
         postEntity.settingUserInfo( user.getId(), user.getProfileImage(), user.getNickname());
 
         //이미지 URL 저장하기
-        List<String> savedUrls = s3Service.uploadFileInS3(postRequestDto.getImageUrls(), "post/");
+        List<String> savedUrls = s3Service.uploadFileInS3(postRequestDto.getPostImage(), "post/");
         List<PostImage> postImages = savedUrls
                 .stream()
                 .map(PostImage::new)
@@ -72,11 +72,11 @@ public class PostService {
         validatePostDto( postRequestDto);
 
         // 사진 갈아끼우기
-        if ( postRequestDto.getImageUrls() != null) {
+        if ( postRequestDto.getPostImage() != null) {
             List<String> deleteUrls = post.getImages().stream()
                     .map(PostImage::getUrl)
                     .collect(Collectors.toList());
-            List<String> imagePaths = s3Service.update(deleteUrls,  postRequestDto.getImageUrls(), "post/");
+            List<String> imagePaths = s3Service.update(deleteUrls,  postRequestDto.getPostImage(), "post/");
             List<PostImage> postImages = imagePaths
                     .stream()
                     .map(PostImage::new)

@@ -1,6 +1,6 @@
 package com.mealfit.user.controller;
 
-import com.mealfit.user.dto.SignUpRequestDto;
+import com.mealfit.user.dto.request.SignUpRequestDto;
 import com.mealfit.user.service.UserSignUpService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

@@ -1,0 +1,6 @@
+== 회원 가입
+
+=== 요청
+include::{snippets}/index/curl-request.adoc[]
+
+=== 응답
