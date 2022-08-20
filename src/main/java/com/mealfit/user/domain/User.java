@@ -57,9 +57,6 @@ public class User extends BaseEntity {
     private String profileImage;
 
     @Column
-    private double currentWeight;
-
-    @Column
     private double goalWeight;
 
     @Column
@@ -99,13 +96,12 @@ public class User extends BaseEntity {
     }
 
     private User(String username, String password, String nickname, String email,
-          double currentWeight, double goalWeight
+          double goalWeight
           , LocalTime startFasting, LocalTime endFasting, UserNutritionGoal userNutritionGoal) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
-        this.currentWeight = currentWeight;
         this.goalWeight = goalWeight;
         this.startFasting = startFasting;
         this.endFasting = endFasting;
@@ -123,7 +119,6 @@ public class User extends BaseEntity {
         this.password = password;
         this.nickname = nickname;
         this.email = email;
-        this.currentWeight = 0;
         this.goalWeight = 0;
         this.startFasting = null;
         this.endFasting = null;
@@ -137,7 +132,7 @@ public class User extends BaseEntity {
           double currentWeight, double goalWeight
           , LocalTime startFasting, LocalTime endFasting) {
         return new User(username, password, nickname, email,
-              currentWeight, goalWeight, startFasting, endFasting,
+              goalWeight, startFasting, endFasting,
               new UserNutritionGoal(0, 0, 0, 0));
     }
 

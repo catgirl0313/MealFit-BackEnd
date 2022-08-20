@@ -81,7 +81,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/user/signup",
                     "/user/username", "/user/email", "/user/email", "/user/nickname",
                     "/user/validate",
-                    "/find/**").permitAll()
+                    "/find/**",
+                    "/h2-console/**",
+                    "/test/error").permitAll()
               .anyRequest().authenticated();
 
         http.addFilterBefore(new FormLoginFilter(authenticationManager(), jwtUtils),
@@ -95,11 +97,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
               .userService(customOAuth2UserService);
     }
 
-    @Override // ignore check swagger resource  // 합쳤는데, 바꿔도 되나요?
+    @Override
     public void configure(WebSecurity web) {
         web.ignoring()
               .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-              .antMatchers("/v2/api-docs", "/swagger-resources/**",
-                    "/swagger-ui.html", "/swagger-ui/**", "/webjars/**", "/swagger/**");
+              .antMatchers("/h2-console/**");
     }
 }

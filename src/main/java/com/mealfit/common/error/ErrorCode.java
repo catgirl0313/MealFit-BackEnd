@@ -36,11 +36,15 @@ public enum ErrorCode implements ErrorModel {
     }
 
     public static ErrorCode of(String code) {
-        switch (code){
+        switch (code) {
+            case "Email":
+            case "MIN":
+                return ErrorCode.INVALID_CODE;
             case "NotNull":
                 return ErrorCode.NOT_NULL;
             case "NotBlank":
                 return ErrorCode.NOT_BLANK;
+
             default:
                 throw new IllegalArgumentException("지원하지 않는 코드입니다.");
         }

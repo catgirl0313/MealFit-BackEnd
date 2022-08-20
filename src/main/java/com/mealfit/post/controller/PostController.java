@@ -5,6 +5,7 @@ import com.mealfit.post.dto.PostCUDResponseDto;
 import com.mealfit.post.dto.PostRequestDto;
 import com.mealfit.post.service.PostService;
 import com.mealfit.user.domain.User;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class PostController {
     //게시글작성
 
     @PostMapping("/post")
-    public ResponseEntity<PostCUDResponseDto> createPost(PostRequestDto postDto,
+    public ResponseEntity<PostCUDResponseDto> createPost(@Valid PostRequestDto postDto,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         PostCUDResponseDto responseDto = postService.createPost(postDto, userDetailsImpl.getUser());
 
@@ -44,7 +45,7 @@ public class PostController {
 
     //게시글 수정
     @PutMapping("/post")
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId, PostRequestDto postDto,
+    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @Valid PostRequestDto postDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         postService.updatePost(postId, postDto, userDetails.getUser());

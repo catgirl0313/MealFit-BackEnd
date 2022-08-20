@@ -22,4 +22,3 @@ management:
   endpoint:
     info:
       enabled: true
-
