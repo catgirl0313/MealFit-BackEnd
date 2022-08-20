@@ -44,7 +44,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         LoginResponseDto loginResponseDto = new LoginResponseDto(accessToken, refreshToken,
               (String) attributes.get("nickname"),
-              (String) attributes.get("picture"));
+              (String) attributes.get("picture")); //
 
         String url = UriComponentsBuilder.fromUriString(redirectUrl)
               .queryParam("accessToken", accessToken)
