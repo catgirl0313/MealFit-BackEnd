@@ -12,4 +12,7 @@ public class BodyInfoChangeRequestDto implements Serializable {
 
     @NotNull(message = "몸무게를 입력해주세요.")
     private double weight;
+
+    @NotNull(message = "체지방을 입력해주세요.")
+    private double bodyFat;
 }

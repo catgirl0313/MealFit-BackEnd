@@ -19,6 +19,10 @@ public class BodyInfoSaveRequestDto implements Serializable {
     @Min(value = 0, message = "무게는 0보다 커야 합니다.")
     private double weight;
 
+    @NotBlank(message = "체지방을 입력해주세요.")
+    @Min(value = 0, message = "무게는 0보다 커야 합니다.")
+    private double bodyFat;
+
     @DateTimeFormat(pattern = "YYYY-MM-DD")
     @NotNull(message = "날짜를 입력해 주세요")
     private LocalDate savedDate;

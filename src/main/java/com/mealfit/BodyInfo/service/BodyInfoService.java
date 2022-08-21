@@ -23,7 +23,7 @@ public class BodyInfoService {
     @Transactional
     public void saveBodyInfo(User user, BodyInfoSaveRequestDto dto) {
         BodyInfo bodyInfo = BodyInfo.createBodyInfo(user.getId(), dto.getWeight(),
-              dto.getSavedDate());
+              dto.getBodyFat(), dto.getSavedDate());
         bodyInfoRepository.save(bodyInfo);
     }
 
