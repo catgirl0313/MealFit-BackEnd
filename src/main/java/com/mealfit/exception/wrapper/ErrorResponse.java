@@ -1,28 +1,30 @@
-package com.mealfit.common.error;
+package com.mealfit.exception.wrapper;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ErrorResponse {
 
-    private int status;
+    private HttpStatus httpStatus;
     private String code;
     private String message;
     private String detail;
 
+    private ErrorResponse() {
+
+    }
+
     private ErrorResponse(ErrorCode code) {
-        this.status = code.getStatus();
+        this.httpStatus = code.getHttpStatus();
         this.code = code.getCode();
         this.message = code.getMessage();
     }
 
     private ErrorResponse(ErrorCode code, String detail) {
-        this.status = code.getStatus();
+        this.httpStatus = code.getHttpStatus();
         this.code = code.getCode();
         this.message = code.getMessage();
         this.detail = detail;

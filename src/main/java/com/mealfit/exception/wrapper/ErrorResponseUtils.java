@@ -1,4 +1,4 @@
-package com.mealfit.common.error;
+package com.mealfit.exception.wrapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

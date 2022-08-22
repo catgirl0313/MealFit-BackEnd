@@ -1,4 +1,4 @@
-package com.mealfit.common.error;
+package com.mealfit.exception.wrapper;
 
 public interface ErrorModel {
 
