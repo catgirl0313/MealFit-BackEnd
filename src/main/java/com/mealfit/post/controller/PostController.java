@@ -16,18 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
 @RestController
 @RequiredArgsConstructor
-
 public class PostController {
-
 
     private final PostService postService;
 
     //게시글작성
-
     @PostMapping("/post")
     public ResponseEntity<PostCUDResponseDto> createPost(@Valid PostRequestDto postDto,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -38,13 +33,13 @@ public class PostController {
     }
 
     //게시글 삭제
-    @DeleteMapping("/post")
+    @DeleteMapping("/post/{postId}")
     public Long deletePost(@PathVariable Long postId, @AuthenticationPrincipal User user) {
         return postService.deletePost(postId, user);
     }
 
     //게시글 수정
-    @PutMapping("/post")
+    @PutMapping("/post/{postId}")
     public ResponseEntity<Void> updatePost(@PathVariable Long postId, @Valid PostRequestDto postDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 

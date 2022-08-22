@@ -1,11 +1,13 @@
 package com.mealfit.user.dto.request;
 
 import com.mealfit.user.domain.User;
+import com.mealfit.user.domain.UserBasicProfile;
 import java.io.Serializable;
 import java.time.LocalTime;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignUpRequestDto implements Serializable {
 
+    @Size(max = 20)
     @NotBlank(message = "아이디는 필수로 입력해주세요")
     private String username;
 
@@ -26,12 +29,15 @@ public class SignUpRequestDto implements Serializable {
     @Email(message = "이메일 형식을 확인해 주세요")
     private String email;
 
+    @Size(max = 20)
     @NotBlank(message = "비밀번호는 필수로 입력해주세요")
     private String password;
 
+    @Size(max = 20)
     @NotBlank(message = "비밀번호 재확인을 필수로 입력해주세요")
     private String passwordCheck;
 
+    @Size(max = 20)
     @NotBlank(message = "닉네임을 필수로 입력해주세요")
     private String nickname;
 
@@ -50,8 +56,16 @@ public class SignUpRequestDto implements Serializable {
     private LocalTime endFasting;
 
     public User toEntity() {
-        return User.createLocalUser(username, password, nickname, email, goalWeight,
-              startFasting, endFasting);
+        return User.createLocalUser(
+              UserBasicProfile.builder()
+                    .username(username)
+                    .password(password)
+                    .nickname(nickname)
+                    .email(email)
+                    .goalWeight(goalWeight)
+                    .startFasting(startFasting)
+                    .endFasting(endFasting)
+                    .build());
     }
 
     @Builder

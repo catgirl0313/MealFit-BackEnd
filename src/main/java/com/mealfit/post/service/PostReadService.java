@@ -4,7 +4,7 @@ package com.mealfit.post.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.mealfit.post.domain.Post;
 import com.mealfit.post.domain.PostImage;
-import com.mealfit.post.dto.MemberDto;
+import com.mealfit.post.dto.UserDto;
 import com.mealfit.post.dto.PostResponseDto;
 import com.mealfit.post.dto.PostsResponseDto;
 import com.mealfit.post.repository.PostReadRepository;
@@ -42,7 +42,7 @@ public class PostReadService {
                 .content(post.getContent())
                 .image(post.getImages().stream().map(PostImage::getUrl)
                         .collect(Collectors.toList()))
-                .member(new MemberDto(user.getNickname(), user.getProfileImage()))
+                .userDto(new UserDto(user.getNickname(), user.getProfileImage()))
                 .like(post.getLikeIt())
                 .view(post.getView())
                 .build();
@@ -75,7 +75,4 @@ public class PostReadService {
                         .build()
         );
     }
-
-
-
 }

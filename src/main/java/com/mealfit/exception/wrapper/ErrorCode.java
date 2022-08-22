@@ -17,9 +17,9 @@ public enum ErrorCode implements ErrorModel {
 
     // COMMON
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C001", "서버 내부 에러"),
-    INVALID_CODE(HttpStatus.BAD_REQUEST, "C001", "Invalid Code"),
-    RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "C002", "Resource not found"),
-    EXPIRED_CODE(HttpStatus.BAD_REQUEST, "C003", "Expired Code"),
+    INVALID_CODE(HttpStatus.BAD_REQUEST, "C002", "Invalid Code"),
+    RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "C003", "Resource not found"),
+    EXPIRED_CODE(HttpStatus.BAD_REQUEST, "C004", "Expired Code"),
 
     // AWS
     AWS_ERROR(HttpStatus.BAD_REQUEST, "A001", "aws client error"),
