@@ -35,8 +35,8 @@ public class FoodService {
 
         Food food = Food.builder()
                 .foodName(requestDto.getFoodName())
-                .foodWeight(requestDto.getFoodWeight())
-                .kCal(requestDto.getKCal())
+                .oneServing(requestDto.getOneServing())
+                .kcal(requestDto.getKcal())
                 .carbs(requestDto.getCarbs())
                 .protein(requestDto.getProtein())
                 .fat(requestDto.getFat())
