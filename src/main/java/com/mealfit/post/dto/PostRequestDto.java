@@ -19,7 +19,7 @@ public class PostRequestDto {
     @NotBlank
     private String content;
 
-    private List<MultipartFile> postImage;
+    private List<MultipartFile> postImageList;
 
     public Post toEntity() {
         return new Post(content);

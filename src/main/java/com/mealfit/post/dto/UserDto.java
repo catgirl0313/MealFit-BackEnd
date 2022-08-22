@@ -6,14 +6,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberDto {
+public class UserDto {
+
     private String nickname;
     private String profile;
 
-    public MemberDto(String nickname, String profile) {
+    public UserDto(String nickname, String profile) {
         this.nickname = nickname;
         this.profile = profile;
-
-
     }
 }

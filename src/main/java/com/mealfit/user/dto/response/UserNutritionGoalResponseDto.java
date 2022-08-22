@@ -27,4 +27,11 @@ public class UserNutritionGoalResponseDto {
         this.protein = user.getUserNutritionGoal().getProtein();
         this.fat = user.getUserNutritionGoal().getFat();
     }
+
+    public UserNutritionGoalResponseDto(double kcal, double carbs, double protein, double fat) {
+        this.kcal = kcal;
+        this.carbs = carbs;
+        this.protein = protein;
+        this.fat = fat;
+    }
 }

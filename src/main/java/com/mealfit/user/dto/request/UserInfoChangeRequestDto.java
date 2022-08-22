@@ -7,14 +7,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
-@Setter
-@ToString
 public class UserInfoChangeRequestDto implements Serializable {
 
     @NotBlank(message = "닉네임을 필수로 입력해주세요")
