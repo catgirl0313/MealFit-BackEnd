@@ -80,7 +80,7 @@ public class DietService {
 
     // 식단 삭제
     @Transactional
-    public Long deleteDiet(Long dietId, User user) {
+    public void deleteDiet(Long dietId, User user) {
         //유효성 검사
         Diet diet = dietRepository.findById(dietId)
                 .orElseThrow(() -> new IllegalArgumentException("기록한 식단이 없습니다."));
@@ -88,8 +88,6 @@ public class DietService {
         //작성자 검사
         validateUser(user, diet);
 
-        dietRepository.deleteById(dietId);
-
-        return dietId;
+        dietRepository.delete(diet);
     }
 }

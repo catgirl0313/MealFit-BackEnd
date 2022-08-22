@@ -12,7 +12,7 @@ public class DietResponseDto {
     private DietStatus dietStatus;
     private Long foodId;
     private String foodName;
-    private double kCal;
+    private double kcal;
     private double carbs;
     private double protein;
     private double fat;

@@ -11,8 +11,6 @@ public class FoodRequestDto {   // 회원이 음식을 직접 입력
 
     private String foodName; // 음식 이름
 
-    private double foodWeight; // 음식 중량
-
     private double kCal; // 칼로리
 
     private double carbs; // 탄수화물
