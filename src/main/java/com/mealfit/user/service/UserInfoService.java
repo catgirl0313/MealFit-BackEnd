@@ -2,31 +2,37 @@ package com.mealfit.user.service;
 
 import com.mealfit.common.email.EmailUtil;
 import com.mealfit.common.email.FindPasswordEmail;
-import com.mealfit.common.s3.S3Service;
+import com.mealfit.common.storageService.StorageService;
+import com.mealfit.exception.user.NoUserException;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
-import com.mealfit.user.dto.request.UserInfoChangeRequestDto;
+import com.mealfit.user.dto.request.ChangeUserInfoRequestDto;
 import com.mealfit.user.dto.response.UserInfoResponseDto;
 import com.mealfit.user.repository.EmailCertificationRepository;
 import com.mealfit.user.repository.UserRepository;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
+
 @Service
-public class UserService {
+public class UserInfoService {
 
     private final UserRepository userRepository;
     private final EmailUtil emailUtil;
     private final EmailCertificationRepository emailCertificationRepository;
-    private final S3Service s3Service;
+    private final StorageService storageService;
 
-    public UserService(UserRepository userRepository, EmailUtil emailUtil,
-          EmailCertificationRepository emailCertificationRepository, S3Service s3Service) {
+    public UserInfoService(UserRepository userRepository, EmailUtil emailUtil,
+          EmailCertificationRepository emailCertificationRepository,
+          StorageService storageService) {
         this.userRepository = userRepository;
         this.emailUtil = emailUtil;
         this.emailCertificationRepository = emailCertificationRepository;
-        this.s3Service = s3Service;
+        this.storageService = storageService;
     }
 
     public void findUsername(String url, String email) {
@@ -65,35 +71,49 @@ public class UserService {
             throw new IllegalStateException("잘못된 요청입니다.");
         }
 
-        user.setUserStatus(UserStatus.FIRST_LOGIN);
+        user.changeUserStatus(UserStatus.FIRST_LOGIN);
     }
 
     @Transactional
-    public void changeUserInfo(String username, UserInfoChangeRequestDto dto) {
-        User user = userRepository.findByUsername(username)
-              .orElseThrow(() -> new IllegalArgumentException("다시 로그인해주세요"));
+    public UserInfoResponseDto changeUserInfo(String username, ChangeUserInfoRequestDto dto) {
+        User changeUser = userRepository.findByUsername(username)
+              .orElseThrow(() -> new NoUserException("찾으려는 회원이 없습니다."));
 
         String imageUrl = null;
 
-        // TODO: S3 연결 이후 변경
-//        if (dto.getProfileImage() != null) {
-//            imageUrl = s3Service.uploadOne(dto.getProfileImage(), "PROFILE");
-//        }
+        if (dto.getProfileImage() != null) {
+            imageUrl = storageService.uploadMultipartFile(
+                  List.of(dto.getProfileImage()), "PROFILE").get(0);
+        }
 
-        user.updateInfo(dto.getNickname(), imageUrl);
-        user.setUserStatus(UserStatus.NORMAL);
-        user.changeFastingTime(dto.getStartFasting(), dto.getEndFasting());
-        user.updateUserNutrition(dto.getKcal(),
+        changeUser.changeProfile(dto.getNickname(), imageUrl);
+        changeUser.changeGoalWeight(dto.getGoalWeight());
+
+        if (changeUser.getUserStatus() == UserStatus.FIRST_LOGIN) {
+            changeUser.changeUserStatus(UserStatus.NORMAL);
+        }
+
+        changeUser.changeFastingTime(dto.getStartFasting(), dto.getEndFasting());
+        changeUser.changeUserNutrition(dto.getKcal(),
               dto.getCarbs(),
               dto.getProtein(),
               dto.getFat());
+
+        return new UserInfoResponseDto(changeUser);
     }
 
-    @Transactional(readOnly = true)
     public UserInfoResponseDto findUserInfo(String username) {
         User user = userRepository.findByUsername(username)
-              .orElseThrow(() -> new IllegalArgumentException("다시 로그인해주세요"));
+              .orElseThrow(() -> new NoUserException("찾으려는 회원이 없습니다."));
 
         return new UserInfoResponseDto(user);
+    }
+
+    public List<UserInfoResponseDto> findUserInfoList() {
+
+        return userRepository.findAll()
+              .stream()
+              .map(UserInfoResponseDto::new)
+              .collect(Collectors.toList());
     }
 }

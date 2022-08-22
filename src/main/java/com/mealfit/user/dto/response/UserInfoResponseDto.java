@@ -15,6 +15,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserInfoResponseDto implements Serializable {
 
+    private Long userId;
+
     @JsonProperty("userProfile")
     private UserProfileResponseDto userProfile;
 
@@ -22,18 +24,20 @@ public class UserInfoResponseDto implements Serializable {
     private UserFastingResponseDto fastingInfo;
 
     public UserInfoResponseDto(User user) {
+        this.userId = user.getId();
         this.userProfile = new UserProfileResponseDto(user);
         this.fastingInfo = new UserFastingResponseDto(user);
     }
 
-    public UserInfoResponseDto(String username, String nickname, String profileImage,
+    public UserInfoResponseDto(Long userId, String username, String nickname, String profileImage,
           double goalWeight, UserStatus userStatus, LocalTime startFasting, LocalTime endFasting) {
+        this.userId = userId;
         this.userProfile = new UserProfileResponseDto(username, nickname, profileImage, goalWeight, userStatus);
         this.fastingInfo = new UserFastingResponseDto(startFasting, endFasting);
     }
 
     @Data
-    static class UserProfileResponseDto {
+    public static class UserProfileResponseDto {
 
         private String username;
         private String nickname;
@@ -60,7 +64,7 @@ public class UserInfoResponseDto implements Serializable {
     }
 
     @Data
-    static class UserFastingResponseDto {
+    public static class UserFastingResponseDto {
 
         private LocalTime startFasting;
         private LocalTime endFasting;

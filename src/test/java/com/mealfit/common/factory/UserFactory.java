@@ -4,9 +4,11 @@ import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
 import com.mealfit.user.dto.request.SignUpRequestDto;
+import com.mealfit.user.dto.request.ChangeUserInfoRequestDto;
 import com.mealfit.user.dto.response.UserInfoResponseDto;
 import com.mealfit.user.dto.response.UserNutritionGoalResponseDto;
 import java.time.LocalTime;
+import org.springframework.web.multipart.MultipartFile;
 
 public class UserFactory {
 
@@ -82,8 +84,44 @@ public class UserFactory {
               .build();
     }
 
+    public static ChangeUserInfoRequestDto createChangeUserInfoRequestDto(String nickname,
+          MultipartFile profileImage) {
+        return ChangeUserInfoRequestDto.builder()
+              .nickname(nickname)
+              .build();
+    }
+
+    public static ChangeUserInfoRequestDto createChangeUserInfoRequestDto(String nickname,
+          MultipartFile profileImage, double currentWeight, double goalWeight) {
+        return ChangeUserInfoRequestDto.builder()
+              .nickname(nickname)
+              .profileImage(profileImage)
+              .currentWeight(currentWeight)
+              .goalWeight(goalWeight)
+              .startFasting(LocalTime.now())
+              .endFasting(LocalTime.now())
+              .build();
+    }
+
+    public static ChangeUserInfoRequestDto createChangeUserInfoRequestDto(String nickname,
+          MultipartFile profileImage, double currentWeight, double goalWeight,
+          double kcal, double carbs, double protein, double fat) {
+        return ChangeUserInfoRequestDto.builder()
+              .nickname(nickname)
+              .profileImage(profileImage)
+              .currentWeight(currentWeight)
+              .goalWeight(goalWeight)
+              .startFasting(LocalTime.now())
+              .endFasting(LocalTime.now())
+              .kcal(kcal)
+              .carbs(carbs)
+              .protein(protein)
+              .fat(fat)
+              .build();
+    }
+
     public static UserInfoResponseDto createMockUserInfoResponseDtoByUserStatus(UserStatus userStatus) {
-        return new UserInfoResponseDto(
+        return new UserInfoResponseDto(1L,
               "testUser", "testNickname", "https://github.com/testImage.jpg",
               80.0, userStatus,
               LocalTime.of(11, 0, 0), LocalTime.of(12, 0, 0)

@@ -2,8 +2,10 @@ package com.mealfit.common.factory;
 
 import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
+import com.mealfit.user.domain.UserBasicProfile;
 import com.mealfit.user.domain.UserNutritionGoal;
 import com.mealfit.user.domain.UserStatus;
+import com.mealfit.user.domain.UserStatusInfo;
 import java.time.LocalTime;
 
 public class MockUser {
@@ -101,13 +103,10 @@ public class MockUser {
         }
 
         public User build() {
-            return new User(
-                  id,
-                  username, password, nickname, email, profileImage,
-                  goalWeight,
-                  startFasting, endFasting,
-                  userStatus,
-                  providerType,
+            return new User(id,
+                  new UserBasicProfile(username, password,
+                        nickname, email, profileImage, goalWeight, startFasting, endFasting),
+                  new UserStatusInfo(userStatus, providerType),
                   new UserNutritionGoal(kcal, carbs, protein, fat)
             );
         }
