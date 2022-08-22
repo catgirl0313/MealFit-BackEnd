@@ -11,7 +11,9 @@ public class FoodRequestDto {   // 회원이 음식을 직접 입력
 
     private String foodName; // 음식 이름
 
-    private double kCal; // 칼로리
+    private double oneServing; // 1회 제공량
+
+    private double kcal; // 칼로리
 
     private double carbs; // 탄수화물
 
@@ -19,10 +21,10 @@ public class FoodRequestDto {   // 회원이 음식을 직접 입력
 
     private double fat; // 지방
 
-    public FoodRequestDto(String foodName, double foodWeight, double kCal, double carbs, double protein, double fat) {
+    public FoodRequestDto(String foodName, double oneServing, double kcal, double carbs, double protein, double fat) {
         this.foodName = foodName;
-        this.foodWeight = foodWeight;
-        this.kCal = kCal;
+        this.oneServing = oneServing;
+        this.kcal = kcal;
         this.carbs = carbs;
         this.protein = protein;
         this.fat = fat;
