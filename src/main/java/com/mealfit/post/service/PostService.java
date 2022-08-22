@@ -1,55 +1,59 @@
 package com.mealfit.post.service;
 
-import com.mealfit.common.s3.S3Service;
+import com.mealfit.common.storageService.StorageService;
 import com.mealfit.post.domain.Post;
 import com.mealfit.post.domain.PostImage;
 import com.mealfit.post.dto.PostCUDResponseDto;
 import com.mealfit.post.dto.PostRequestDto;
 import com.mealfit.post.repository.PostRepository;
 import com.mealfit.user.domain.User;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
-    private final S3Service s3Service;
+    private final StorageService storageService;
 
-
-    @Transactional
     public PostCUDResponseDto createPost(PostRequestDto postRequestDto, User user) {
         validatePostDto(postRequestDto);
 
         //post 저장
         Post postEntity = postRequestDto.toEntity();
-        postEntity.settingUserInfo( user.getId(), user.getProfileImage(), user.getNickname());
+        postEntity.settingUserInfo(user.getId(), user.getProfileImage(), user.getNickname());
 
         //이미지 URL 저장하기
-        List<String> savedUrls = s3Service.uploadFileInS3(postRequestDto.getPostImage(), "post/");
-        List<PostImage> postImages = savedUrls
-                .stream()
-                .map(PostImage::new)
-                .collect(Collectors.toList());
+        List<MultipartFile> uploadImages = postRequestDto.getPostImageList();
+        if (uploadImages != null) {
+            List<String> saveImageUrls = saveImagesToS3(uploadImages);
+            List<PostImage> postImages = saveImageUrls.stream()
+                  .map(PostImage::new)
+                  .collect(Collectors.toList());
 
-        log.info("insert into s3 complete! -> {}", postImages);
-
-        postEntity.addPostImages(postImages);
-
-        log.info("entity -> {}", postEntity);
+            postEntity.addPostImages(postImages);
+            postRepository.save(postEntity);
+            return new PostCUDResponseDto(postEntity, user, saveImageUrls);
+        }
 
         postRepository.save(postEntity);
+        return new PostCUDResponseDto(postEntity, user);
+    }
 
-        //return 값 생성
-        return new PostCUDResponseDto(postEntity, user, savedUrls);}
+    private List<String> saveImagesToS3(List<MultipartFile> uploadImages) {
+        if (uploadImages != null) {
+            return storageService.uploadMultipartFile(uploadImages, "post/");
+        }
+        return null;
+    }
 
     private void validatePostDto(PostRequestDto postRequestDto) {
         validateContent(postRequestDto);
@@ -62,37 +66,27 @@ public class PostService {
     }
 
     // 게시글 수정
-    @Transactional
     public void updatePost(Long postId, PostRequestDto postRequestDto, User user) {
         //item
-        Post post= postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalStateException("해당 게시글이 없습니다."));
+        Post post = postRepository.findById(postId)
+              .orElseThrow(() -> new IllegalStateException("해당 게시글이 없습니다."));
 
         validateUser(user, post);
-        validatePostDto( postRequestDto);
+        validatePostDto(postRequestDto);
 
         // 사진 갈아끼우기
-        if ( postRequestDto.getPostImage() != null) {
-            List<String> deleteUrls = post.getImages().stream()
-                    .map(PostImage::getUrl)
-                    .collect(Collectors.toList());
-            List<String> imagePaths = s3Service.update(deleteUrls,  postRequestDto.getPostImage(), "post/");
-            List<PostImage> postImages = imagePaths
-                    .stream()
-                    .map(PostImage::new)
-                    .collect(Collectors.toList());
+        List<MultipartFile> uploadImages = postRequestDto.getPostImageList();
 
-            Post postEntity = postRequestDto.toEntity();
-            log.info("insert into s3 complete! -> {}", postImages);
+        if (uploadImages != null) {
+            List<String> saveImageUrls = saveImagesToS3(uploadImages);
+            List<PostImage> postImages = saveImageUrls.stream()
+                  .map(PostImage::new)
+                  .collect(Collectors.toList());
 
-            postEntity.addPostImages(postImages);
-
-            log.info("entity -> {}", postEntity);
-
-            postRepository.save(postEntity);
+            post.replacePostImages(postImages);
         }
 
-        post.update(postRequestDto);
+        post.updateContent(postRequestDto.getContent());
     }
 
     private static void validateUser(User user, Post post) {
@@ -103,24 +97,17 @@ public class PostService {
     }
 
     //게시글 삭제
-    @Transactional
     public Long deletePost(Long postId, User user) {
         //유효성 검사
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalStateException("해당 게시글이 없습니다."));
+              .orElseThrow(() -> new IllegalStateException("해당 게시글이 없습니다."));
 
         //작성자 검사
         validateUser(user, post);
 
-        List<String> imageUrls = post.getImages().stream()
-                .map(PostImage::getUrl)
-                .collect(Collectors.toList());
-
-        //S3 사진, ImageURl, item 삭제
-        s3Service.deleteFileInS3(imageUrls);
         postRepository.deleteById(postId);
-        //System.out.println("삭제확인");
 
         return postId;
     }
 }
+

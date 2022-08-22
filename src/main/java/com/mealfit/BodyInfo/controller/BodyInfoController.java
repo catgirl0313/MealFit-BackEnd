@@ -28,7 +28,6 @@ public class BodyInfoController {
         this.bodyInfoService = bodyInfoService;
     }
 
-
     @GetMapping("/bodyInfo")
     public ResponseEntity<DataWrapper<List<BodyInfoResponseDto>>> showAllUserBodyInfo(
           @AuthenticationPrincipal UserDetailsImpl userDetails) {

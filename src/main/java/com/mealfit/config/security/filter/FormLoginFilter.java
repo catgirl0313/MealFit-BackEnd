@@ -5,6 +5,11 @@ import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.config.security.dto.LoginRequestDto;
 import com.mealfit.config.security.dto.LoginResponseDto;
 import com.mealfit.config.security.jwt.JwtUtils;
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,13 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.CrossOrigin;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
 
 //스프링 시큐리티에서 UsernamePasswordAuthenticationFilter 가 있음.
 // /login 요청해서 username, password 전송하면 (psot)
@@ -60,20 +58,11 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
 
             log.info("authenticationToken = {}", authenticationToken);
 
-            Authentication authentication =
-                    getAuthenticationManager().authenticate(authenticationToken);
-
-            return authentication;
-//            return getAuthenticationManager().authenticate(authenticationToken);
+            return getAuthenticationManager().authenticate(authenticationToken);
 
         } catch (IOException e) {
             throw new IllegalArgumentException("잘못된 로그인 정보입니다.");
-        } //return null;
-////        catch (IOException e) {
-////           e.printStackTrace(); //throw new IllegalArgumentException();// 와 다른점은?
-////        }
-////
-//        return null;
+        }
     }
 
     //attemptAuthentication실행 후 인증이 정상적으로 되었으면 successfulAuthentication 함수가 실행됨.
@@ -89,15 +78,9 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
         String accessToken = jwtUtils.issueAccessToken(userDetails.getUsername());
         String refreshToken = jwtUtils.issueRefreshToken(userDetails.getUsername());
 
-        // ↓이렇게 하지 않아도 되나요?
-        //UserInfoDto userInfoDto = new UserInfoDto(userDetails.getUser());
-//
         LoginResponseDto loginResponseDto = new LoginResponseDto(accessToken, refreshToken, userDetails);
 
-
         response.getOutputStream().write(objectMapper.writeValueAsBytes(loginResponseDto));
-
-//        response.addHeader("Authorization", jwtToken); //헤더에 토큰을 넣어줘.
     }
 
     //로그인 실패시 예외 처리

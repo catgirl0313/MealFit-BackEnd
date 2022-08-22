@@ -1,6 +1,6 @@
 package com.mealfit.user.controller;
 
-import com.mealfit.user.service.UserService;
+import com.mealfit.user.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-    private final UserService userService;
+    private final UserInfoService userInfoService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserInfoService userInfoService) {
+        this.userInfoService = userInfoService;
     }
 
     /**
@@ -24,7 +24,7 @@ public class UserController {
      */
     @GetMapping("/validate")
     public ResponseEntity<String> checkEmail(String username, String authKey) {
-        userService.checkValidLink(username, authKey);
+        userInfoService.checkValidLink(username, authKey);
 
         return ResponseEntity.status(HttpStatus.CREATED)
               .body("이메일이 성공적으로 인증되었습니다.");

@@ -78,10 +78,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
               .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
               .antMatchers("/",
-                    "/user/signup",
+                    "/user/signup", "/login",
                     "/user/username", "/user/email", "/user/email", "/user/nickname",
-                    "/user/validate",
-                    "/find/**",
+                    "/user/validate", "/find/**",
                     "/h2-console/**",
                     "/test/error").permitAll()
               .anyRequest().authenticated();

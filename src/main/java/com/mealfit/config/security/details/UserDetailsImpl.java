@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,8 +23,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @Setter
 @Getter
 @ToString
-@NoArgsConstructor
 public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
+
     private User user;
     private ProviderType providerType;
     private Collection<GrantedAuthority> authorities;
@@ -47,7 +46,7 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
     }
 
     //계정이 만료되지 않았는지 리턴턴
-   @Override
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
@@ -101,6 +100,13 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
               user.getProviderType(),
               Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
         );
+    }
+
+    public static UserDetailsImpl create(User user, Collection<GrantedAuthority> authorities) {
+        return new UserDetailsImpl(
+              user,
+              user.getProviderType(),
+              authorities);
     }
 
     public static UserDetailsImpl create(User user, Map<String, Object> attributes) {

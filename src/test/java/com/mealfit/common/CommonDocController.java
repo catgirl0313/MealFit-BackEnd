@@ -1,7 +1,7 @@
 package com.mealfit.common;
 
-import com.mealfit.common.error.ErrorCode;
-import com.mealfit.common.error.ErrorResponse;
+import com.mealfit.exception.wrapper.ErrorCode;
+import com.mealfit.exception.wrapper.ErrorResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
