@@ -2,6 +2,8 @@ package com.mealfit.post.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -9,9 +11,8 @@ import lombok.*;
 
 public class PostsResponseDto {
     private Long postId;
-    private String image;
+    private List<String> image;
+    private String content;
     private int like;
     private int view;
-
-
 }

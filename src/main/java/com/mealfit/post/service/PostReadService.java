@@ -44,6 +44,7 @@ public class PostReadService {
                         .collect(Collectors.toList()))
                 .userDto(new UserDto(user.getNickname(), user.getProfileImage()))
                 .like(post.getLikeIt())
+                .view(postReadRepository.updateView(postId))
                 .view(post.getView())
                 .build();
     }
@@ -62,14 +63,14 @@ public class PostReadService {
         return postToPostsResponseDtos(postSlice);
     }
     //전체 게시물 조회
+
     private Page<PostsResponseDto> postToPostsResponseDtos(Page<Post> postSlice) {
         return postSlice.map(p ->
                 PostsResponseDto.builder()
                         .postId(p.getId())
-                        .image(p.getImages().stream()
-                                .filter(PostImage::isRepresentative)
-                                .map(PostImage::getUrl)
-                                .findFirst().orElse(null))
+                        .content(p.getContent())
+                        .image(p.getImages().stream().map(PostImage::getUrl)
+                                .collect(Collectors.toList()))
                         .like(p.getLikeIt())
                         .view(p.getView())
                         .build()
