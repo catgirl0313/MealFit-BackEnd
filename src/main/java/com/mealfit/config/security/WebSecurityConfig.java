@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -40,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthorizationProvider jwtAuthProvider;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtUtils jwtUtils;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Bean   // 비밀번호 암호화
     public PasswordEncoder encodePassword() {
@@ -87,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(new FormLoginFilter(authenticationManager(), jwtUtils),
                     UsernamePasswordAuthenticationFilter.class)
-              .addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), jwtUtils, userDetailsService),
+              .addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), jwtUtils, userDetailsService, redisTemplate),
                     UsernamePasswordAuthenticationFilter.class);
 
         http.oauth2Login()
