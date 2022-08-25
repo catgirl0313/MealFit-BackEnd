@@ -1,7 +1,8 @@
 plugins {
+    id 'java'
     id 'org.springframework.boot' version '2.6.10'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
-    id 'java'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com'
@@ -12,10 +13,17 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+
+    asciidoctorExt
 }
 
 repositories {
     mavenCentral()
+}
+
+ext {
+    restdocVersion = "2.0.6.RELEASE"
+    snippetsDir = file('build/generated-snippets')
 }
 
 dependencies {
@@ -33,6 +41,10 @@ dependencies {
     //JWT
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // Amazon S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'com.amazonaws:aws-java-sdk-s3'
+
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-web'
     runtimeOnly 'com.h2database:h2'
@@ -40,13 +52,44 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
     // REST DOC
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${restdocVersion}"
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${restdocVersion}"
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
+}
+
+build {
+    dependsOn copyDocument
 }

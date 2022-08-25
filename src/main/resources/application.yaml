@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: DEV, KEY
+    active: DB, KEY, OAUTH2
   main:
     allow-bean-definition-overriding: true
 
@@ -22,4 +22,3 @@ management:
   endpoint:
     info:
       enabled: true
-

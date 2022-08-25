@@ -22,10 +22,10 @@ public class Food extends BaseEntity {
     private String foodName; // 음식 이름
 
     @Column(nullable = false)
-    private double foodWeight; // 음식 중량
+    private double oneServing; // 1회 제공량
 
     @Column(nullable = false)
-    private double kCal; // 칼로리
+    private double kcal; // 칼로리
 
     @Column(nullable = false)
     private double carbs; // 탄수화물
@@ -36,11 +36,11 @@ public class Food extends BaseEntity {
     @Column(nullable = false)
     private double fat; // 지방
 
-    public Food(Long id, String foodName, double foodWeight, double kCal, double carbs, double protein, double fat) {
+    public Food(Long id, String foodName, double oneServing, double kcal, double carbs, double protein, double fat) {
         this.id = id;
+        this.oneServing = oneServing;
         this.foodName = foodName;
-        this.foodWeight = foodWeight;
-        this.kCal = kCal;
+        this.kcal = kcal;
         this.carbs = carbs;
         this.protein = protein;
         this.fat = fat;

@@ -40,7 +40,7 @@ public class JwtUtils {
     }
 
     // TODO 리프레시 토큰 생성 예정
-    public String issueRefreshToken(String username) {
+    public String issueRefreshToken(String username) { //redis 안 쓰면 그냥 되는거?
 //        String refreshToken = createRefreshToken(username);
 //        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
 //        operations.set(username, refreshToken.getToken());

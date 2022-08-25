@@ -10,31 +10,37 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class PostCUDResponseDto {
 
     private Long postId;
-    private Member member;
+    private UserInfoDto userInfoDto;
     private String content;
     private int likeCnt;
     private List<String> imageUrls;
 
-    public PostCUDResponseDto(Post post, User user, List<String> images) {
+    public PostCUDResponseDto(Post post, User user) {
         this.postId = post.getId();
-        this.member = new Member(
-                user.getUsername(),
+        this.userInfoDto = new UserInfoDto(
                 user.getNickname(),
                 user.getProfileImage());
         this.content = post.getContent();
         this.likeCnt = post.getLikeIt();
-        this.imageUrls = images;
+    }
+
+    public PostCUDResponseDto(Post post, User user, List<String> imageUrls) {
+        this.postId = post.getId();
+        this.userInfoDto = new UserInfoDto(
+              user.getNickname(),
+              user.getProfileImage());
+        this.content = post.getContent();
+        this.likeCnt = post.getLikeIt();
+        this.imageUrls = imageUrls;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    static class Member {
-        private String username;
+    static class UserInfoDto {
         private String nickname;
         private String profileImage;
     }

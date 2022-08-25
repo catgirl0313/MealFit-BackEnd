@@ -1,61 +1,22 @@
 package com.mealfit.user.controller;
 
-import com.mealfit.user.dto.SignUpRequestDto;
-import com.mealfit.user.service.UserService;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import com.mealfit.user.service.UserInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequestMapping("/user")
 @RestController
 public class UserController {
 
-    private final UserService userService;
+    private final UserInfoService userInfoService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(HttpServletRequest request, @Valid SignUpRequestDto dto) {
-        userService.signup(extractDomainRoot(request), dto);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-              .body("가입 완료!");
-    }
-
-    /**
-     * 검증 부분
-     */
-    @GetMapping("/username")
-    public ResponseEntity<String> validateUsername(@RequestParam String username) {
-        userService.validateUsername(username);
-
-        return ResponseEntity.status(HttpStatus.OK)
-              .body("검증완료!");
-    }
-
-    @GetMapping("/email")
-    public ResponseEntity<String> validateEmail(@RequestParam String email) {
-        userService.validateEmail(email);
-
-        return ResponseEntity.status(HttpStatus.OK)
-              .body("검증완료!");
-    }
-
-    @GetMapping("/nickname")
-    public ResponseEntity<String> validateNickname(@RequestParam String nickname) {
-        userService.validateNickname(nickname);
-
-        return ResponseEntity.status(HttpStatus.OK)
-              .body("검증완료!");
+    public UserController(UserInfoService userInfoService) {
+        this.userInfoService = userInfoService;
     }
 
     /**
@@ -63,27 +24,9 @@ public class UserController {
      */
     @GetMapping("/validate")
     public ResponseEntity<String> checkEmail(String username, String authKey) {
-        userService.checkValidLink(username, authKey);
+        userInfoService.checkValidLink(username, authKey);
 
         return ResponseEntity.status(HttpStatus.CREATED)
               .body("이메일이 성공적으로 인증되었습니다.");
-    }
-
-    private String extractDomainRoot(HttpServletRequest request) {
-        return request.getRequestURL().toString().replace(request.getRequestURI().toString(), "");
-    }
-
-    @GetMapping("/find/username")
-    public ResponseEntity<String> findUsername(HttpServletRequest request, @RequestBody String email) {
-        userService.findUsername(extractDomainRoot(request), email);
-        return ResponseEntity.status(HttpStatus.OK)
-              .body("전송완료");
-    }
-
-    @GetMapping("/find/password")
-    public ResponseEntity<String> findPassword(HttpServletRequest request, @RequestBody String email, String username) {
-        userService.findPassword(extractDomainRoot(request), email, username);
-        return ResponseEntity.status(HttpStatus.OK)
-              .body("전송완료");
     }
 }

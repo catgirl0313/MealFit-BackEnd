@@ -1,7 +1,8 @@
 package com.mealfit.config.security.OAuth.OAuth2UserInfo;
 
-import com.mealfit.config.security.OAuth.ProviderType;
+import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
+import com.mealfit.user.domain.UserBasicProfile;
 import java.util.Map;
 
 public class KakaoUserInfo implements OAuth2UserInfo {
@@ -25,7 +26,7 @@ public class KakaoUserInfo implements OAuth2UserInfo {
             return null;
         }
 
-        return (String) profiles.get("profile_nickname");
+        return (String) profiles.get("nickname");
     }
 
     @Override
@@ -39,12 +40,19 @@ public class KakaoUserInfo implements OAuth2UserInfo {
             return null;
         }
 
-        return (String) profiles.get("profile_image_url");
+        return (String) profiles.get("profile_image");
     }
 
 
     @Override
     public User toEntity() {
-        return User.createSocialUser(getId(), "SOCIAL_LOGIN", getNickname(), getEmail(), ProviderType.KAKAO);
+        return User.createSocialUser(
+              UserBasicProfile.builder()
+                    .username(getId())
+                    .password("SOCIAL_LOGIN")
+                    .nickname(getNickname())
+                    .email(getEmail())
+                    .build(),
+              ProviderType.KAKAO);
     }
 }

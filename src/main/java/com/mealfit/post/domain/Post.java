@@ -2,18 +2,23 @@ package com.mealfit.post.domain;
 
 
 import com.mealfit.common.baseEntity.BaseEntity;
-
-import java.util.*;
-import javax.persistence.*;
-
-
-import com.mealfit.post.dto.PostRequestDto;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.ToString.Exclude;
 import org.hibernate.annotations.DynamicUpdate;
 
-@ToString(exclude = "postImages")
 @Getter
 @NoArgsConstructor
 @DynamicUpdate
@@ -27,7 +32,6 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
     private String profileImage;
 
     @Column(nullable = false)
@@ -43,8 +47,9 @@ public class Post extends BaseEntity {
     @Column
     private int likeIt;
 
+    @Exclude
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<PostImage> images = new HashSet<>();
+    private List<PostImage> images = new ArrayList<>();
 
 
     public Post(String content) {
@@ -64,16 +69,22 @@ public class Post extends BaseEntity {
             addPostImage(postImage);
         }
     }
+
+    public void replacePostImages(List<PostImage> images) {
+        this.images.clear();
+
+        for (PostImage postImage : images) {
+            addPostImage(postImage);
+        }
+    }
     private void addPostImage(PostImage postImage) {
         postImage.setPost(this);
         this.images.add(postImage);
     }
 
-    public void update(PostRequestDto postRequestDto) {
-
+    public void updateContent(String content) {
+        this.content = content;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -90,5 +101,19 @@ public class Post extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Builder
+    public Post(Long id, Long userId, String profileImage, String nickName, String content,
+          int view,
+          int likeIt, List<PostImage> images) {
+        this.id = id;
+        this.userId = userId;
+        this.profileImage = profileImage;
+        this.nickName = nickName;
+        this.content = content;
+        this.view = view;
+        this.likeIt = likeIt;
+        this.images = images;
     }
 }

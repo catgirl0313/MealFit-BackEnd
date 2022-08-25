@@ -1,19 +1,23 @@
 package com.mealfit.diet.service;
 
 import com.mealfit.diet.domain.Diet;
-import com.mealfit.diet.dto.*;
+import com.mealfit.diet.dto.DietCUDResponseDto;
+import com.mealfit.diet.dto.DietListResponseDto;
+import com.mealfit.diet.dto.DietRequestDto;
+import com.mealfit.diet.dto.DietResponseDto;
+import com.mealfit.diet.dto.PostRequestDto;
 import com.mealfit.diet.repository.DietRepository;
 import com.mealfit.food.domain.Food;
 import com.mealfit.food.repository.FoodRepository;
 import com.mealfit.user.domain.User;
+import com.mealfit.user.dto.response.UserNutritionGoalResponseDto;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +40,7 @@ public class DietService {
             dietResponseDtoList.add(dietResponseDto);
         }
 
-        UserGoalDto userGoalDto = new UserGoalDto(user);
+        UserNutritionGoalResponseDto userGoalDto = new UserNutritionGoalResponseDto(user);
 
         return new DietListResponseDto(dietResponseDtoList, userGoalDto);
     }
@@ -69,7 +73,6 @@ public class DietService {
         diet.update(postDto);
     }
 
-    // 어차피 로그인 한 사람만의 기록이니까 이게 필요할까요...?
     private static void validateUser(User user, Diet diet) {
         Long postUserId = diet.getUserId();
         if (!user.getId().equals(postUserId)) {
@@ -79,7 +82,7 @@ public class DietService {
 
     // 식단 삭제
     @Transactional
-    public Long deleteDiet(Long dietId, User user) {
+    public void deleteDiet(Long dietId, User user) {
         //유효성 검사
         Diet diet = dietRepository.findById(dietId)
                 .orElseThrow(() -> new IllegalArgumentException("기록한 식단이 없습니다."));
@@ -87,8 +90,6 @@ public class DietService {
         //작성자 검사
         validateUser(user, diet);
 
-        dietRepository.deleteById(dietId);
-
-        return dietId;
+        dietRepository.delete(diet);
     }
 }
