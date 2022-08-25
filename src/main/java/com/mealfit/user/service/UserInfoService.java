@@ -4,20 +4,25 @@ import com.mealfit.common.email.EmailUtil;
 import com.mealfit.common.email.FindPasswordEmail;
 import com.mealfit.common.storageService.StorageService;
 import com.mealfit.exception.user.NoUserException;
+import com.mealfit.exception.user.PasswordCheckException;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
-import com.mealfit.user.dto.request.ChangeUserInfoRequestDto;
-import com.mealfit.user.dto.response.UserInfoResponseDto;
 import com.mealfit.user.repository.EmailCertificationRepository;
 import com.mealfit.user.repository.UserRepository;
+import com.mealfit.user.service.dto.UserServiceDtoFactory;
+import com.mealfit.user.service.dto.request.ChangeUserInfoRequestDto;
+import com.mealfit.user.service.dto.request.ChangeUserPasswordRequestDto;
+import com.mealfit.user.service.dto.response.UserInfoResponseDto;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
-
+@RequiredArgsConstructor
 @Service
 public class UserInfoService {
 
@@ -25,15 +30,8 @@ public class UserInfoService {
     private final EmailUtil emailUtil;
     private final EmailCertificationRepository emailCertificationRepository;
     private final StorageService storageService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserInfoService(UserRepository userRepository, EmailUtil emailUtil,
-          EmailCertificationRepository emailCertificationRepository,
-          StorageService storageService) {
-        this.userRepository = userRepository;
-        this.emailUtil = emailUtil;
-        this.emailCertificationRepository = emailCertificationRepository;
-        this.storageService = storageService;
-    }
 
     public void findUsername(String url, String email) {
         if (!userRepository.existsByEmail(email)) {
@@ -75,9 +73,8 @@ public class UserInfoService {
     }
 
     @Transactional
-    public UserInfoResponseDto changeUserInfo(String username, ChangeUserInfoRequestDto dto) {
-        User changeUser = userRepository.findByUsername(username)
-              .orElseThrow(() -> new NoUserException("찾으려는 회원이 없습니다."));
+    public UserInfoResponseDto changeUserInfo(ChangeUserInfoRequestDto dto) {
+        User changeUser = findByUsername(dto.getUsername());
 
         String imageUrl = null;
 
@@ -99,21 +96,40 @@ public class UserInfoService {
               dto.getProtein(),
               dto.getFat());
 
-        return new UserInfoResponseDto(changeUser);
+        return UserServiceDtoFactory.userInfoResponseDto(changeUser);
     }
 
-    public UserInfoResponseDto findUserInfo(String username) {
-        User user = userRepository.findByUsername(username)
-              .orElseThrow(() -> new NoUserException("찾으려는 회원이 없습니다."));
+    public UserInfoResponseDto showUserInfoByUsername(String username) {
+        User user = findByUsername(username);
 
-        return new UserInfoResponseDto(user);
+        return UserServiceDtoFactory.userInfoResponseDto(user);
     }
 
-    public List<UserInfoResponseDto> findUserInfoList() {
+    public List<UserInfoResponseDto> showUserInfoList() {
 
         return userRepository.findAll()
               .stream()
-              .map(UserInfoResponseDto::new)
+              .map(UserServiceDtoFactory::userInfoResponseDto)
               .collect(Collectors.toList());
     }
+
+    @Transactional
+    public UserInfoResponseDto changePassword(ChangeUserPasswordRequestDto dto) {
+        User user = findByUsername(dto.getUsername());
+
+        if (!dto.getPassword().equals(dto.getPasswordCheck())) {
+            throw new PasswordCheckException("비밀번호와 비밀번호 재확인이 일치하지 않습니다.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+        user.changePassword(encodedPassword);
+
+        return UserServiceDtoFactory.userInfoResponseDto(user);
+    }
+
+    private User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+              .orElseThrow(() -> new NoUserException("찾으려는 회원이 없습니다."));
+    }
+
 }

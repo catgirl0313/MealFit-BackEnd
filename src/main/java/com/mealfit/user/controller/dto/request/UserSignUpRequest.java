@@ -1,4 +1,4 @@
-package com.mealfit.user.dto.request;
+package com.mealfit.user.controller.dto.request;
 
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserBasicProfile;
@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SignUpRequestDto implements Serializable {
+public class UserSignUpRequest implements Serializable {
 
     @Size(max = 20)
     @NotBlank(message = "아이디는 필수로 입력해주세요")
@@ -69,7 +69,7 @@ public class SignUpRequestDto implements Serializable {
     }
 
     @Builder
-    public SignUpRequestDto(String username, String email, String password, String passwordCheck,
+    public UserSignUpRequest(String username, String email, String password, String passwordCheck,
           String nickname, MultipartFile profileImage, double currentWeight, double goalWeight,
           LocalTime startFasting, LocalTime endFasting) {
         this.username = username;

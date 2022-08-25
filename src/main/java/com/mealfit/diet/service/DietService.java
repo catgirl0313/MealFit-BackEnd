@@ -10,7 +10,7 @@ import com.mealfit.diet.repository.DietRepository;
 import com.mealfit.food.domain.Food;
 import com.mealfit.food.repository.FoodRepository;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.dto.response.UserNutritionGoalResponseDto;
+import com.mealfit.user.service.dto.response.UserNutritionGoalResponseDto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

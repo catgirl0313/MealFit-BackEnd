@@ -1,10 +1,7 @@
-package com.mealfit.config.security.filter;
+package com.mealfit.config.security.jwt;
 
 import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.config.security.details.UserDetailsServiceImpl;
-import com.mealfit.config.security.exception.DeniedJwtException;
-import com.mealfit.config.security.jwt.JwtUtils;
-import com.mealfit.config.security.jwt.VerifyResult;
 import com.mealfit.config.security.jwt.VerifyResult.TokenStatus;
 import com.mealfit.config.security.token.JwtAuthenticationToken;
 import java.io.IOException;
@@ -19,12 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-//시큐리티가 filter 가지고 있는데 그 필터중에 BasicAuthenticationFilter 라는 것이 있음.
-//권한이나 인증이 필요한 특정 주소를 요청했을 때 위 필터를 무조건 타게 되어있음.!!!!!!
-//만약 권한이나 인증이 필요한 주소가 아니라면 이 필터를 안탐.?
-//500에러 . 통과해야 막힘 풀림.
-//권한이 필요한 페이지를 만나면 헤더에있는 토큰을 꺼낸다.
 
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -44,7 +35,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
           FilterChain chain)
           throws IOException, ServletException {
 
-        log.info("=== JWT AUTH FILTER ===");
         String accessToken = null;
 
         try {
@@ -83,18 +73,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             } else {
                 // Access_Token 유효하지 않은 토큰인 경우
                 log.error("유효하지 않은 JWT 발송 감지: " + accessToken);
-                throw new DeniedJwtException("유효하지 않은 JWT 발송 감지: " + accessToken);
+                throw new IllegalArgumentException("유효하지 않은 JWT 발송 감지: " + accessToken);
             }
         } else {
             log.info("정상적이지 않은 토큰");
-            throw new DeniedJwtException("정상적이지 않은 토큰입니다.");
+            throw new IllegalArgumentException("정상적이지 않은 토큰입니다.");
         }
         chain.doFilter(request, response);
     }
 
     private String extractTokenFromHeader(HttpServletRequest request, String tokenType) {
         String headerValue = request.getHeader(tokenType);
-        log.info(headerValue);
 
         //JWT 토큰을 검증을 해서 정상적인 사용자인지 확인 (폼로그인필터에서 발급한 토큰 시크릿키 ->)
         if (headerValue == null || headerValue.isBlank() || !headerValue.startsWith("Bearer ")) {

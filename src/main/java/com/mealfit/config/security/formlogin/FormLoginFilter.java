@@ -1,4 +1,4 @@
-package com.mealfit.config.security.filter;
+package com.mealfit.config.security.formlogin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mealfit.config.security.details.UserDetailsImpl;

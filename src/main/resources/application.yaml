@@ -22,3 +22,7 @@ management:
   endpoint:
     info:
       enabled: true
+
+vaadin:
+  servlet:
+    productionMode: true

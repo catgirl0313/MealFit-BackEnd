@@ -7,16 +7,20 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
+import com.mealfit.BodyInfo.repository.BodyInfoRepository;
 import com.mealfit.common.email.EmailUtil;
 import com.mealfit.common.factory.UserFactory;
 import com.mealfit.exception.user.DuplicatedSignUpException;
 import com.mealfit.exception.user.PasswordCheckException;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
-import com.mealfit.user.dto.request.SignUpRequestDto;
+import com.mealfit.user.controller.dto.request.UserSignUpRequest;
 import com.mealfit.user.repository.EmailCertificationRepository;
 import com.mealfit.user.repository.UserRepository;
 import com.mealfit.user.service.UserSignUpService;
+import com.mealfit.user.service.dto.UserServiceDtoFactory;
+import com.mealfit.user.service.dto.request.UserSignUpRequestDto;
+import com.mealfit.user.service.dto.response.UserInfoResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -50,6 +54,9 @@ class UserSignupTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private BodyInfoRepository bodyInfoRepository;
 
     @DisplayName("signup() 메서드는")
     @Nested
@@ -220,7 +227,7 @@ class UserSignupTest {
                   "nickname", "test@gmail.com", UserStatus.NORMAL);
 
             // given
-            SignUpRequestDto signUpRequestDto = SignUpRequestDto.builder()
+            UserSignUpRequest request = UserSignUpRequest.builder()
                   .username(username)
                   .email("test@gmail.com")
                   .password("qwe123123")
@@ -228,16 +235,18 @@ class UserSignupTest {
                   .nickname("nickname")
                   .build();
 
+            UserSignUpRequestDto dto = UserServiceDtoFactory
+                  .userSignUpRequestDto("TEST_DOMAIN_URL",
+                  request);
+
             // when
             given(userRepository.save(any(User.class))).willReturn(saveUser);
 
-            User savedUser = userSignUpService.signup("TEST_DOMAIN_URL", signUpRequestDto);
+            UserInfoResponseDto responseDto = userSignUpService.signup(dto);
 
             // then
-            assertEquals(signUpRequestDto.getUsername(), savedUser.getUsername());
-            assertEquals(signUpRequestDto.getEmail(), savedUser.getEmail());
-            assertEquals(signUpRequestDto.getPassword(), savedUser.getPassword());
-            assertEquals(signUpRequestDto.getNickname(), savedUser.getNickname());
+            assertEquals(request.getEmail(), responseDto.getEmail());
+            assertEquals(request.getNickname(), responseDto.getNickname());
         }
     }
 }

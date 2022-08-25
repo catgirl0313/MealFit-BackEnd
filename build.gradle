@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '2.6.10'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.vaadin' version '23.1.2'
 }
 
 group = 'com'
@@ -19,12 +20,16 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url = "https://maven.vaadin.com/vaadin-addons" }
 }
 
 ext {
     restdocVersion = "2.0.6.RELEASE"
     snippetsDir = file('build/generated-snippets')
+    set('vaadinVersion', "23.1.2")
+    def profile = project.hasProperty("profile") ? project.property("proifle").toString() : "local"
 }
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -47,8 +52,13 @@ dependencies {
 
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.testng:testng:7.1.0'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
+
+    // back-office vaadin
+    implementation 'com.vaadin:vaadin-spring-boot-starter'
+    implementation 'dev.mett.vaadin:tooltip:1.7.0'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -63,6 +73,18 @@ dependencies {
     testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${restdocVersion}"
 }
 
+
+vaadin {
+    optimizeBundle = false
+    productionMode = true
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.vaadin:vaadin-bom:23.1.2"
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
@@ -71,25 +93,25 @@ test {
     outputs.dir snippetsDir
 }
 
-asciidoctor {
-    inputs.dir snippetsDir
-    configurations 'asciidoctorExt'
-    dependsOn test
-}
-
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
-bootJar {
-    dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
-    }
-}
-
-build {
-    dependsOn copyDocument
-}
+//asciidoctor {
+//    inputs.dir snippetsDir
+//    configurations 'asciidoctorExt'
+//    dependsOn test
+//}
+//
+//task copyDocument(type: Copy) {
+//    dependsOn asciidoctor
+//    from file("build/docs/asciidoc")
+//    into file("src/main/resources/static/docs")
+//}
+//
+//bootJar {
+//    dependsOn asciidoctor
+//    from ("${asciidoctor.outputDir}/html5") {
+//        into 'static/docs'
+//    }
+//}
+//
+//build {
+//    dependsOn copyDocument
+//}

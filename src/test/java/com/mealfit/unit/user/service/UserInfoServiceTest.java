@@ -10,13 +10,15 @@ import com.mealfit.common.email.EmailUtil;
 import com.mealfit.common.factory.UserFactory;
 import com.mealfit.common.storageService.StorageService;
 import com.mealfit.exception.user.NoUserException;
+import com.mealfit.user.controller.dto.request.ChangeUserInfoRequest;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
-import com.mealfit.user.dto.request.ChangeUserInfoRequestDto;
-import com.mealfit.user.dto.response.UserInfoResponseDto;
 import com.mealfit.user.repository.EmailCertificationRepository;
 import com.mealfit.user.repository.UserRepository;
 import com.mealfit.user.service.UserInfoService;
+import com.mealfit.user.service.dto.UserServiceDtoFactory;
+import com.mealfit.user.service.dto.request.ChangeUserInfoRequestDto;
+import com.mealfit.user.service.dto.response.UserInfoResponseDto;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -65,7 +67,7 @@ public class UserInfoServiceTest {
                 given(userRepository.findByUsername(loginUsername)).willReturn(Optional.ofNullable(user));
 
                 // when
-                UserInfoResponseDto userResponseDto = userInfoService.findUserInfo("test1");
+                UserInfoResponseDto userResponseDto = userInfoService.showUserInfoByUsername("test1");
 
                 // then
                 assertThat(userResponseDto).isNotNull();
@@ -87,7 +89,7 @@ public class UserInfoServiceTest {
                 String notLoginUsername = null;
 
                 // when then
-                assertThatThrownBy(() -> userInfoService.findUserInfo(notLoginUsername))
+                assertThatThrownBy(() -> userInfoService.showUserInfoByUsername(notLoginUsername))
                       .isInstanceOf(NoUserException.class);
 
                 verify(userRepository, times(1))
@@ -111,22 +113,25 @@ public class UserInfoServiceTest {
 
                 String loginUsername = "test1";
 
-                ChangeUserInfoRequestDto requestDto = UserFactory.createChangeUserInfoRequestDto(
+                ChangeUserInfoRequest request = UserFactory.createChangeUserInfoRequestDto(
                       "newNickname1",
                       null,
                       80,
                       70);
 
+                ChangeUserInfoRequestDto dto = UserServiceDtoFactory.ChangeUserInfoRequestDto(
+                      "test1", request);
+
                 // given
                 given(userRepository.findByUsername(loginUsername)).willReturn(Optional.ofNullable(user));
 
                 // when
-                UserInfoResponseDto responseDto = userInfoService.changeUserInfo("test1", requestDto);
+                UserInfoResponseDto responseDto = userInfoService.changeUserInfo(dto);
 
                 // then
                 // 나중에 일치시킬 수 있다면 usingRecursiveComparison() 사용도 나쁘지 않다.
-                assertThat(requestDto.getNickname()).isEqualTo(responseDto.getUserProfile().getNickname());
-                assertThat(requestDto.getGoalWeight()).isEqualTo(responseDto.getUserProfile().getGoalWeight());
+                assertThat(request.getNickname()).isEqualTo(responseDto.getNickname());
+                assertThat(request.getGoalWeight()).isEqualTo(responseDto.getGoalWeight());
 
                 verify(userRepository, times(1))
                       .findByUsername("test1");
@@ -140,17 +145,20 @@ public class UserInfoServiceTest {
             @DisplayName("자신의 프로필을 수정할 수 없다.")
             @Test
             void getUserInfo_WithMyUsername_UnSuccess() {
-                ChangeUserInfoRequestDto requestDto = UserFactory.createChangeUserInfoRequestDto(
+                ChangeUserInfoRequest request = UserFactory.createChangeUserInfoRequestDto(
                       "newNickname1",
                       null);
 
                 String notLoginUsername = null;
 
+                ChangeUserInfoRequestDto dto = UserServiceDtoFactory.ChangeUserInfoRequestDto(
+                      notLoginUsername, request);
+
                 // given
                 given(userRepository.findByUsername(notLoginUsername)).willReturn(Optional.empty());
 
                 // when then
-                assertThatThrownBy(() -> userInfoService.changeUserInfo(notLoginUsername, requestDto))
+                assertThatThrownBy(() -> userInfoService.changeUserInfo(dto))
                       .isInstanceOf(NoUserException.class);
 
                 verify(userRepository, times(1))
