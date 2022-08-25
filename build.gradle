@@ -58,6 +58,13 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
+    //스프링 redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    //embedded redis
+    implementation 'it.ozimov:embedded-redis:0.7.2'
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'javax.xml.bind:jaxb-api'
+
     // REST DOC
     asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${restdocVersion}"
     testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${restdocVersion}"
@@ -71,25 +78,25 @@ test {
     outputs.dir snippetsDir
 }
 
-asciidoctor {
-    inputs.dir snippetsDir
-    configurations 'asciidoctorExt'
-    dependsOn test
-}
+//asciidoctor {
+//    inputs.dir snippetsDir
+//    configurations 'asciidoctorExt'
+//    dependsOn test
+//}
 
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
-bootJar {
-    dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
-    }
-}
-
-build {
-    dependsOn copyDocument
-}
+//task copyDocument(type: Copy) {
+//    dependsOn asciidoctor
+//    from file("build/docs/asciidoc")
+//    into file("src/main/resources/static/docs")
+//}
+//
+//bootJar {
+//    dependsOn asciidoctor
+//    from ("${asciidoctor.outputDir}/html5") {
+//        into 'static/docs'
+//    }
+//}
+//
+//build {
+//    dependsOn copyDocument
+//}

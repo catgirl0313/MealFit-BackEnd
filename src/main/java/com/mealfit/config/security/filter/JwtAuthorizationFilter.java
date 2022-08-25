@@ -13,6 +13,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,12 +33,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtUtils jwtUtils,
-          UserDetailsServiceImpl userDetailsService) {
+                                  UserDetailsServiceImpl userDetailsService, RedisTemplate<String, Object> redisTemplate) {
         super(authenticationManager);
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -58,6 +62,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         VerifyResult verifyResult = jwtUtils.verifyToken(accessToken);
 
         if (verifyResult.getTokenStatus() == TokenStatus.AVAILABLE) {
+//            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+//            if (operations.get(accessToken) != null && (boolean) operations.get(accessToken)) {
+//                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+//                        "이미 로그아웃 하셨습니다. 다시 로그인 해 주세요");
+//                return;
+//            }
             Authentication jwtAuthToken = new JwtAuthenticationToken(verifyResult.getUsername(),
                   null);
             Authentication authentication = getAuthenticationManager().authenticate(jwtAuthToken);
