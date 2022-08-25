@@ -1,14 +1,18 @@
 package com.mealfit.post.service;
 
 import com.mealfit.common.storageService.StorageService;
+
 import com.mealfit.post.domain.Post;
 import com.mealfit.post.domain.PostImage;
 import com.mealfit.post.dto.PostCUDResponseDto;
 import com.mealfit.post.dto.PostRequestDto;
+
 import com.mealfit.post.repository.PostRepository;
 import com.mealfit.user.domain.User;
 import java.util.List;
+
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final StorageService storageService;
+
 
     public PostCUDResponseDto createPost(PostRequestDto postRequestDto, User user) {
         validatePostDto(postRequestDto);
@@ -109,5 +114,8 @@ public class PostService {
 
         return postId;
     }
-}
+
+
+
+    }
 
