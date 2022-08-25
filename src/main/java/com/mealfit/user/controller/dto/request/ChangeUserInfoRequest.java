@@ -1,4 +1,4 @@
-package com.mealfit.user.dto.request;
+package com.mealfit.user.controller.dto.request;
 
 
 import java.io.Serializable;
@@ -9,12 +9,14 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+@Setter
 @Getter
 @NoArgsConstructor
-public class ChangeUserInfoRequestDto implements Serializable {
+public class ChangeUserInfoRequest implements Serializable {
 
     @NotBlank(message = "닉네임을 필수로 입력해주세요")
     private String nickname;
@@ -46,7 +48,7 @@ public class ChangeUserInfoRequestDto implements Serializable {
     private double fat;
 
     @Builder
-    public ChangeUserInfoRequestDto(String nickname, MultipartFile profileImage,
+    public ChangeUserInfoRequest(String nickname, MultipartFile profileImage,
           double currentWeight,
           double goalWeight, LocalTime startFasting, LocalTime endFasting, double kcal,
           double carbs,

@@ -1,4 +1,4 @@
-package com.mealfit.config.security.provider;
+package com.mealfit.config.security.jwt;
 
 import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.config.security.details.UserDetailsServiceImpl;

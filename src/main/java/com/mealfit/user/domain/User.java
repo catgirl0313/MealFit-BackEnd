@@ -77,7 +77,7 @@ public class User extends BaseEntity {
 
     public static User createSocialUser(UserBasicProfile userBasicProfile, ProviderType providerType) {
         return new User(null, userBasicProfile,
-              new UserStatusInfo(UserStatus.NOT_VALID, providerType),
+              new UserStatusInfo(UserStatus.FIRST_LOGIN, providerType),
               new UserNutritionGoal(0, 0, 0, 0));
     }
 

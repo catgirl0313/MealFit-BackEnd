@@ -1,10 +1,11 @@
 package com.mealfit.user.controller;
 
-import com.mealfit.user.dto.request.SignUpRequestDto;
+import com.mealfit.user.controller.dto.request.UserSignUpRequest;
 import com.mealfit.user.service.UserSignUpService;
+import com.mealfit.user.service.dto.UserServiceDtoFactory;
+import com.mealfit.user.service.dto.request.UserSignUpRequestDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +27,11 @@ public class UserSignUpController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(HttpServletRequest request, @Valid SignUpRequestDto dto) {
-        userSignUpService.signup(extractDomainRoot(request), dto);
+    public ResponseEntity<String> signup(HttpServletRequest httpServletRequest,
+          @Valid UserSignUpRequest request) {
+        UserSignUpRequestDto dto = UserServiceDtoFactory.userSignUpRequestDto(
+              extractDomainRoot(httpServletRequest), request);
+        userSignUpService.signup(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
               .body("가입 완료!");
@@ -42,7 +46,7 @@ public class UserSignUpController {
     }
 
     @GetMapping("/email")
-    public ResponseEntity<String> validateEmail(@Email @RequestParam String email) {
+    public ResponseEntity<String> validateEmail(@RequestParam String email) {
         userSignUpService.validateEmail(email);
 
         return ResponseEntity.status(HttpStatus.OK)

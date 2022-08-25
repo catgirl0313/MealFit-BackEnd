@@ -58,10 +58,10 @@ public class Post extends BaseEntity {
         this.view = 0;
     }
 
-    public void settingUserInfo(Long userId,String profileImage,String nickName) {
+    public void settingUserInfo(Long userId, String profileImage, String nickName) {
         this.userId = userId;
         this.profileImage = profileImage;
-        this.nickName=nickName;
+        this.nickName = nickName;
     }
 
     public void addPostImages(List<PostImage> images) {
@@ -77,6 +77,7 @@ public class Post extends BaseEntity {
             addPostImage(postImage);
         }
     }
+
     private void addPostImage(PostImage postImage) {
         postImage.setPost(this);
         this.images.add(postImage);
