@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -85,6 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/user/validate", "/find/**",
                     "/h2-console/**",
                     "/test/error").permitAll()
+                .antMatchers(HttpMethod.GET, "/post").permitAll()
               .anyRequest().authenticated();
 
         http.addFilterBefore(new FormLoginFilter(authenticationManager(), jwtUtils),
