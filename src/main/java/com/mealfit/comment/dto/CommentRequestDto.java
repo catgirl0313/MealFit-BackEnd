@@ -1,22 +1,24 @@
 package com.mealfit.comment.dto;
 
+
 import com.mealfit.comment.domain.Comment;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 
-@ToString
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+
 public class CommentRequestDto {
-   private String content;
+
+    private Long commentId;
+    private String comment;
+    private Long postId;
 
     public Comment toEntity() {
-        return new Comment(content);
-
+        return new Comment(comment,postId);
     }
+
+
 }

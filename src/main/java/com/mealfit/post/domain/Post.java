@@ -1,6 +1,7 @@
 package com.mealfit.post.domain;
 
 
+import com.mealfit.comment.domain.Comment;
 import com.mealfit.common.baseEntity.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +17,11 @@ import javax.persistence.OneToMany;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.ToString.Exclude;
 import org.hibernate.annotations.DynamicUpdate;
 
+@ToString
 @Getter
 @NoArgsConstructor
 @DynamicUpdate
@@ -86,6 +89,10 @@ public class Post extends BaseEntity {
     public void updateContent(String content) {
         this.content = content;
     }
+
+//    public void addComment(Comment comment) {
+//        this.comment.add(comment);
+//    }
 
     @Override
     public boolean equals(Object o) {

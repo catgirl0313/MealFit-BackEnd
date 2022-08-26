@@ -2,23 +2,31 @@ package com.mealfit.comment.dto;
 
 
 import com.mealfit.comment.domain.Comment;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
+import lombok.*;
+
+
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Getter
 
 public class CommentResponseDto {
     private Long commentId;
     private Long postId;
-    private String content;
-    private String profileImage;
+    private String comment;
+    private UserInfoDto userDto;
     private int like;
 
     public CommentResponseDto(Comment comment) {
+        this.commentId = comment.getId();
+        this.comment = comment.getComment();
+        this.postId = comment.getPostId();
+        this.userDto = new UserInfoDto(comment.getProfileImage());
+    }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class UserInfoDto {
+        private String profileImage;
     }
 }
