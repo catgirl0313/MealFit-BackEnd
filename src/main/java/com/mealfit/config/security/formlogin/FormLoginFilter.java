@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 //UsernamePasswordAuthenticationFilter 동작을 함.
 //controller에서 지정안해줘도 login으로 읽힘
 @Slf4j
-@CrossOrigin
+//@CrossOrigin
 public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtUtils jwtUtils;
