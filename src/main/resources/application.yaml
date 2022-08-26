@@ -26,3 +26,4 @@ management:
 vaadin:
   servlet:
     productionMode: true
+
