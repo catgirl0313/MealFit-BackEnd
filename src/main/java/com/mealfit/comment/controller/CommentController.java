@@ -4,8 +4,6 @@ import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.comment.dto.CommentResponseDto;
 import com.mealfit.comment.service.CommentService;
 import com.mealfit.config.security.details.UserDetailsImpl;
-import com.mealfit.user.domain.User;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,33 +21,36 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    //작성
-    @PostMapping("posts/{postId}/comments")
-    public ResponseEntity<Void> saveComment(@PathVariable Long postId,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                            @RequestBody CommentRequestDto commentRequestDto) {
-        commentService.createComment(postId, commentRequestDto,userDetails.getUser());
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(null);
-    }
-    //삭제
-    @DeleteMapping("/comment")
-    public Long deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal
-                              User user) {
-        return commentService.deleteComment(commentId,user);
-    }
-    //수정
-    @PutMapping("/comment")
-    public ResponseEntity<Void> updateComment(@PathVariable Long commentId, CommentRequestDto commentDto,
-                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping("/post/{postId}/comment")
+    public ResponseEntity<String> createComment(@PathVariable Long postId,
+                                        @Valid CommentRequestDto requestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        commentService.updateComment(commentId, commentDto, userDetails.getUser());
+        commentService.createComment(postId, userDetails.getUser(), requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(null);
+                .body("작성 완료!");
+
     }
-    //조회
-    @GetMapping("/post/{postId}/comment")
+
+    @DeleteMapping("/post/comment/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails){
+        commentService.deleteComment(commentId,userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("삭제완료");
+    }
+
+    @PutMapping("/post/comment/{commentId}")
+    public ResponseEntity<String> updateComment(@PathVariable Long commentId,
+                                                @Valid CommentRequestDto requestDto,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails){
+        commentService.updateComment(commentId,userDetails.getUser(),requestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("수정 완료!");
+    }
+
+    @GetMapping("post/{postId}/comment")
     public ResponseEntity<CommentWrapper<List<CommentResponseDto>>> listComment(@PathVariable Long postId) {
         List<CommentResponseDto> dtoList = commentService.listComment(postId);
         return ResponseEntity.status(HttpStatus.OK)

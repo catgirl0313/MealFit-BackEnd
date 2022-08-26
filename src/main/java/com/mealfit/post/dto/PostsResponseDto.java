@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PostsResponseDto {
     private Long postId;
-    private List<String> image;
+    private String image;
     private String content;
     private int like;
     private int view;

@@ -1,14 +1,19 @@
 package com.mealfit.comment.domain;
 
-import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.common.baseEntity.BaseEntity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
 
+@Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Comment extends BaseEntity {
 
@@ -16,7 +21,7 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String content;
+    private String comment;
     
     private int likeIt;
 
@@ -26,25 +31,23 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
+    @Column
     private String profileImage;
-    // Self Join???
-    private Long reCommentId;
 
 
-    public Comment(String content) {
-        this.content = content;
+    public Comment(String comment,Long postId) {
+        this.comment = comment;
+        this.postId = postId;
         this.likeIt = 0;
     }
 
-    public Comment() {
-    }
     public void settingUserInfo(Long userId,String profileImage) {
         this.userId = userId;
         this.profileImage = profileImage;
     }
 
-    public void update(CommentRequestDto commentDto) {
+    public void update(String comment){
+        this.comment = comment;
     }
 }
 

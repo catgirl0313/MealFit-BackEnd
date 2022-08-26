@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,61 +25,42 @@ public class CommentService {
     private final PostRepository postRepository;
 
 
+    //작성하기
+    public Long createComment(Long postId, User user,CommentRequestDto requestDto){
 
-    //작성
-    @Transactional
-    public void createComment(Long postId, CommentRequestDto commentRequestDto, User user) {
-        Post post= postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalStateException("해당 게시글이 없습니다."));
-
-        validateCommentDto(commentRequestDto);
-        Comment commentEntity = commentRequestDto.toEntity();
+        Post post = postRepository.findById(postId).orElseThrow(()-> new IllegalArgumentException("게시글이 업습니다."));
+        requestDto.setPostId(postId);
+        Comment commentEntity = requestDto.toEntity();
         commentEntity.settingUserInfo(user.getId(), user.getProfileImage());
+        commentRepository.save(commentEntity);
 
-
-
+        return requestDto.getCommentId();
     }
 
-
-    private void validateCommentDto(CommentRequestDto commentRequestDto) {
-        validateContent(commentRequestDto);
-    }
-
-    private void validateContent(CommentRequestDto dto) {
-        if (dto.getContent().isBlank()) {
-            throw new IllegalArgumentException("내용을 넣어주세요.");
-        }
-    }
-
-
-    //삭제
-    public Long deleteComment(Long commentId, User user) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalStateException("해당 댓글이 없습니다."));
-
-        validateUser(user,comment);
-        postRepository.deleteById(commentId);
-
-        return commentId;
-    }
     private static void validateUser(User user,Comment comment) {
         Long commentUserId = comment.getUserId();
         if (!user.getId().equals(commentUserId)) {
-            throw new IllegalArgumentException("작성자가 아니므로, 해당 게시글을 수정할 수 없습니다.");
+            throw new IllegalArgumentException("작성자가 아니므로 수정할 수 없습니다.");
         }
     }
-
-    //수정
-    public void updateComment(Long commentId, CommentRequestDto commentDto, User user) {
-        Comment comment  = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalStateException("해당 게시글이 없습니다."));
+    //삭제하기
+    public void deleteComment(Long commentId, User user) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()->new IllegalArgumentException("댓글이 없습니다."));
 
         validateUser(user, comment);
-
-        comment.update(commentDto);
+        commentRepository.deleteById(commentId);
     }
-    //조회
-    @Transactional
+    //수정하기
+    public void updateComment(Long commentId, User user, CommentRequestDto requestDto) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()->new IllegalArgumentException("댓글이 없습니다."));
+
+        validateUser(user, comment);
+        comment.update(requestDto.getComment());
+    }
+
+    //댓글 리스트
     public List<CommentResponseDto> listComment(Long postId) {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
@@ -90,7 +72,4 @@ public class CommentService {
         }
         return commentResponseDtoList;
     }
-
-
-
 }
