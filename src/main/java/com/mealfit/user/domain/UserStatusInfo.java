@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Embeddable
 public class UserStatusInfo {
-
+    @Getter
     @Setter
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
