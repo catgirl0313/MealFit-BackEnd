@@ -4,7 +4,11 @@ import com.mealfit.authentication.domain.JwtToken;
 import com.mealfit.authentication.domain.OAuthTokenDao;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
+@Profile("!prod")
+@Component
 public class ConcurrentHashMapOAuthTokenDao implements OAuthTokenDao {
 
     private final ConcurrentHashMap<String, String> storage;
