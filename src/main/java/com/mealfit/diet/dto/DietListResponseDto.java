@@ -1,6 +1,6 @@
 package com.mealfit.diet.dto;
 
-import com.mealfit.user.service.dto.response.UserNutritionGoalResponseDto;
+import com.mealfit.user.application.dto.response.UserNutritionGoalResponseDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
