@@ -1,10 +1,10 @@
-package com.mealfit.BodyInfo.service;
+package com.mealfit.bodyInfo.service;
 
-import com.mealfit.BodyInfo.domain.BodyInfo;
-import com.mealfit.BodyInfo.dto.request.BodyInfoChangeRequestDto;
-import com.mealfit.BodyInfo.dto.request.BodyInfoSaveRequestDto;
-import com.mealfit.BodyInfo.dto.response.BodyInfoResponseDto;
-import com.mealfit.BodyInfo.repository.BodyInfoRepository;
+import com.mealfit.bodyInfo.domain.BodyInfo;
+import com.mealfit.bodyInfo.dto.request.BodyInfoChangeRequestDto;
+import com.mealfit.bodyInfo.dto.request.BodyInfoSaveRequestDto;
+import com.mealfit.bodyInfo.dto.response.BodyInfoResponseDto;
+import com.mealfit.bodyInfo.repository.BodyInfoRepository;
 import com.mealfit.user.domain.User;
 import java.util.List;
 import java.util.stream.Collectors;

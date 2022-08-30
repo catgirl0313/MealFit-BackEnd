@@ -1,4 +1,4 @@
-package com.mealfit.BodyInfo.dto.request;
+package com.mealfit.bodyInfo.dto.request;
 
 import java.io.Serializable;
 import java.time.LocalDate;

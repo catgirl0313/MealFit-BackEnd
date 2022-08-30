@@ -1,4 +1,4 @@
-package com.mealfit.BodyInfo.domain;
+package com.mealfit.bodyInfo.domain;
 
 import java.time.LocalDate;
 import javax.persistence.Column;
