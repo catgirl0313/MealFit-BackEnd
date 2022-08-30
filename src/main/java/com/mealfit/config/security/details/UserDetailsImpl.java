@@ -32,7 +32,7 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
 
     @Override
     public String getPassword() {
-        return null;
+        return user.getLoginInfo().getPassword();
     }
 
     @Override

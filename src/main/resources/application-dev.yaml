@@ -33,7 +33,6 @@ jwt:
   access-expired-time: 6000000
   # 3 days
   refresh-expired-time: 259200000
-  blacklist-prefix: BLACKLIST_
 
 cloud:
   aws:
