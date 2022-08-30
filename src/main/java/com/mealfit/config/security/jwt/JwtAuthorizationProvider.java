@@ -24,7 +24,6 @@ public class JwtAuthorizationProvider implements AuthenticationProvider {
           throws AuthenticationException {
 
         String username = (String) authentication.getPrincipal();
-
         UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(username);
 
         return new JwtAuthenticationToken(userDetails, null,
