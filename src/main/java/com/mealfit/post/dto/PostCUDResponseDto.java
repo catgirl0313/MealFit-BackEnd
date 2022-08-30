@@ -21,8 +21,8 @@ public class PostCUDResponseDto {
     public PostCUDResponseDto(Post post, User user) {
         this.postId = post.getId();
         this.userInfoDto = new UserInfoDto(
-                user.getNickname(),
-                user.getProfileImage());
+              user.getUserProfile().getNickname(),
+              user.getUserProfile().getProfileImage());
         this.content = post.getContent();
         this.likeCnt = post.getLikeIt();
     }
@@ -30,8 +30,8 @@ public class PostCUDResponseDto {
     public PostCUDResponseDto(Post post, User user, List<String> imageUrls) {
         this.postId = post.getId();
         this.userInfoDto = new UserInfoDto(
-              user.getNickname(),
-              user.getProfileImage());
+              user.getUserProfile().getNickname(),
+              user.getUserProfile().getProfileImage());
         this.content = post.getContent();
         this.likeCnt = post.getLikeIt();
         this.imageUrls = imageUrls;
