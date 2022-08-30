@@ -36,7 +36,7 @@ public class DietService {
         for (Diet diet : dietList) {
             Food food = foodRepository.findById(diet.getFoodId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
-            DietResponseDto dietResponseDto = new DietResponseDto(diet.getStatus(),food,diet.getFoodWeight());
+            DietResponseDto dietResponseDto = new DietResponseDto(diet.getStatus(),diet.getId(),food,diet.getFoodWeight());
             dietResponseDtoList.add(dietResponseDto);
         }
 

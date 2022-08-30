@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class UserStatusInfo {
-
+    @Getter
     @Setter
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;

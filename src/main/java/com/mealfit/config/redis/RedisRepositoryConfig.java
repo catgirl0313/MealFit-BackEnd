@@ -38,3 +38,4 @@ public class RedisRepositoryConfig {
         return redisTemplate;
     }
 }
+

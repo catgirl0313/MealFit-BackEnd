@@ -15,8 +15,7 @@ public class LoginResponseDto {
     private String userStatus;
     private String providerType;
 
-    public LoginResponseDto(String accessToken, String refreshToken,
-          UserDetailsImpl userDetails) {
+    public LoginResponseDto(String accessToken, String refreshToken, UserDetailsImpl userDetails) {
         this.tokenBox = new TokenBox(accessToken, refreshToken);
         this.userStatus = userDetails.getUser().getUserStatusInfo().getUserStatus().name();
         this.providerType = userDetails.getUser().getUserStatusInfo().getProviderType().name();

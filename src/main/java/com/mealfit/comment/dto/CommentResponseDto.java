@@ -21,12 +21,13 @@ public class CommentResponseDto {
         this.commentId = comment.getId();
         this.comment = comment.getComment();
         this.postId = comment.getPostId();
-        this.userDto = new UserInfoDto(comment.getProfileImage());
+        this.userDto = new UserInfoDto(userDto.getProfileImage(), userDto.getNickname());
     }
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     static class UserInfoDto {
         private String profileImage;
+        private String nickname;
     }
 }
