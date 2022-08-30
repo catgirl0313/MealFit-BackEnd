@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: dev, OAUTH2
+    include: local, OAUTH2
   main:
     allow-bean-definition-overriding: true
 

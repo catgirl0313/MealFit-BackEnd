@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
-@Profile("!dev")
+@Profile("!local")
 @Component
 public class RedisOAuthTokenDao implements OAuthTokenDao {
 
