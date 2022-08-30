@@ -31,7 +31,7 @@ public class CommentService {
         Post post = postRepository.findById(postId).orElseThrow(()-> new IllegalArgumentException("게시글이 업습니다."));
         requestDto.setPostId(postId);
         Comment commentEntity = requestDto.toEntity();
-        commentEntity.settingUserInfo(user.getId(), user.getProfileImage());
+        commentEntity.settingUserInfo(user.getId(), user.getUserProfile().getProfileImage());
         commentRepository.save(commentEntity);
 
         return requestDto.getCommentId();
