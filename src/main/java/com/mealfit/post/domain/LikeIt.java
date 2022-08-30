@@ -2,12 +2,14 @@ package com.mealfit.post.domain;
 
 
 import com.mealfit.common.baseEntity.BaseEntity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
+@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "like_it",
         indexes = {

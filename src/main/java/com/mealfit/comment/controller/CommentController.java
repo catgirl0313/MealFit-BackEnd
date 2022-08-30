@@ -1,5 +1,6 @@
 package com.mealfit.comment.controller;
 
+import com.mealfit.comment.dto.CommentCUDResponseDto;
 import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.comment.dto.CommentResponseDto;
 import com.mealfit.comment.service.CommentService;
@@ -21,16 +22,15 @@ public class CommentController {
 
     private final CommentService commentService;
 
+
+    //작성하기
     @PostMapping("/post/{postId}/comment")
-    public ResponseEntity<String> createComment(@PathVariable Long postId,
-                                        @Valid CommentRequestDto requestDto,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        commentService.createComment(postId, userDetails.getUser(), requestDto);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("작성 완료!");
-
+    public ResponseEntity<CommentCUDResponseDto> createComment(@PathVariable Long postId,
+                                                               @Valid CommentRequestDto requestDto,
+                                                               @AuthenticationPrincipal UserDetailsImpl userDetails){
+        CommentCUDResponseDto responseDto = commentService.createComment(postId,requestDto,userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(responseDto);
     }
 
     @DeleteMapping("/post/comment/{commentId}")
@@ -38,7 +38,7 @@ public class CommentController {
                                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
         commentService.deleteComment(commentId,userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK)
-                .body("삭제완료");
+                .body("삭제 완료!");
     }
 
     @PutMapping("/post/comment/{commentId}")
@@ -50,12 +50,12 @@ public class CommentController {
                 .body("수정 완료!");
     }
 
-    @GetMapping("post/{postId}/comment")
-    public ResponseEntity<CommentWrapper<List<CommentResponseDto>>> listComment(@PathVariable Long postId) {
-        List<CommentResponseDto> dtoList = commentService.listComment(postId);
+    @GetMapping("/post/{postId}/comment")
+    public ResponseEntity<CommentWrapper<List<CommentResponseDto>>>listcomment(@PathVariable Long postId){
+        List<CommentResponseDto> doList = commentService.listComment(postId);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new CommentWrapper<>(dtoList));
+                .body(new CommentWrapper<>(doList));
     }
 
     @Data
@@ -63,5 +63,4 @@ public class CommentController {
     static class CommentWrapper<T> {
         private T comments;
     }
-
 }

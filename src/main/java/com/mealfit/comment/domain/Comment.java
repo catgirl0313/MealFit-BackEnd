@@ -2,6 +2,8 @@ package com.mealfit.comment.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
 
+import com.mealfit.post.domain.Post;
+import com.mealfit.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +36,9 @@ public class Comment extends BaseEntity {
     @Column
     private String profileImage;
 
+    @Column(nullable = false)
+    private String nickName;
+
 
     public Comment(String comment,Long postId) {
         this.comment = comment;
@@ -41,13 +46,19 @@ public class Comment extends BaseEntity {
         this.likeIt = 0;
     }
 
-    public void settingUserInfo(Long userId,String profileImage) {
+    public void settingUserInfo(Long userId,String profileImage,String nickName) {
         this.userId = userId;
         this.profileImage = profileImage;
+        this.nickName = nickName;
     }
 
     public void update(String comment){
         this.comment = comment;
     }
+
+    public void addCommentToPost(Post post) {
+        post.addComment(this);
+    }
+
 }
 
