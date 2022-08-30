@@ -1,4 +1,4 @@
-package com.mealfit.user.service.dto.request;
+package com.mealfit.user.application.dto.request;
 
 
 import java.io.Serializable;

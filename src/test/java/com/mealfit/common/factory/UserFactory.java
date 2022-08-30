@@ -1,12 +1,18 @@
 package com.mealfit.common.factory;
 
+import com.mealfit.user.application.dto.request.ChangeNutritionRequestDto;
+import com.mealfit.user.application.dto.request.ChangeUserInfoRequestDto;
+import com.mealfit.user.application.dto.request.ChangeUserPasswordRequestDto;
+import com.mealfit.user.application.dto.request.UserSignUpRequestDto;
+import com.mealfit.user.application.dto.response.UserInfoResponseDto;
 import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserStatus;
-import com.mealfit.user.controller.dto.request.UserSignUpRequest;
-import com.mealfit.user.controller.dto.request.ChangeUserInfoRequest;
-import com.mealfit.user.controller.dto.response.UserInfoResponse;
-import com.mealfit.user.controller.dto.response.UserNutritionGoalResponse;
+import com.mealfit.user.presentation.dto.request.ChangeUserInfoRequest;
+import com.mealfit.user.presentation.dto.request.ChangeUserPasswordRequest;
+import com.mealfit.user.presentation.dto.request.UserSignUpRequest;
+import com.mealfit.user.presentation.dto.response.UserInfoResponse;
+import com.mealfit.user.presentation.dto.response.UserNutritionGoalResponse;
 import java.time.LocalTime;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,39 +21,41 @@ public class UserFactory {
     private UserFactory() {
     }
 
-    public static User createSaveUser(String username, String password, String nickname,
-          String email, UserStatus userStatus) {
-        return MockUser.builder()
-              .username(username)
-              .password(password)
-              .nickname(nickname)
-              .email(email)
-              .providerType(ProviderType.LOCAL)
-              .userStatus(userStatus)
-              .build();
-    }
-
-    public static User createMockLocalUser(Long id, String username, String password,
-          String nickname, String email,
-          UserStatus userStatus) {
+    public static User basicUser(Long id, String username) {
         return MockUser.builder()
               .id(id)
               .username(username)
+              .build();
+    }
+
+    public static User mockUser(String username, String password,
+          String nickname, String email, String imageUrl,
+          double goalWeight, LocalTime startFasting, LocalTime endFasting,
+          double kcal, double carbs, double proteins, double fats,
+          UserStatus userStatus) {
+        return MockUser.builder()
+              .username(username)
               .password(password)
               .nickname(nickname)
               .email(email)
+              .goalWeight(goalWeight)
+              .startFasting(startFasting)
+              .endFasting(endFasting)
+              .profileImage(imageUrl)
+              .kcal(kcal)
+              .carbs(carbs)
+              .protein(proteins)
+              .fat(fats)
               .providerType(ProviderType.LOCAL)
               .userStatus(userStatus)
               .build();
     }
 
-    public static User createMockSocialUser(Long id, String username, String password,
+    public static User mockSocialUser(String username,
           String nickname, String email,
           ProviderType providerType, UserStatus userStatus) {
         return MockUser.builder()
-              .id(id)
               .username(username)
-              .password(password)
               .nickname(nickname)
               .email(email)
               .providerType(providerType)
@@ -55,7 +63,7 @@ public class UserFactory {
               .build();
     }
 
-    public static UserSignUpRequest createSignUpRequestDto(String username, String email,
+    public static UserSignUpRequest mockSignUpRequest(String username, String email,
           String password, String passwordCheck,
           String nickname) {
         return UserSignUpRequest.builder()
@@ -67,11 +75,11 @@ public class UserFactory {
               .build();
     }
 
-    public static UserSignUpRequest createSignUpRequestDto(String username, String email,
+    public static UserSignUpRequestDto mockSignUpRequestDto(String username, String email,
           String password, String passwordCheck,
           String nickname, double currentWeight, double goalWeight,
           LocalTime startFasting, LocalTime endFasting) {
-        return UserSignUpRequest.builder()
+        return UserSignUpRequestDto.builder()
               .username(username)
               .email(email)
               .password(password)
@@ -84,35 +92,31 @@ public class UserFactory {
               .build();
     }
 
-    public static ChangeUserInfoRequest createChangeUserInfoRequestDto(String nickname,
-          MultipartFile profileImage) {
-        return ChangeUserInfoRequest.builder()
-              .nickname(nickname)
-              .build();
-    }
-
-    public static ChangeUserInfoRequest createChangeUserInfoRequestDto(String nickname,
-          MultipartFile profileImage, double currentWeight, double goalWeight) {
-        return ChangeUserInfoRequest.builder()
-              .nickname(nickname)
-              .profileImage(profileImage)
-              .currentWeight(currentWeight)
-              .goalWeight(goalWeight)
-              .startFasting(LocalTime.now())
-              .endFasting(LocalTime.now())
-              .build();
-    }
-
-    public static ChangeUserInfoRequest createChangeUserInfoRequestDto(String nickname,
+    public static ChangeUserInfoRequest mockChangeUserInfoRequest(String nickname,
           MultipartFile profileImage, double currentWeight, double goalWeight,
-          double kcal, double carbs, double protein, double fat) {
+          LocalTime startFasting, LocalTime endFasting) {
         return ChangeUserInfoRequest.builder()
               .nickname(nickname)
               .profileImage(profileImage)
               .currentWeight(currentWeight)
               .goalWeight(goalWeight)
-              .startFasting(LocalTime.now())
-              .endFasting(LocalTime.now())
+              .startFasting(startFasting)
+              .endFasting(endFasting)
+              .build();
+    }
+
+    public static ChangeUserInfoRequestDto mockChangeUserInfoRequestDto(String username, String nickname,
+          MultipartFile profileImage, double currentWeight, double goalWeight,
+          LocalTime startFasting, LocalTime endFasting,
+          double kcal, double carbs, double protein, double fat) {
+        return ChangeUserInfoRequestDto.builder()
+              .username(username)
+              .nickname(nickname)
+              .profileImage(profileImage)
+              .currentWeight(currentWeight)
+              .goalWeight(goalWeight)
+              .startFasting(startFasting)
+              .endFasting(endFasting)
               .kcal(kcal)
               .carbs(carbs)
               .protein(protein)
@@ -120,15 +124,75 @@ public class UserFactory {
               .build();
     }
 
-    public static UserInfoResponse createMockUserInfoResponseDtoByUserStatus(UserStatus userStatus, ProviderType providerType) {
-        return new UserInfoResponse(1L,
-              "testUser", "testNickname", "https://github.com/testImage.jpg",
-              80.0, userStatus, providerType,
-              LocalTime.of(11, 0, 0), LocalTime.of(12, 0, 0)
-        );
+    public static ChangeUserPasswordRequest mockChangeUserPasswordRequest(String password,
+          String changePassword, String passwordCheck) {
+        return ChangeUserPasswordRequest.builder()
+              .password(password)
+              .changePassword(changePassword)
+              .checkPassword(passwordCheck)
+              .build();
     }
 
-    public static UserNutritionGoalResponse createUserNutritionGoalResponseDto(double kcal,
+    public static ChangeUserPasswordRequestDto mockChangeUserPasswordRequestDto(String username,
+          String password, String changePassword, String checkPassword) {
+        return ChangeUserPasswordRequestDto.builder()
+              .username(username)
+              .password(password)
+              .changePassword(changePassword)
+              .checkPassword(checkPassword)
+              .build();
+    }
+
+    public static ChangeNutritionRequestDto mockNutritionRequestDto(String username,
+          double kcal, double carbs, double proteins, double fats) {
+        return new ChangeNutritionRequestDto(username, kcal, carbs, proteins, fats);
+    }
+
+    public static UserInfoResponseDto mockUserInfoResponseDto(Long userId, String username,
+          String nickname, String profileImage, String email,
+          double goalWeight, LocalTime startFasting, LocalTime endFasting,
+          double kcal, double carbs, double protein, double fat,
+          UserStatus userStatus, ProviderType providerType) {
+        return UserInfoResponseDto.builder()
+              .userId(userId)
+              .username(username)
+              .nickname(nickname)
+              .email(email)
+              .profileImage(profileImage)
+              .goalWeight(goalWeight)
+              .startFasting(startFasting)
+              .endFasting(endFasting)
+              .kcal(kcal)
+              .carbs(carbs)
+              .protein(protein)
+              .fat(fat)
+              .userStatus(userStatus)
+              .providerType(providerType)
+              .build();
+    }
+
+    public static UserInfoResponse mockUserInfoResponse(Long userId,
+          String nickname, String profileImage, String email,
+          double goalWeight, LocalTime startFasting, LocalTime endFasting,
+          double kcal, double carbs, double protein, double fat,
+          UserStatus userStatus, ProviderType providerType) {
+        return UserInfoResponse.builder()
+              .userId(userId)
+              .nickname(nickname)
+              .profileImage(profileImage)
+              .goalWeight(goalWeight)
+              .startFasting(startFasting)
+              .endFasting(endFasting)
+              .kcal(kcal)
+              .carbs(carbs)
+              .protein(protein)
+              .fat(fat)
+              .userStatus(userStatus)
+              .providerType(providerType)
+              .build();
+    }
+
+    public static UserNutritionGoalResponse mockUserNutritionGoalResponseDto(double kcal,
           double carbs, double protein, double fat) {
         return new UserNutritionGoalResponse(kcal, carbs, protein, fat);
     }

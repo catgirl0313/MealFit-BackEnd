@@ -1,4 +1,4 @@
-package com.mealfit.user.controller.dto.request;
+package com.mealfit.user.presentation.dto.request;
 
 
 import java.io.Serializable;

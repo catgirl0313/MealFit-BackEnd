@@ -1,7 +1,5 @@
-package com.mealfit.user.controller.dto.request;
+package com.mealfit.user.presentation.dto.request;
 
-import com.mealfit.user.domain.User;
-import com.mealfit.user.domain.UserBasicProfile;
 import java.io.Serializable;
 import java.time.LocalTime;
 import javax.validation.constraints.Email;
@@ -25,10 +23,6 @@ public class UserSignUpRequest implements Serializable {
     @NotBlank(message = "아이디는 필수로 입력해주세요")
     private String username;
 
-    @NotBlank(message = "이메일은 필수로 입력해주세요")
-    @Email(message = "이메일 형식을 확인해 주세요")
-    private String email;
-
     @Size(max = 20)
     @NotBlank(message = "비밀번호는 필수로 입력해주세요")
     private String password;
@@ -36,6 +30,10 @@ public class UserSignUpRequest implements Serializable {
     @Size(max = 20)
     @NotBlank(message = "비밀번호 재확인을 필수로 입력해주세요")
     private String passwordCheck;
+
+    @NotBlank(message = "이메일은 필수로 입력해주세요")
+    @Email(message = "이메일 형식을 확인해 주세요")
+    private String email;
 
     @Size(max = 20)
     @NotBlank(message = "닉네임을 필수로 입력해주세요")
@@ -54,19 +52,6 @@ public class UserSignUpRequest implements Serializable {
 
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime endFasting;
-
-    public User toEntity() {
-        return User.createLocalUser(
-              UserBasicProfile.builder()
-                    .username(username)
-                    .password(password)
-                    .nickname(nickname)
-                    .email(email)
-                    .goalWeight(goalWeight)
-                    .startFasting(startFasting)
-                    .endFasting(endFasting)
-                    .build());
-    }
 
     @Builder
     public UserSignUpRequest(String username, String email, String password, String passwordCheck,

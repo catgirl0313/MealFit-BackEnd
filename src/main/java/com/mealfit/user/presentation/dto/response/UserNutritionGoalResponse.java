@@ -1,4 +1,4 @@
-package com.mealfit.user.controller.dto.response;
+package com.mealfit.user.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
