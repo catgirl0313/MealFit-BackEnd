@@ -23,8 +23,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.web.cors.CorsUtils;
@@ -41,11 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthorizationProvider jwtAuthProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-
-    @Bean   // 비밀번호 암호화
-    public PasswordEncoder encodePassword() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     @Override // Bean 에 등록
@@ -101,4 +94,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
               .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
               .antMatchers("/h2-console/**");
     }
+
 }

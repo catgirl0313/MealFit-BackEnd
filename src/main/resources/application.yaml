@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: DB, KEY, OAUTH2
+    include: dev, OAUTH2
   main:
     allow-bean-definition-overriding: true
 

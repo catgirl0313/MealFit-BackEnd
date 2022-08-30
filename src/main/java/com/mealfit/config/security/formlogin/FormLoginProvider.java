@@ -2,7 +2,7 @@ package com.mealfit.config.security.formlogin;
 
 import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.config.security.details.UserDetailsServiceImpl;
-import com.mealfit.user.domain.UserStatus;
+import com.mealfit.exception.user.InvalidUserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,8 +26,8 @@ public class FormLoginProvider implements AuthenticationProvider {
 
         UserDetailsImpl userDetails = userDetailsServiceImpl.loadUserByUsername(username);
 
-        if (userDetails.getUser().getUserStatus() == UserStatus.NOT_VALID) {
-            throw new BadCredentialsException("이메일 인증을 받지 않았습니다.");
+        if (userDetails.getUser().checkNotValid()) {
+            throw new InvalidUserException("이메일 인증을 받지 않았습니다.");
         }
 
         //인코딩된 암호는 시간마다 같은 값도 변경 되기 때문에 matches 함수를 이용해 비교. equals x
