@@ -1,5 +1,4 @@
-package com.mealfit.post.dto;
-
+package com.mealfit.comment.dto;
 
 import lombok.Getter;
 import lombok.Setter;

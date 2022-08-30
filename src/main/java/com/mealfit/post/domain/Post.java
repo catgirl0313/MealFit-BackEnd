@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.ToString.Exclude;
+import org.hibernate.Criteria;
 import org.hibernate.annotations.DynamicUpdate;
 
 @ToString
@@ -55,6 +56,9 @@ public class Post extends BaseEntity {
     private List<PostImage> images = new ArrayList<>();
 
 
+//    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<Comment> comment = new ArrayList<>();
+
     public Post(String content) {
         this.content = content;
         this.likeIt = 0;
@@ -90,9 +94,7 @@ public class Post extends BaseEntity {
         this.content = content;
     }
 
-//    public void addComment(Comment comment) {
-//        this.comment.add(comment);
-//    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -124,4 +126,10 @@ public class Post extends BaseEntity {
         this.likeIt = likeIt;
         this.images = images;
     }
+
+
+//    // Post에서 Comment에 대한 정보 넣기.
+//    public void addComment(Comment comment) {
+//        this.comment.add(comment);
+//    }
 }
