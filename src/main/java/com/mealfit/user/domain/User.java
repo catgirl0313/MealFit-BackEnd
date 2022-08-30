@@ -76,7 +76,7 @@ public class User extends BaseEntity {
               userBasicProfile,
               goalWeight,
               fastingTime,
-              nutrition,
+              new Nutrition(0, 0, 0, 0),
               new UserStatusInfo(UserStatus.NOT_VALID, ProviderType.LOCAL));
     }
 
