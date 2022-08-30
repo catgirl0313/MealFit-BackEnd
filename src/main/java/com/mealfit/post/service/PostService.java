@@ -34,7 +34,7 @@ public class PostService {
 
         //post 저장
         Post postEntity = postRequestDto.toEntity();
-        postEntity.settingUserInfo(user.getId(), user.getProfileImage(), user.getNickname());
+        postEntity.settingUserInfo(user.getId(), user.getUserProfile().getProfileImage(), user.getUserProfile().getNickname());
 
         //이미지 URL 저장하기
         List<MultipartFile> uploadImages = postRequestDto.getPostImageList();

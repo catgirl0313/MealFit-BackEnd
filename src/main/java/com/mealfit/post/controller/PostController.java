@@ -4,7 +4,6 @@ import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.post.dto.PostCUDResponseDto;
 import com.mealfit.post.dto.PostRequestDto;
 import com.mealfit.post.service.PostService;
-import com.mealfit.user.domain.User;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
