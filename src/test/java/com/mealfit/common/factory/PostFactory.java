@@ -18,15 +18,23 @@ public class PostFactory {
 
     }
 
+    public static Post simplePost(long postId, long userId, String content) {
+        return Post.builder()
+              .id(postId)
+              .userId(userId)
+              .content(content)
+              .build();
+    }
+
     public static Post createPost(User user) {
         return Post.builder()
               .id(1L)
               .content("mocking content")
               .userId(user.getId())
-              .nickName(user.getNickname())
+              .nickName(user.getUserProfile().getNickname())
+              .profileImage(user.getUserProfile().getProfileImage())
               .likeIt(0)
               .view(0)
-              .profileImage(user.getProfileImage())
               .images(new ArrayList<>())
               .build();
     }
