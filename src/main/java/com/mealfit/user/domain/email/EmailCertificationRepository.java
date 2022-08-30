@@ -1,6 +1,5 @@
-package com.mealfit.user.repository;
+package com.mealfit.user.domain.email;
 
-import com.mealfit.user.domain.EmailCertification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmailCertificationRepository extends JpaRepository<EmailCertification, Long> {
