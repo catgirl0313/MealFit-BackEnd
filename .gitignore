@@ -14,14 +14,8 @@ package-lock.json
 HELP.md
 
 # Resources
-src/main/resources/privates/
 src/main/resources/static/docs
-src/main/resources/application-*.yaml
-!src/main/resources/application-DEV.yaml
-src/main/resources/application.tar
-
-src/test/resources/application.tar
-src/test/resources/application-*.yaml
+src/**/resources/application-*.yaml
 
 # Created by https://www.toptal.com/developers/gitignore/api/gradle,intellij,windows,macos,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle,intellij,windows,macos,java

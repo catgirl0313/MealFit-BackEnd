@@ -4,7 +4,7 @@ import com.mealfit.config.security.OAuth.OAuth2UserInfo.OAuth2UserInfo;
 import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.repository.UserRepository;
+import com.mealfit.user.domain.UserRepository;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;

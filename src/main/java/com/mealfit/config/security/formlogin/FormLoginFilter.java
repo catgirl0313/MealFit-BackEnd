@@ -1,10 +1,11 @@
 package com.mealfit.config.security.formlogin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mealfit.authentication.application.JwtTokenService;
+import com.mealfit.authentication.application.dto.JwtTokenDto;
 import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.config.security.dto.LoginRequestDto;
 import com.mealfit.config.security.dto.LoginResponseDto;
-import com.mealfit.config.security.jwt.JwtUtils;
 import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.FilterChain;
@@ -25,47 +26,26 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
-//스프링 시큐리티에서 UsernamePasswordAuthenticationFilter 가 있음.
-// /login 요청해서 username, password 전송하면 (psot)
-//UsernamePasswordAuthenticationFilter 동작을 함.
-//controller에서 지정안해줘도 login으로 읽힘
 @Slf4j
-//@CrossOrigin
 public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final JwtUtils jwtUtils;
-//    private ObjectMapper objectMapper = new ObjectMapper(); //final로 만드는게 좋은건가? //밖에 써도 괜찮아?
+    private final JwtTokenService jwtTokenService;
 
-    public FormLoginFilter(AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
-
+    public FormLoginFilter(AuthenticationManager authenticationManager, JwtTokenService jwtTokenService) {
         super(authenticationManager);
-        this.jwtUtils = jwtUtils;
+        this.jwtTokenService = jwtTokenService;
     }
 
-    // /login 요청을 하면 로그인 시도를 위해서 함수 실행
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        log.info("JwtAuthenticationFilter : 로그인 시도중");
-//        ObjectMapper objectMapper = new ObjectMapper();
-        // 1.username, password 받아서
-        // 2. 정상인지 로그인 시도를 해보는 것. authenticationManager로 로그인 시도를 하면!!
-        // PrincipalDetailsService가 호출 loadUserByUsername() 함수 실행됨.
-        // PrincipalDetailsService의 loadUserByUsername()함수가 실행된 후 정상이면 authentication이 리턴됨.
-        // DB에 있는 username과 password가 일치한다.
-//        ObjectMapper objectMapper = new ObjectMapper();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
 
             LoginRequestDto loginRequestDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class); //유저정보 담기
-            log.info("loginRequestDto = {}", loginRequestDto); //입력된 값 확인
-            log.info("==============================================================");
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
-
-            log.info("authenticationToken = {}", authenticationToken);
 
             return getAuthenticationManager().authenticate(authenticationToken);
 
@@ -74,20 +54,16 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
         }
     }
 
-    //attemptAuthentication실행 후 인증이 정상적으로 되었으면 successfulAuthentication 함수가 실행됨.
-    //JWT 토큰을 만들어서 request요청한 사용자에게 JWT토큰을 response해주면 됨.
-    //찐토큰 발급.
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        log.info("successfulAuthentication 실행됨: FormLoginProvider 인증 완료.");
         ObjectMapper objectMapper = new ObjectMapper();
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
-        String accessToken = jwtUtils.issueAccessToken(userDetails.getUsername());
-        String refreshToken = jwtUtils.issueRefreshToken(userDetails.getUsername());
+        JwtTokenDto accessToken = jwtTokenService.createAccessToken(userDetails.getUsername());
+        JwtTokenDto refreshToken = jwtTokenService.createRefreshToken(userDetails.getUsername());
 
-        LoginResponseDto loginResponseDto = new LoginResponseDto(accessToken, refreshToken, userDetails);
+        LoginResponseDto loginResponseDto = new LoginResponseDto(accessToken.getToken(), refreshToken.getToken(), userDetails);
 
         response.getOutputStream().write(objectMapper.writeValueAsBytes(loginResponseDto));
     }
@@ -100,6 +76,4 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(failed.getMessage());
     }
-
-
 }

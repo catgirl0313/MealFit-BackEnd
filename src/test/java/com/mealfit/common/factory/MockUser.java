@@ -1,9 +1,11 @@
 package com.mealfit.common.factory;
 
+import com.mealfit.user.domain.FastingTime;
+import com.mealfit.user.domain.LoginInfo;
 import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.domain.UserBasicProfile;
-import com.mealfit.user.domain.UserNutritionGoal;
+import com.mealfit.user.domain.UserProfile;
+import com.mealfit.user.domain.Nutrition;
 import com.mealfit.user.domain.UserStatus;
 import com.mealfit.user.domain.UserStatusInfo;
 import java.time.LocalTime;
@@ -26,12 +28,12 @@ public class MockUser {
         private String nickname;
         private String email;
         private String profileImage = "https://github.com/testImage.jpg";
-        private double goalWeight = 90.0;
-        private LocalTime startFasting = LocalTime.now();
-        private LocalTime endFasting = LocalTime.now();
+        private double goalWeight;
+        private LocalTime startFasting;
+        private LocalTime endFasting;
         private UserStatus userStatus;
         private ProviderType providerType;
-        private UserNutritionGoal userNutritionGoal;
+        private Nutrition nutrition;
         private double kcal;
         private double carbs;
         private double protein;
@@ -87,8 +89,18 @@ public class MockUser {
             return this;
         }
 
-        public Builder profileImage(double carbs) {
+        public Builder carbs(double carbs) {
             this.carbs = carbs;
+            return this;
+        }
+
+        public Builder startFasting(LocalTime startFasting) {
+            this.startFasting = startFasting;
+            return this;
+        }
+
+        public Builder endFasting(LocalTime endFasting) {
+            this.endFasting = endFasting;
             return this;
         }
 
@@ -104,10 +116,12 @@ public class MockUser {
 
         public User build() {
             return new User(id,
-                  new UserBasicProfile(username, password,
-                        nickname, email, profileImage, goalWeight, startFasting, endFasting),
-                  new UserStatusInfo(userStatus, providerType),
-                  new UserNutritionGoal(kcal, carbs, protein, fat)
+                  new LoginInfo(username, password),
+                  new UserProfile(nickname, email, profileImage),
+                  goalWeight,
+                  new FastingTime(startFasting, endFasting),
+                  new Nutrition(kcal, carbs, protein, fat),
+                  new UserStatusInfo(userStatus, providerType)
             );
         }
     }
