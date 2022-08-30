@@ -1,5 +1,8 @@
 package com.mealfit.user.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum UserStatus {
     NOT_VALID,              // 이메일 미인증 플래그
     FIRST_LOGIN,            // 앱 튜토리얼을 위한 플래그
