@@ -1,9 +1,8 @@
 package com.mealfit.config.security.OAuth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mealfit.authentication.application.JwtTokenService;
 import com.mealfit.config.security.details.UserDetailsImpl;
-import com.mealfit.config.security.dto.LoginResponseDto;
-import com.mealfit.config.security.jwt.JwtUtils;
 import java.io.IOException;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -20,13 +19,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final JwtUtils jwtUtils;
+    private final JwtTokenService jwtTokenService;
 
     @Value("${common.redirect-url}")
     private String redirectUrl;
 
-    public OAuth2SuccessHandler(JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
+    public OAuth2SuccessHandler(JwtTokenService jwtTokenService) {
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Override
@@ -39,19 +38,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Map<String, Object> attributes = userDetails.getAttributes();
 
-        String accessToken = jwtUtils.issueAccessToken(userDetails.getUsername());
-        String refreshToken = jwtUtils.issueRefreshToken(userDetails.getUsername());
-
-        LoginResponseDto loginResponseDto = new LoginResponseDto(accessToken, refreshToken,
-              (String) attributes.get("nickname"),
-              (String) attributes.get("picture")); //
+        String accessToken = jwtTokenService.createAccessToken(userDetails.getUsername()).getToken();
+        String refreshToken = jwtTokenService.createRefreshToken(userDetails.getUsername()).getToken();
 
         String url = UriComponentsBuilder.fromUriString(redirectUrl)
               .queryParam("accessToken", accessToken)
               .queryParam("refreshToken", refreshToken)
               .build().toUriString();
 
-        response.getOutputStream().write(objectMapper.writeValueAsBytes(loginResponseDto));
         getRedirectStrategy().sendRedirect(request, response, url);
     }
 }

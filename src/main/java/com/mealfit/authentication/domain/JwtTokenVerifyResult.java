@@ -1,4 +1,4 @@
-package com.mealfit.config.security.jwt;
+package com.mealfit.authentication.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +9,12 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerifyResult {
+public class JwtTokenVerifyResult {
 
     private String username;
     private TokenStatus tokenStatus;
 
-
-    public static enum TokenStatus {
+    public enum TokenStatus {
         AVAILABLE,
         EXPIRED,
         DENIED
