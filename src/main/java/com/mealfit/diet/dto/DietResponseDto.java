@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class DietResponseDto {
 
     private DietStatus dietStatus;
+    private Long dietId;
     private Long foodId;
     private String foodName;
     private double kcal;
@@ -18,8 +19,9 @@ public class DietResponseDto {
     private double fat;
     private double foodWeight;
 
-    public DietResponseDto(DietStatus dietStatus, Food food, double foodWeight) {
+    public DietResponseDto(DietStatus dietStatus, Long dietId, Food food, double foodWeight) {
         this.dietStatus = dietStatus;
+        this.dietId = dietId;
         this.foodId = food.getId();
         this.foodName = food.getFoodName();
         this.kcal = foodWeight*food.getKcal()/food.getOneServing();    // 1회제공량을 나눠서 입력받은 중량만큼 g당 칼로리,탄수화물,단백질을 계산
