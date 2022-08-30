@@ -1,9 +1,9 @@
-package com.mealfit.BodyInfo.controller;
+package com.mealfit.bodyInfo.controller;
 
-import com.mealfit.BodyInfo.dto.request.BodyInfoChangeRequestDto;
-import com.mealfit.BodyInfo.dto.request.BodyInfoSaveRequestDto;
-import com.mealfit.BodyInfo.dto.response.BodyInfoResponseDto;
-import com.mealfit.BodyInfo.service.BodyInfoService;
+import com.mealfit.bodyInfo.dto.request.BodyInfoChangeRequestDto;
+import com.mealfit.bodyInfo.dto.request.BodyInfoSaveRequestDto;
+import com.mealfit.bodyInfo.dto.response.BodyInfoResponseDto;
+import com.mealfit.bodyInfo.service.BodyInfoService;
 import com.mealfit.common.wrapper.DataWrapper;
 import com.mealfit.config.security.details.UserDetailsImpl;
 import java.util.List;

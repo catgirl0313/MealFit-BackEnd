@@ -1,6 +1,6 @@
-package com.mealfit.BodyInfo.repository;
+package com.mealfit.bodyInfo.repository;
 
-import com.mealfit.BodyInfo.domain.BodyInfo;
+import com.mealfit.bodyInfo.domain.BodyInfo;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

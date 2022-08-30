@@ -1,6 +1,6 @@
-package com.mealfit.BodyInfo.dto.response;
+package com.mealfit.bodyInfo.dto.response;
 
-import com.mealfit.BodyInfo.domain.BodyInfo;
+import com.mealfit.bodyInfo.domain.BodyInfo;
 import java.io.Serializable;
 import java.time.LocalDate;
 import lombok.Data;
