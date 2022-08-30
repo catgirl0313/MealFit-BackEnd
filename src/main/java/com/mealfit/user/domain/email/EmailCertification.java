@@ -1,4 +1,4 @@
-package com.mealfit.user.domain;
+package com.mealfit.user.domain.email;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
