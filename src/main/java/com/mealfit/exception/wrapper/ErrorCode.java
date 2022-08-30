@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 @JsonFormat(shape = Shape.OBJECT)
 public enum ErrorCode implements ErrorModel {
 
+    // TOKEN
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "잘못된 토큰입니다."),
+
     // User
     DUPLICATE_SIGNUP_INPUT(HttpStatus.BAD_GATEWAY, "U001", "이미 해당 값이 존재합니다."),
     WRONG_SIGNUP_PASSWORD(HttpStatus.BAD_REQUEST, "U002", "잘못된 비밀번호입니다."),

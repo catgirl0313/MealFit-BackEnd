@@ -6,12 +6,12 @@ import javax.mail.internet.MimeMessage;
 public class FindPasswordEmail implements SendingEmailStrategy {
 
     private final String url;
-    private final String email;
+    private final String username;
     private final String authKey;
 
-    public FindPasswordEmail(String url, String email, String authKey) {
+    public FindPasswordEmail(String url, String username, String authKey) {
         this.url = url;
-        this.email = email;
+        this.username = username;
         this.authKey = authKey;
     }
 
@@ -19,7 +19,7 @@ public class FindPasswordEmail implements SendingEmailStrategy {
     public void fillMessage(MimeMessage message) {
         try {
             String charSet = "utf-8";
-            message.setSubject("비밀번호 찾기 인증 - 혜림스 포토존", charSet);
+            message.setSubject("비밀번호 찾기 - MealFit", charSet);
 
             message.setText(new StringBuffer()
                   .append("<h1>[이메일 인증]</h1>")
@@ -27,7 +27,7 @@ public class FindPasswordEmail implements SendingEmailStrategy {
                   .append("<a href='")
                   .append(url)
                   .append("/user/validate?username=")
-                  .append(email)
+                  .append(username)
                   .append("&authKey=")
                   .append(authKey)
                   .append("' target='_blenk'>비밀번호 변경하기</a>")

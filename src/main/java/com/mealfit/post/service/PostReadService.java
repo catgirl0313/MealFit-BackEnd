@@ -9,7 +9,7 @@ import com.mealfit.post.dto.PostResponseDto;
 import com.mealfit.post.dto.PostsResponseDto;
 import com.mealfit.post.repository.PostReadRepository;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.repository.UserRepository;
+import com.mealfit.user.domain.UserRepository;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class PostReadService {
                 .content(post.getContent())
                 .image(post.getImages().stream().map(PostImage::getUrl)
                         .collect(Collectors.toList()))
-                .userDto(new UserDto(user.getNickname(), user.getProfileImage()))
+                .userDto(new UserDto(user.getUserProfile().getNickname(), user.getUserProfile().getProfileImage()))
                 .like(post.getLikeIt())
                 .view(postReadRepository.updateView(postId))
                 .view(post.getView())

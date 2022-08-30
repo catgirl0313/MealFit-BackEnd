@@ -90,11 +90,11 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-task copyPrivate(type: Copy) {
+task copyPrivateModule(type: Copy) {
     copy {
         from './backend-privates'
         include "*.yaml"
-        into 'src/main/resources'
+        into './src/main/resources'
     }
 }
 
@@ -109,9 +109,9 @@ jacoco {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
-        csv.enabled true
         html.enabled true
+        xml.enabled true
+        csv.enabled false
     }
 
     afterEvaluate {
@@ -123,6 +123,7 @@ jacocoTestReport {
                             '**/*Response*',
                             '**/*Dto*',
                             '**/*Exception*',
+                            '**/*config*',
                     ])
                 })
         )
@@ -168,6 +169,7 @@ jacocoTestCoverageVerification {
                     '**.*Dto*',
                     '**.*Exception*',
                     '**.*Storage*',
+
             ]
         }
     }

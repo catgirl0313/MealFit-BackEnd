@@ -1,6 +1,6 @@
 package com.mealfit.diet.dto;
 
-import com.mealfit.user.domain.UserNutritionGoal;
+import com.mealfit.user.domain.Nutrition;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,10 +14,10 @@ public class UserGoalDto {
     private double protein; // 목표 단백질
     private double fat; // 목표 지방
 
-    public UserGoalDto(UserNutritionGoal userNutritionGoal) {
-        this.kcal = userNutritionGoal.getKcal();
-        this.carbs = userNutritionGoal.getCarbs();
-        this.protein = userNutritionGoal.getProtein();
-        this.fat = userNutritionGoal.getFat();
+    public UserGoalDto(Nutrition nutrition) {
+        this.kcal = nutrition.getKcal();
+        this.carbs = nutrition.getCarbs();
+        this.protein = nutrition.getProtein();
+        this.fat = nutrition.getFat();
     }
 }
