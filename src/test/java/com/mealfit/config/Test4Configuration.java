@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @TestConfiguration
-public class ForTestConfiguration {
+public class Test4Configuration {
 
     @Bean
     public StorageService storageService() {
