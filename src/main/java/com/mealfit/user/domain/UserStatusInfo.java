@@ -4,10 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class UserStatusInfo {
 
@@ -18,9 +21,6 @@ public class UserStatusInfo {
     @Column(updatable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
-
-    protected UserStatusInfo() {
-    }
 
     public UserStatusInfo(UserStatus userStatus, ProviderType providerType) {
         this.userStatus = userStatus;

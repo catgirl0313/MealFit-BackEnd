@@ -1,7 +1,10 @@
-package com.mealfit.user.service.dto.request;
+package com.mealfit.user.application.dto.request;
 
+import com.mealfit.user.domain.FastingTime;
+import com.mealfit.user.domain.LoginInfo;
 import com.mealfit.user.domain.User;
-import com.mealfit.user.domain.UserBasicProfile;
+import com.mealfit.user.domain.UserProfile;
+import com.mealfit.user.presentation.dto.request.UserSignUpRequest;
 import java.io.Serializable;
 import java.time.LocalTime;
 import lombok.AccessLevel;
@@ -30,15 +33,11 @@ public class UserSignUpRequestDto implements Serializable {
 
     public User toEntity() {
         return User.createLocalUser(
-              UserBasicProfile.builder()
-                    .username(username)
-                    .password(password)
-                    .nickname(nickname)
-                    .email(email)
-                    .goalWeight(goalWeight)
-                    .startFasting(startFasting)
-                    .endFasting(endFasting)
-                    .build());
+              new LoginInfo(username, password),
+              new UserProfile(nickname, email, null),
+              goalWeight,
+              new FastingTime(startFasting, endFasting),
+              null);
     }
 
     @Builder
@@ -56,5 +55,19 @@ public class UserSignUpRequestDto implements Serializable {
         this.goalWeight = goalWeight;
         this.startFasting = startFasting;
         this.endFasting = endFasting;
+    }
+
+    public UserSignUpRequestDto(String redirectURL, UserSignUpRequest request) {
+        this.redirectURL = redirectURL;
+        this.username = request.getUsername();
+        this.password = request.getPassword();
+        this.passwordCheck = request.getPasswordCheck();
+        this.email = request.getEmail();
+        this.nickname = request.getNickname();
+        this.profileImage = request.getProfileImage();
+        this.currentWeight = request.getCurrentWeight();
+        this.goalWeight = request.getGoalWeight();
+        this.startFasting = request.getStartFasting();
+        this.endFasting = request.getEndFasting();
     }
 }

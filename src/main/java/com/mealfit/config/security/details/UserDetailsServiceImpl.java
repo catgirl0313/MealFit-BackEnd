@@ -1,7 +1,7 @@
 package com.mealfit.config.security.details;
 
 import com.mealfit.user.domain.User;
-import com.mealfit.user.repository.UserRepository;
+import com.mealfit.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

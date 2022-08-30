@@ -1,4 +1,4 @@
-package com.mealfit.user.controller.dto.response;
+package com.mealfit.user.presentation.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mealfit.user.domain.ProviderType;
@@ -24,33 +24,36 @@ public class UserInfoResponse implements Serializable {
     @JsonProperty("fastingInfo")
     private UserFastingResponse fastingInfo;
 
+    @JsonProperty("nutritionGoal")
+    private NutritionGoalResponse nutritionGoal;
+
     @Builder
-    public UserInfoResponse(Long userId, String email, String nickname, String profileImage,
-          double goalWeight, UserStatus userStatus, ProviderType providerType, LocalTime startFasting, LocalTime endFasting) {
+    public UserInfoResponse(Long userId, String nickname, String profileImage,
+          double goalWeight, UserStatus userStatus, ProviderType providerType, LocalTime startFasting, LocalTime endFasting,
+          double kcal, double carbs, double protein, double fat) {
         this.userId = userId;
-        this.userProfile = new UserProfileResponse(email, nickname, profileImage,
+        this.userProfile = new UserProfileResponse(nickname, profileImage,
               goalWeight, userStatus, providerType);
         this.fastingInfo = new UserFastingResponse(startFasting, endFasting);
+        this.nutritionGoal = new NutritionGoalResponse(kcal, carbs, protein, fat);
     }
 
     @Data
     public static class UserProfileResponse {
 
-        private String email;
         private String nickname;
         private String profileImage;
         private double goalWeight;
-        private UserStatus userStatus;
+        private String userStatus;
         private String providerType;
 
-        public UserProfileResponse(String email, String nickname, String profileImage,
+        public UserProfileResponse(String nickname, String profileImage,
               double goalWeight, UserStatus userStatus, ProviderType providerType) {
 
-            this.email = email;
             this.nickname = nickname;
             this.profileImage = profileImage;
             this.goalWeight = goalWeight;
-            this.userStatus = userStatus;
+            this.userStatus = userStatus.name();
             this.providerType = providerType.name();
         }
     }
@@ -67,4 +70,19 @@ public class UserInfoResponse implements Serializable {
         }
     }
 
+    @Data
+    public static class NutritionGoalResponse {
+
+        private double kcal;
+        private double carbs;
+        private double protein;
+        private double fat;
+
+        public NutritionGoalResponse(double kcal, double carbs, double protein, double fat) {
+            this.kcal = kcal;
+            this.carbs = carbs;
+            this.protein = protein;
+            this.fat = fat;
+        }
+    }
 }

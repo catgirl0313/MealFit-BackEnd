@@ -32,17 +32,17 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return null;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getLoginInfo().getUsername();
     }
 
     @Override
     public String getName() {
-        return user.getNickname();
+        return user.getUserProfile().getNickname();
     }
 
     //계정이 만료되지 않았는지 리턴턴
@@ -97,7 +97,7 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
     public static UserDetailsImpl create(User user) {
         return new UserDetailsImpl(
               user,
-              user.getProviderType(),
+              user.getUserStatusInfo().getProviderType(),
               Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
@@ -105,7 +105,7 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
     public static UserDetailsImpl create(User user, Collection<GrantedAuthority> authorities) {
         return new UserDetailsImpl(
               user,
-              user.getProviderType(),
+              user.getUserStatusInfo().getProviderType(),
               authorities);
     }
 
