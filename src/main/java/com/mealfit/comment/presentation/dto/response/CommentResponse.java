@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 public class CommentResponse {
+
     private Long commentId;
     private Long postId;
     private String comment;
@@ -20,14 +21,15 @@ public class CommentResponse {
         this.commentId = comment.getId();
         this.comment = comment.getContent();
         this.postId = comment.getPostId();
-        this.userDto = new UserInfoDto(comment.getNickname()
-              , comment.getNickname());
+        this.userDto = new UserInfoDto(comment.getNickname(), comment.getProfileImage());
         this.like = comment.getLikeIt();
     }
+
     @Data
     @AllArgsConstructor
     static class UserInfoDto {
-        private String profileImage;
+
         private String nickname;
+        private String profileImage;
     }
 }
