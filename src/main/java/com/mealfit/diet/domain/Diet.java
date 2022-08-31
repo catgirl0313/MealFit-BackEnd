@@ -1,7 +1,6 @@
 package com.mealfit.diet.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
-import com.mealfit.diet.dto.PostRequestDto;
 import java.time.LocalDate;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -12,8 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
+@DynamicUpdate
 @Entity
 public class Diet extends BaseEntity {
 
@@ -35,7 +36,7 @@ public class Diet extends BaseEntity {
     private Long foodId;
 
     @Column(nullable = false)
-    private Long foodWeight;
+    private double foodWeight;
 
     public Diet(Long foodId, DietStatus status, Long foodWeight, LocalDate dietDate) {
         this.foodId = foodId;
@@ -52,10 +53,9 @@ public class Diet extends BaseEntity {
         this.userId = userId;
     }
 
-
-    public void update(PostRequestDto postDto) {
-        this.foodId = postDto.getChangeTo();
-        this.foodWeight = postDto.getFoodWeight();
+    public void update(Long foodId, double foodWeight) {
+        this.foodId = foodId;
+        this.foodWeight = foodWeight;
     }
 
     @Override
