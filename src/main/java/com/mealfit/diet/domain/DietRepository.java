@@ -1,11 +1,9 @@
-package com.mealfit.diet.repository;
-
-import com.mealfit.diet.domain.Diet;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+package com.mealfit.diet.domain;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DietRepository extends JpaRepository<Diet, Long> {
