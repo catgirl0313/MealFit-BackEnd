@@ -1,4 +1,4 @@
-package com.mealfit.comment.repository;
+package com.mealfit.comment.domain;
 
 import com.mealfit.comment.domain.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
