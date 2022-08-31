@@ -12,7 +12,7 @@ public class CommentResponseDto {
     private Long commentId;
     private Long postId;
     private String comment;
-    UserDto userDto;
+    CommentUserDto userDto;
     private int like;
 
 }

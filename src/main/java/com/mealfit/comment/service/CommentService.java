@@ -4,9 +4,11 @@ import com.mealfit.comment.domain.Comment;
 import com.mealfit.comment.dto.CommentCUDResponseDto;
 import com.mealfit.comment.dto.CommentRequestDto;
 import com.mealfit.comment.dto.CommentResponseDto;
-import com.mealfit.comment.dto.UserDto;
+import com.mealfit.comment.dto.CommentUserDto;
 import com.mealfit.comment.repository.CommentRepository;
 
+import com.mealfit.post.domain.Post;
+import com.mealfit.post.repository.PostRepository;
 import com.mealfit.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +25,14 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
 
     //작성하기
     public CommentCUDResponseDto createComment(Long postId, CommentRequestDto requestDto, User user) {
 
 
-        Comment commentEntity = requestDto.toEntity();
+        Comment commentEntity = requestDto.toEntity(new Post());
         commentEntity.settingUserInfo(user.getId(), user.getUserProfile().getProfileImage(),user.getUserProfile().getNickname());
 
         commentRepository.save(commentEntity);
@@ -71,7 +74,7 @@ public class CommentService {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         List<Comment> commentList = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
         for (Comment comment : commentList) {
-            CommentResponseDto commentResponseDto = new CommentResponseDto(comment.getId(), comment.getPostId(), comment.getComment(),new UserDto(comment.getNickName(), comment.getProfileImage()),comment.getLikeIt());
+            CommentResponseDto commentResponseDto = new CommentResponseDto(comment.getId(), comment.getPostId(), comment.getComment(),new CommentUserDto(comment.getNickName(), comment.getProfileImage()),comment.getLikeIt());
             commentResponseDtoList.add(commentResponseDto);
         }
         return commentResponseDtoList;

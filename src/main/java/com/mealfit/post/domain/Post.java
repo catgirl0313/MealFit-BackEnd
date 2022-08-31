@@ -56,8 +56,8 @@ public class Post extends BaseEntity {
     private List<PostImage> images = new ArrayList<>();
 
 
-//    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private List<Comment> comment = new ArrayList<>();
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> comment = new ArrayList<>();
 
     public Post(String content) {
         this.content = content;
@@ -115,8 +115,8 @@ public class Post extends BaseEntity {
 
     @Builder
     public Post(Long id, Long userId, String profileImage, String nickName, String content,
-          int view,
-          int likeIt, List<PostImage> images) {
+                int view,
+                int likeIt, List<PostImage> images) {
         this.id = id;
         this.userId = userId;
         this.profileImage = profileImage;
@@ -128,8 +128,8 @@ public class Post extends BaseEntity {
     }
 
 
-//    // Post에서 Comment에 대한 정보 넣기.
-//    public void addComment(Comment comment) {
-//        this.comment.add(comment);
-//    }
+    // Post에서 Comment에 대한 정보 넣기.
+    public void addComment(Comment comment) {
+        this.comment.add(comment);
+    }
 }

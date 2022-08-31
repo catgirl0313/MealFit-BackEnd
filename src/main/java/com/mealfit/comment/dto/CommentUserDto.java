@@ -5,12 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDto {
+public class CommentUserDto {
 
     private String nickname;
     private String profileImage;
 
-    public UserDto(String nickname, String profileImage) {
+    public CommentUserDto(String nickname, String profileImage) {
         this.nickname = nickname;
         this.profileImage = profileImage;
     }
