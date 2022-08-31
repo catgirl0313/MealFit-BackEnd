@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostListController {
     private final PostReadService postReadService;
 
-    public static final int DEFAULT_PAGE_SIZE = 6;
+    public static final int DEFAULT_PAGE_SIZE = 12;
 // 전체 리스트 조회
 
-@GetMapping("/post")
+    @GetMapping("/post")
     // sort = "id", direction = Sort.Direction.DESC 아이디로 내림차순 정렬
     public ResponseEntity<Slice<PostsResponseDto>> readAll(
             @RequestParam(defaultValue = "" + Long.MAX_VALUE) Long lastId,
@@ -35,6 +35,8 @@ public class PostListController {
                 .body(postReadService.getReadAll( pageable, lastId));
     }
 
+
+
 //상세페이지 조회
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostResponseDto> readOne(@PathVariable Long postId) {
@@ -42,5 +44,16 @@ public class PostListController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(postReadService.getReadOne(postId));
     }
+//
+//    @PostMapping("/post/{postId}/likeIt")
+//    public void likes(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+//        postReadService.likes(postId, userDetails.getUser().getId());
+//    }
+//    @DeleteMapping("/post/{postId}/likeIt")
+//    public void unlikes(@PathVariable Long postId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+//        postReadService.unlikes(postId, userDetails.getUser().getId());
+//    }
+
+
 }
 

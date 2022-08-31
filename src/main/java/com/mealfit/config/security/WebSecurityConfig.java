@@ -5,7 +5,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import com.mealfit.authentication.application.JwtTokenService;
 import com.mealfit.config.security.OAuth.CustomOAuth2UserService;
 import com.mealfit.config.security.OAuth.handler.OAuth2SuccessHandler;
-import com.mealfit.config.security.details.UserDetailsServiceImpl;
 import com.mealfit.config.security.formlogin.FormLoginFilter;
 import com.mealfit.config.security.formlogin.FormLoginProvider;
 import com.mealfit.config.security.jwt.JwtAuthorizationFilter;
@@ -34,7 +33,6 @@ import org.springframework.web.cors.CorsUtils;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenService jwtTokenService;
-    private final UserDetailsServiceImpl userDetailsService;
     private final FormLoginProvider formLoginProvider;
     private final JwtAuthorizationProvider jwtAuthProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -50,7 +48,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(formLoginProvider);
         auth.authenticationProvider(jwtAuthProvider);
-        auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -70,11 +67,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
               .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
               .antMatchers("/",
                     "/user/signup", "/login",
-                    "/user/username", "/user/email", "/user/email", "/user/nickname",
+                    "/user/username/**", "/user/email/**", "/user/nickname/**", // 중복확인
                     "/user/validate", "/find/**",
                     "/h2-console/**",
                     "/test/error").permitAll()
-                .antMatchers(HttpMethod.GET, "/post").permitAll()
+              .antMatchers("/actuator/**").access("hasRole('ADMIN')")
+              .antMatchers(HttpMethod.GET, "/post").permitAll()
               .anyRequest().authenticated();
 
         http.addFilterBefore(new FormLoginFilter(authenticationManager(), jwtTokenService),

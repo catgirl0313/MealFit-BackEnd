@@ -6,15 +6,18 @@ import com.mealfit.config.security.details.UserDetailsImpl;
 import com.mealfit.user.application.EmailService;
 import com.mealfit.user.application.UserService;
 import com.mealfit.user.application.dto.UserServiceDtoFactory;
+import com.mealfit.user.application.dto.request.ChangeFastingTimeRequestDto;
 import com.mealfit.user.application.dto.request.ChangeNutritionRequestDto;
 import com.mealfit.user.application.dto.request.ChangeUserInfoRequestDto;
 import com.mealfit.user.application.dto.request.ChangeUserPasswordRequestDto;
+import com.mealfit.user.application.dto.request.CheckDuplicateSignupInputDto;
 import com.mealfit.user.application.dto.request.EmailAuthRequestDto;
 import com.mealfit.user.application.dto.request.FindPasswordRequestDto;
 import com.mealfit.user.application.dto.request.FindUsernameRequestDto;
 import com.mealfit.user.application.dto.request.UserSignUpRequestDto;
 import com.mealfit.user.application.dto.response.UserInfoResponseDto;
 import com.mealfit.user.presentation.dto.UserControllerDtoFactory;
+import com.mealfit.user.presentation.dto.request.ChangeFastingTimeRequest;
 import com.mealfit.user.presentation.dto.request.ChangeNutritionRequest;
 import com.mealfit.user.presentation.dto.request.ChangeUserInfoRequest;
 import com.mealfit.user.presentation.dto.request.ChangeUserPasswordRequest;
@@ -28,11 +31,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -62,25 +65,24 @@ public class UserController {
               .body("가입 완료!");
     }
 
-    @GetMapping("/username")
-    public ResponseEntity<String> validateUsername(@RequestParam String username) {
-        userService.validateUsername(username);
+    @PostMapping("/social/signup")
+    public ResponseEntity<String> socialSignup(@Valid ChangeUserInfoRequest request,
+          @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        ChangeUserInfoRequestDto dto = UserServiceDtoFactory.changeUserInfoRequestDto(
+              userDetailsImpl.getUsername(), request);
+
+        userService.fillSocialUserInfo(dto);
 
         return ResponseEntity.status(HttpStatus.OK)
-              .body("검증완료!");
+              .body("수정 완료!");
     }
 
-    @GetMapping("/email")
-    public ResponseEntity<String> validateEmail(@RequestParam String email) {
-        userService.validateEmail(email);
-
-        return ResponseEntity.status(HttpStatus.OK)
-              .body("검증완료!");
-    }
-
-    @GetMapping("/nickname")
-    public ResponseEntity<String> validateNickname(@RequestParam String nickname) {
-        userService.validateNickname(nickname);
+    @GetMapping("/{key}/{value}")
+    public ResponseEntity<String> validateUsername(@PathVariable("key") String key,
+          @PathVariable("value") String value) {
+        CheckDuplicateSignupInputDto requestDto =
+              UserServiceDtoFactory.checkDuplicateSignupInput(key, value);
+        userService.checkDuplicateSignupInput(requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
               .body("검증완료!");
@@ -102,6 +104,8 @@ public class UserController {
           @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         ChangeUserInfoRequestDto requestDto = UserServiceDtoFactory.changeUserInfoRequestDto(
               userDetailsImpl.getUsername(), request);
+
+        log.info("requestDto -> {}", requestDto.getNickname());
 
         userService.changeUserInfo(requestDto);
 
@@ -164,15 +168,30 @@ public class UserController {
     }
 
     @PutMapping("/nutrition")
-    public ResponseEntity<String> changeNutrition(@Valid ChangeNutritionRequest request,
+    public ResponseEntity<UserInfoResponse> changeNutrition(@Valid ChangeNutritionRequest request,
           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         ChangeNutritionRequestDto requestDto = UserServiceDtoFactory
               .changeNutritionRequestDto(userDetails.getUsername(), request);
 
-        userService.changeNutrition(requestDto);
+        UserInfoResponseDto responseDto = userService.changeNutrition(requestDto);
+        UserInfoResponse response = UserControllerDtoFactory.userInfoResponse(responseDto);
 
         return ResponseEntity.status(HttpStatus.OK)
-              .body("수정 완료");
+              .body(response);
+    }
+
+    @PutMapping("/fastingTime")
+    public ResponseEntity<UserInfoResponse> changeFastingTime(
+          @Valid ChangeFastingTimeRequest request,
+          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        ChangeFastingTimeRequestDto requestDto = UserServiceDtoFactory
+              .changeFastingTimeRequestDto(userDetails.getUsername(), request);
+
+        UserInfoResponseDto responseDto = userService.changeFastingTime(requestDto);
+        UserInfoResponse response = UserControllerDtoFactory.userInfoResponse(responseDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+              .body(response);
     }
 
     private String extractDomainRoot(HttpServletRequest request) {

@@ -92,7 +92,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String headerValue = request.getHeader(tokenType);
 
         //JWT 토큰을 검증을 해서 정상적인 사용자인지 확인 (폼로그인필터에서 발급한 토큰 시크릿키 ->)
-        if (headerValue == null || headerValue.isBlank() || !headerValue.startsWith("Bearer ")) {
+        if (headerValue == null
+              || headerValue.isEmpty()
+              || headerValue.isBlank()
+              || !headerValue.startsWith("Bearer ")) {
             throw new IllegalArgumentException("토큰이 없습니다.");
         }
         return headerValue.substring("Bearer ".length());

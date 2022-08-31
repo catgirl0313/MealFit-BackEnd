@@ -13,14 +13,14 @@ import java.util.List;
 public class PostCUDResponseDto {
 
     private Long postId;
-    private UserInfoDto userInfoDto;
+    UserDto userDto;
     private String content;
     private int likeCnt;
     private List<String> imageUrls;
 
     public PostCUDResponseDto(Post post, User user) {
         this.postId = post.getId();
-        this.userInfoDto = new UserInfoDto(
+        this.userDto = new UserDto(
               user.getUserProfile().getNickname(),
               user.getUserProfile().getProfileImage());
         this.content = post.getContent();
@@ -29,7 +29,7 @@ public class PostCUDResponseDto {
 
     public PostCUDResponseDto(Post post, User user, List<String> imageUrls) {
         this.postId = post.getId();
-        this.userInfoDto = new UserInfoDto(
+        this.userDto = new UserDto(
               user.getUserProfile().getNickname(),
               user.getUserProfile().getProfileImage());
         this.content = post.getContent();
@@ -37,12 +37,5 @@ public class PostCUDResponseDto {
         this.imageUrls = imageUrls;
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class UserInfoDto {
-        private String nickname;
-        private String profileImage;
-    }
 }
 

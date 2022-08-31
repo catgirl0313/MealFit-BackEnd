@@ -123,6 +123,69 @@ class UserControllerTest extends ControllerTest {
                   .changeUserInfo(any());
         }
 
+        @DisplayName(value = "[POST] /user/social/signup 요청 시 소셜 회원의 최초 정보 기입을 할 수 있다.")
+        @WithMockCustomUser
+        @Test
+        void socialSignup_success() throws Exception {
+
+            // given
+            MockMultipartFile image = new MockMultipartFile("profileImage", "profileTest.jpeg",
+                  "image/jpeg", "<<image-data>>".getBytes(StandardCharsets.UTF_8));
+
+            given(userService.changeUserInfo(any())).willReturn(userInfoResponseDto);
+
+            mockMvc.perform(multipart("/user/info")
+                        .file(image)
+                        .param("nickname", "new_Nickname")
+                        .param("currentWeight", "80")
+                        .param("goalWeight", "70")
+                        .param("startFasting", "15:00")
+                        .param("endFasting", "17:00")
+                        .param("kcal", "2000")
+                        .param("carbs", "250")
+                        .param("protein", "150")
+                        .param("fat", "50")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer access_token")
+                        .header("refresh_token", "Bearer refresh_token")
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        .with(csrf().asHeader())
+                  )
+                  .andExpect(status().isOk())
+                  .andDo(print())
+                  .andDo(document("user-changeInfo",
+                        preprocessRequest(prettyPrint()),
+                        requestHeaders(
+                              headerWithName(HttpHeaders.AUTHORIZATION).description("엑세스 토큰")
+                                    .attributes(key("constraints").value("Bearer 토큰.")),
+                              headerWithName("refresh_token").description("리프레싴 토큰")
+                                    .attributes(key("constraints").value("Bearer 토큰."))
+                        ),
+                        requestParameters(
+                              parameterWithName("nickname").optional().description("닉네임"),
+                              parameterWithName("currentWeight").optional().description("현재 무게")
+                                    .attributes(key("constraints").value("0보다 커야 함.")),
+                              parameterWithName("goalWeight").optional().description("목표 무게")
+                                    .attributes(key("constraints").value("0보다 커야 함")),
+                              parameterWithName("startFasting").optional().description("단식 시작 시간")
+                                    .attributes(key("constraints").value("HH:mm 형태여야 함.")),
+                              parameterWithName("endFasting").optional().description("단식 종료 시간")
+                                    .attributes(key("constraints").value("HH:mm 형태여야 함.")),
+                              parameterWithName("kcal").optional().description("칼로리")
+                                    .attributes(key("constraints").value("0 이상이어야 함.")),
+                              parameterWithName("carbs").optional().description("탄수화물")
+                                    .attributes(key("constraints").value("0 이상이어야 함.")),
+                              parameterWithName("protein").optional().description("단백질")
+                                    .attributes(key("constraints").value("0 이상이어야 함.")),
+                              parameterWithName("fat").optional().description("지방").attributes()
+                                    .attributes(key("constraints").value("0 이상이어야 함."))
+                        ), requestParts(
+                              partWithName("profileImage").optional().description("프로필 사진")
+                        )));
+
+            verify(userService, times(1))
+                  .changeUserInfo(any());
+        }
+
         @DisplayName(value = "[GET] /user/info 요청 시 회원 정보를 반환한다.")
         @WithMockCustomUser
         @Test
@@ -223,50 +286,37 @@ class UserControllerTest extends ControllerTest {
                               partWithName("profileImage").optional().description("프로필 사진")
                         )));
         }
-        @DisplayName(value = "[GET] /user/username 요청 시 아이디 중복 확인을 시도한다.")
+        @DisplayName(value = "[GET] /user/{username}/{아이디} 요청 시 아이디 중복 확인을 시도한다.")
         @WithMockCustomUser
         @Test
         void validateUsername_success() throws Exception {
-            mockMvc.perform(get("/user/username")
-                        .queryParam("username", "test123"))
+            mockMvc.perform(get("/user/{key}/{value}", "username", "test123@gmail.com"))
                   .andExpect(status().isOk())
                   .andDo(print())
                   .andDo(document("user-usernameValidation",
-                        preprocessRequest(prettyPrint()),
-                        requestParameters(
-                              parameterWithName("username").description("아이디")
-                        )));
+                        preprocessRequest(prettyPrint())));
         }
 
-        @DisplayName(value = "[GET] /user/email")
+        @DisplayName(value = "[GET] /user/{email}/{이메일} 요청 시 이메일 중복 확인을 시도한다.")
         @WithMockCustomUser
         @Test
         void validateEmail_success() throws Exception {
-            mockMvc.perform(get("/user/email")
-                        .queryParam("email", "test123@gmail.com"))
+            mockMvc.perform(get("/user/{key}/{value}", "nickname", "test123@gmail.com"))
                   .andExpect(status().isOk())
                   .andDo(print())
                   .andDo(document("user-emailValidation",
-                        preprocessRequest(prettyPrint()),
-                        requestParameters(
-                              parameterWithName("email").description("이메일")
-                        )));
+                        preprocessRequest(prettyPrint())));
         }
 
-        @DisplayName(value = "[GET] /user/nickname")
+        @DisplayName(value = "[GET] /user/{nickname}/{닉네임} 요청 시 닉네임 중복 확인을 시도한다.")
         @WithMockCustomUser
         @Test
         void validateNickname_success() throws Exception {
-            mockMvc.perform(get("/user/nickname")
-                        .queryParam("nickname", "test2"))
+            mockMvc.perform(get("/user/{key}/{value}", "nickname", "test2"))
                   .andExpect(status().isOk())
                   .andDo(print())
                   .andDo(document("user-nicknameValidation",
-                        preprocessRequest(prettyPrint()),
-                        requestParameters(
-                              parameterWithName("nickname").description("닉네임")
-                        )));
-
+                        preprocessRequest(prettyPrint())));
         }
     }
 }

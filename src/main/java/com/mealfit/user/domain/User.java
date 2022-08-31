@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
@@ -24,6 +25,7 @@ import org.hibernate.annotations.DynamicUpdate;
       @Index(columnList = "email")
 })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 @Entity
 public class User extends BaseEntity {
 
@@ -81,24 +83,31 @@ public class User extends BaseEntity {
     }
 
     public static User createSocialUser(LoginInfo loginInfo,
-          UserProfile userBasicProfile, ProviderType providerType) {
+          UserProfile userProfile, ProviderType providerType) {
         return new User(loginInfo,
-              userBasicProfile,
+              userProfile,
               0,
-              null,
+              new FastingTime(null, null),
               new Nutrition(0, 0, 0, 0),
               new UserStatusInfo(UserStatus.FIRST_LOGIN, providerType));
     }
 
     public void changePassword(String password) {
-        this.loginInfo = new LoginInfo(this.loginInfo.getUsername(), password);
+        this.loginInfo = new LoginInfo(getLoginInfo().getUsername(), password);
+    }
+
+    public void changeNickname(String nickname) {
+        checkUserDeleted();
+        setUserProfile(new UserProfile(nickname,
+              getUserProfile().getEmail(),
+              getUserProfile().getProfileImage()));
     }
 
     public void changeProfileImage(String profileImage) {
         checkUserDeleted();
         setUserProfile(new UserProfile(
-              this.userProfile.getNickname(),
-              this.userProfile.getEmail(),
+              getUserProfile().getNickname(),
+              getUserProfile().getEmail(),
               profileImage));
     }
 
@@ -106,18 +115,14 @@ public class User extends BaseEntity {
         this.goalWeight = goalWeight;
     }
 
-    public void changeNickname(String nickname) {
-        setUserProfile(new UserProfile(nickname,
-              userProfile.getEmail(),
-              userProfile.getProfileImage()));
-    }
+
 
     @Generated
-    private void setUserProfile(UserProfile userBasicProfile) {
-        if (userBasicProfile == null) {
-            throw new IllegalArgumentException("userBasicProfile is null");
+    private void setUserProfile(UserProfile userProfile) {
+        if (userProfile == null) {
+            throw new IllegalArgumentException("userProfile is null");
         }
-        this.userProfile = userBasicProfile;
+        this.userProfile = userProfile;
     }
 
     @Generated
@@ -159,12 +164,16 @@ public class User extends BaseEntity {
         this.userStatusInfo = new UserStatusInfo(userStatus, this.userStatusInfo.getProviderType());
     }
 
-    public boolean checkNotValid() {
+    public boolean isNotValid() {
         return this.userStatusInfo.getUserStatus() == UserStatus.NOT_VALID;
     }
 
-    public boolean checkFirstLogin() {
+    public boolean isFirstLogin() {
         return this.userStatusInfo.getUserStatus() == UserStatus.FIRST_LOGIN;
+    }
+
+    public boolean isSocialUser() {
+        return this.userStatusInfo.getProviderType() != ProviderType.LOCAL;
     }
 
     @Generated
@@ -191,4 +200,19 @@ public class User extends BaseEntity {
         return Objects.hash(id);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public LoginInfo getLoginInfo() {
+        return loginInfo == null ? new LoginInfo() : loginInfo;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile == null ? new UserProfile() : userProfile;
+    }
+
+    public FastingTime getFastingTime() {
+        return fastingTime == null ? new FastingTime() : fastingTime;
+    }
 }

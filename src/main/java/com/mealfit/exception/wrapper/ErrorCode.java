@@ -16,7 +16,8 @@ public enum ErrorCode implements ErrorModel {
 
     // User
     DUPLICATE_SIGNUP_INPUT(HttpStatus.BAD_GATEWAY, "U001", "이미 해당 값이 존재합니다."),
-    WRONG_SIGNUP_PASSWORD(HttpStatus.BAD_REQUEST, "U002", "잘못된 비밀번호입니다."),
+    WRONG_SIGNUP_PASSWORD(HttpStatus.BAD_REQUEST, "U002", "비밀번호와 비밀번호 재확인을 확인해주세요."),
+    BAD_LOGIN_INFO(HttpStatus.BAD_GATEWAY, "U003", "잘못된 로그인 정보입니다."),
 
     // COMMON
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C001", "서버 내부 에러"),

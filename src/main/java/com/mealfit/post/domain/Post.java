@@ -55,6 +55,9 @@ public class Post extends BaseEntity {
     private List<PostImage> images = new ArrayList<>();
 
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
     public Post(String content) {
         this.content = content;
         this.likeIt = 0;
@@ -90,9 +93,7 @@ public class Post extends BaseEntity {
         this.content = content;
     }
 
-//    public void addComment(Comment comment) {
-//        this.comment.add(comment);
-//    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -113,8 +114,8 @@ public class Post extends BaseEntity {
 
     @Builder
     public Post(Long id, Long userId, String profileImage, String nickName, String content,
-          int view,
-          int likeIt, List<PostImage> images) {
+                int view,
+                int likeIt, List<PostImage> images) {
         this.id = id;
         this.userId = userId;
         this.profileImage = profileImage;
@@ -123,5 +124,11 @@ public class Post extends BaseEntity {
         this.view = view;
         this.likeIt = likeIt;
         this.images = images;
+    }
+
+
+    // Post에서 Comment에 대한 정보 넣기.
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 }

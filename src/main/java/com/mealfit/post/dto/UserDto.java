@@ -9,10 +9,10 @@ import lombok.Setter;
 public class UserDto {
 
     private String nickname;
-    private String profile;
+    private String profileImage;
 
-    public UserDto(String nickname, String profile) {
+    public UserDto(String nickname, String profileImage) {
         this.nickname = nickname;
-        this.profile = profile;
+        this.profileImage = profileImage;
     }
 }

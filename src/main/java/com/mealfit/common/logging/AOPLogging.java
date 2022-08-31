@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class AOPLogging {
 
     // 어느 기점
-    @Pointcut("execution(* com.mealfit.*.controller..*.*(..))")
+    @Pointcut("execution(* com.mealfit.*.presentation..*.*(..))")
     private void cut() {
     }
 
