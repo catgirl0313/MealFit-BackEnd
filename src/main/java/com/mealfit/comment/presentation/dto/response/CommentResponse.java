@@ -6,10 +6,9 @@ import com.mealfit.comment.domain.Comment;
 import lombok.*;
 
 
+@ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
-
 public class CommentResponse {
     private Long commentId;
     private Long postId;
@@ -21,11 +20,11 @@ public class CommentResponse {
         this.commentId = comment.getId();
         this.comment = comment.getContent();
         this.postId = comment.getPostId();
-        this.userDto = new UserInfoDto(userDto.getProfileImage(), userDto.getNickname());
+        this.userDto = new UserInfoDto(comment.getNickname()
+              , comment.getNickname());
         this.like = comment.getLikeIt();
     }
     @Data
-    @NoArgsConstructor
     @AllArgsConstructor
     static class UserInfoDto {
         private String profileImage;
