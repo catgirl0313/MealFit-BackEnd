@@ -1,10 +1,8 @@
 package com.mealfit.config.security.OAuth.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mealfit.authentication.application.JwtTokenService;
 import com.mealfit.config.security.details.UserDetailsImpl;
 import java.io.IOException;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,20 +30,30 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
           Authentication authentication) throws IOException, ServletException {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String accessToken = jwtTokenService.createAccessToken(userDetails.getUsername())
+              .getToken();
+        String refreshToken = jwtTokenService.createRefreshToken(userDetails.getUsername())
+              .getToken();
 
-        Map<String, Object> attributes = userDetails.getAttributes();
-
-        String accessToken = jwtTokenService.createAccessToken(userDetails.getUsername()).getToken();
-        String refreshToken = jwtTokenService.createRefreshToken(userDetails.getUsername()).getToken();
-
-        String url = UriComponentsBuilder.fromUriString(redirectUrl)
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(redirectUrl)
               .queryParam("accessToken", accessToken)
-              .queryParam("refreshToken", refreshToken)
-              .build().toUriString();
+              .queryParam("refreshToken", refreshToken);
+
+        if (isFirstSocialLogin(userDetails)) {
+            uriComponentsBuilder
+                  .queryParam("firstSocialLogin", true);
+        } else {
+            uriComponentsBuilder
+                  .queryParam("firstSocialLogin", false);
+        }
+
+        String url = uriComponentsBuilder.build().toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, url);
+    }
+
+    private static boolean isFirstSocialLogin(UserDetailsImpl userDetails) {
+        return userDetails.getUser().isSocialUser() && userDetails.getUser().isFirstLogin();
     }
 }

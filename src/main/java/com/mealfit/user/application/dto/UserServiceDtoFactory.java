@@ -1,5 +1,7 @@
 package com.mealfit.user.application.dto;
 
+import com.mealfit.user.application.dto.request.ChangeFastingTimeRequestDto;
+import com.mealfit.user.application.dto.request.CheckDuplicateSignupInputDto;
 import com.mealfit.user.application.dto.request.FindPasswordRequestDto;
 import com.mealfit.user.application.dto.request.FindUsernameRequestDto;
 import com.mealfit.user.application.dto.request.ChangeNutritionRequestDto;
@@ -12,6 +14,7 @@ import com.mealfit.user.application.dto.request.UserSignUpRequestDto;
 import com.mealfit.user.application.dto.response.UserInfoResponseDto;
 import com.mealfit.user.application.dto.response.UserNutritionGoalResponseDto;
 import com.mealfit.user.domain.User;
+import com.mealfit.user.presentation.dto.request.ChangeFastingTimeRequest;
 import com.mealfit.user.presentation.dto.request.ChangeNutritionRequest;
 import com.mealfit.user.presentation.dto.request.ChangeUserInfoRequest;
 import com.mealfit.user.presentation.dto.request.ChangeUserPasswordRequest;
@@ -100,5 +103,16 @@ public class UserServiceDtoFactory {
               request.getCarbs(),
               request.getProtein(),
               request.getFat());
+    }
+
+    public static ChangeFastingTimeRequestDto changeFastingTimeRequestDto(String username, ChangeFastingTimeRequest request) {
+        return new ChangeFastingTimeRequestDto(username,
+              request.getStartFasting(),
+              request.getEndFasting());
+    }
+
+    public static CheckDuplicateSignupInputDto checkDuplicateSignupInput(String key, String value) {
+        return new CheckDuplicateSignupInputDto(key, value);
+
     }
 }
