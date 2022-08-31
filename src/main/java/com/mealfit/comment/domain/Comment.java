@@ -1,19 +1,17 @@
 package com.mealfit.comment.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-
-import com.mealfit.post.domain.Post;
-import com.mealfit.user.domain.User;
-import lombok.*;
-
-
-import javax.persistence.*;
-
-@Builder
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Comment extends BaseEntity {
 
@@ -21,7 +19,7 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String comment;
+    private String content;
 
     private int likeIt;
 
@@ -31,35 +29,26 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private Long userId;
 
+    @Column(nullable = false)
+    private String nickname;
+
     @Column
     private String profileImage;
 
-    @Column(nullable = false)
-    private String nickName;
-
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "post")
-    private Post post;
-
-    public Comment(String comment,Long postId) {
-        this.comment = comment;
+    public Comment(String content, Long postId) {
+        this.content = content;
         this.postId = postId;
         this.likeIt = 0;
     }
 
-    public void settingUserInfo(Long userId,String profileImage,String nickName) {
+    public void settingUserInfo(Long userId, String nickname, String profileImage) {
         this.userId = userId;
+        this.nickname = nickname;
         this.profileImage = profileImage;
-        this.nickName = nickName;
     }
 
-    public void update(String comment){
-        this.comment = comment;
+    public void update(String comment) {
+        this.content = comment;
     }
-
-    public void addCommentToPost(Post post) {
-        post.addComment(this);
-    }
-
 }
+
