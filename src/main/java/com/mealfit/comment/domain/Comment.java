@@ -2,12 +2,10 @@ package com.mealfit.comment.domain;
 
 import com.mealfit.common.baseEntity.BaseEntity;
 
+
 import com.mealfit.post.domain.Post;
 import com.mealfit.user.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 import javax.persistence.*;
@@ -22,9 +20,9 @@ public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String comment;
-    
+
     private int likeIt;
 
     @Column(nullable = false)
@@ -39,6 +37,10 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private String nickName;
 
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "post")
+    private Post post;
 
     public Comment(String comment,Long postId) {
         this.comment = comment;
@@ -61,4 +63,3 @@ public class Comment extends BaseEntity {
     }
 
 }
-

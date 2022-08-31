@@ -2,14 +2,19 @@ package com.mealfit.post.service;
 
 
 import com.amazonaws.services.s3.AmazonS3Client;
+
 import com.mealfit.post.domain.Post;
 import com.mealfit.post.domain.PostImage;
-import com.mealfit.post.dto.UserDto;
+
 import com.mealfit.post.dto.PostResponseDto;
 import com.mealfit.post.dto.PostsResponseDto;
+import com.mealfit.post.dto.UserDto;
 import com.mealfit.post.repository.PostReadRepository;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserRepository;
+
+
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +34,8 @@ public class PostReadService {
     private final UserRepository userRepository;
     private final PostReadRepository postReadRepository;
 
+
+
     //상세 게시글 조회
     public PostResponseDto getReadOne(Long postId) {
         Post post = postReadRepository.findById(postId)
@@ -44,7 +51,7 @@ public class PostReadService {
                         .map(PostImage::getUrl)
                         .collect(Collectors.toList()))
                 .userDto(new UserDto(user.getUserProfile().getNickname(), user.getUserProfile().getProfileImage()))
-                .like(post.getLikeIt())
+//                .like(likeItRepository.likes(postId,user.getId()))
                 .view(postReadRepository.updateView(postId))
                 .view(post.getView())
                 .build();

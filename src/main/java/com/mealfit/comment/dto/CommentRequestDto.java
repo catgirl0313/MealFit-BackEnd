@@ -2,6 +2,7 @@ package com.mealfit.comment.dto;
 
 
 import com.mealfit.comment.domain.Comment;
+import com.mealfit.post.domain.Post;
 import lombok.*;
 
 
@@ -16,8 +17,10 @@ public class CommentRequestDto {
     private String comment;
     private Long postId;
 
-    public Comment toEntity() {
-        return new Comment(comment,postId);
+    public Comment toEntity(Post post) {
+        Comment comment1 = new Comment(comment,postId);
+        comment1.addCommentToPost(post);
+        return comment1;
     }
 
 
