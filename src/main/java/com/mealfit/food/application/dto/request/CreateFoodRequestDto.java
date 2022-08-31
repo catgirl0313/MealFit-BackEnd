@@ -1,4 +1,4 @@
-package com.mealfit.food.dto;
+package com.mealfit.food.application.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Builder
-public class FoodRequestDto {   // 회원이 음식을 직접 입력
+public class CreateFoodRequestDto {   // 회원이 음식을 직접 입력
 
     private String foodName; // 음식 이름
 
@@ -21,12 +21,16 @@ public class FoodRequestDto {   // 회원이 음식을 직접 입력
 
     private double fat; // 지방
 
-    public FoodRequestDto(String foodName, double oneServing, double kcal, double carbs, double protein, double fat) {
+    private String madeBy;
+
+    public CreateFoodRequestDto(String foodName, double oneServing, double kcal, double carbs,
+          double protein, double fat, String madeBy) {
         this.foodName = foodName;
         this.oneServing = oneServing;
         this.kcal = kcal;
         this.carbs = carbs;
         this.protein = protein;
         this.fat = fat;
+        this.madeBy = madeBy;
     }
 }

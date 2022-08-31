@@ -1,4 +1,4 @@
-package com.mealfit.food.dto;
+package com.mealfit.food.presentation.dto.response;
 
 import com.mealfit.food.domain.Food;
 import lombok.Getter;
@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FoodResponseDto {
+public class FoodInfoResponse {
+
     private Long foodId; // 음식 ID
+
     private String foodName; // 음식 이름
 
     private double oneServing; // 1회 제공량
@@ -20,9 +22,11 @@ public class FoodResponseDto {
 
     private double fat; // 지방
 
+    private String madeBy; // 제조사
 
 
-    public FoodResponseDto(Food food) {
+
+    public FoodInfoResponse(Food food) {
         this.foodId = food.getId();
         this.foodName = food.getFoodName();
         this.oneServing = food.getOneServing();
@@ -30,5 +34,6 @@ public class FoodResponseDto {
         this.carbs = food.getCarbs();
         this.protein = food.getProtein();
         this.fat = food.getFat();
+        this.madeBy = food.getMadeBy();
     }
 }

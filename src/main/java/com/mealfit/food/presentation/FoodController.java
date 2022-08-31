@@ -1,9 +1,11 @@
-package com.mealfit.food.controller;
+package com.mealfit.food.presentation;
 
 
-import com.mealfit.food.dto.FoodRequestDto;
-import com.mealfit.food.dto.FoodResponseDto;
-import com.mealfit.food.service.FoodService;
+import com.mealfit.food.application.dto.FoodServiceDtoFactory;
+import com.mealfit.food.application.dto.request.CreateFoodRequestDto;
+import com.mealfit.food.presentation.dto.request.CreateFoodRequest;
+import com.mealfit.food.presentation.dto.response.FoodInfoResponse;
+import com.mealfit.food.application.FoodService;
 import com.mealfit.config.security.details.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +26,23 @@ public class FoodController {
 
     // 음식 검색
     @GetMapping("/food")
-    public ResponseEntity<List<FoodResponseDto>> getFood(@RequestParam("name") String food, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+    public ResponseEntity<List<FoodInfoResponse>> getFood(@RequestParam("name") String food) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(foodService.getFood(food, userDetailsImpl.getUser()));
+              .body(foodService.getFood(food));
     }
 
     // 음식 입력
     @PostMapping("/food")
-    public ResponseEntity<String> createFood(@RequestBody FoodRequestDto requestDto,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-        foodService.createFood(requestDto, userDetailsImpl.getUser());
+    public ResponseEntity<String> createFood(@RequestBody CreateFoodRequest request,
+          @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        CreateFoodRequestDto requestDto =
+              FoodServiceDtoFactory.createFoodRequestDto(request,
+                    userDetailsImpl.getUser().getId());
+
+        foodService.createFood(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("음식 입력 완료");
+              .body("음식 입력 완료");
     }
 
 }
