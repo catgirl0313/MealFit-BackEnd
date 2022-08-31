@@ -36,8 +36,7 @@ public class UserSignUpRequestDto implements Serializable {
               new LoginInfo(username, password),
               new UserProfile(nickname, email, null),
               goalWeight,
-              new FastingTime(startFasting, endFasting),
-              null);
+              new FastingTime(startFasting, endFasting), null);
     }
 
     @Builder

@@ -3,13 +3,15 @@ package com.mealfit.user.application;
 import com.mealfit.bodyInfo.domain.BodyInfo;
 import com.mealfit.bodyInfo.repository.BodyInfoRepository;
 import com.mealfit.common.storageService.StorageService;
-import com.mealfit.exception.user.DuplicatedSignUpException;
+import com.mealfit.exception.user.DuplicatedUserException;
 import com.mealfit.exception.user.NoUserException;
 import com.mealfit.exception.user.PasswordCheckException;
 import com.mealfit.user.application.dto.UserServiceDtoFactory;
+import com.mealfit.user.application.dto.request.ChangeFastingTimeRequestDto;
 import com.mealfit.user.application.dto.request.ChangeNutritionRequestDto;
 import com.mealfit.user.application.dto.request.ChangeUserInfoRequestDto;
 import com.mealfit.user.application.dto.request.ChangeUserPasswordRequestDto;
+import com.mealfit.user.application.dto.request.CheckDuplicateSignupInputDto;
 import com.mealfit.user.application.dto.request.FindPasswordRequestDto;
 import com.mealfit.user.application.dto.request.FindUsernameRequestDto;
 import com.mealfit.user.application.dto.request.SendEmailRequestDto;
@@ -21,12 +23,13 @@ import com.mealfit.user.domain.Nutrition;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserRepository;
 import com.mealfit.user.domain.UserStatus;
-import com.mealfit.user.domain.email.EmailCertificationRepository;
+import com.mealfit.user.infrastructure.EmailEventListener;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,7 +42,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final EmailService emailService;
-    private final EmailCertificationRepository emailCertificationRepository;
     private final StorageService storageService;
     private final PasswordEncoder passwordEncoder;
     private final BodyInfoRepository bodyInfoRepository;
@@ -47,6 +49,7 @@ public class UserService {
           "^(?=.*?[a-zA-Z])(?=.*?[0-9]).{8,}$");
 
     @Transactional
+    @EventListener(value = EmailEventListener.class)
     public UserInfoResponseDto signup(UserSignUpRequestDto dto) {
         validateSignUpDto(dto);
 
@@ -64,8 +67,6 @@ public class UserService {
         SendEmailRequestDto sendEmailDto = UserServiceDtoFactory.sendEmailRequestDto(
               dto.getUsername(), dto.getRedirectURL(), dto.getEmail(), EmailType.VALID_NEW_ACCOUNT);
 
-        emailService.sendEmail(sendEmailDto);
-
         User saveEntity = userRepository.save(user);
 
         bodyInfoRepository.save(BodyInfo.createBodyInfo(saveEntity.getId(), dto.getCurrentWeight(),
@@ -81,22 +82,25 @@ public class UserService {
         validatePassword(dto.getPassword(), dto.getPasswordCheck());
     }
 
-    public void validateUsername(String username) {
+    private boolean validateUsername(String username) {
         if (userRepository.existsByUsername(username)) {
-            throw new DuplicatedSignUpException("이미 존재하는 아이디입니다.");
+            throw new DuplicatedUserException("이미 존재하는 아이디입니다.");
         }
+        return true;
     }
 
-    public void validateNickname(String nickname) {
+    private boolean validateNickname(String nickname) {
         if (userRepository.existsByNickname(nickname)) {
-            throw new DuplicatedSignUpException("이미 존재하는 닉네임입니다.");
+            throw new DuplicatedUserException("이미 존재하는 닉네임입니다.");
         }
+        return true;
     }
 
-    public void validateEmail(String email) {
+    private boolean validateEmail(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new DuplicatedSignUpException("이미 존재하는 이메일입니다.");
+            throw new DuplicatedUserException("이미 존재하는 이메일입니다.");
         }
+        return true;
     }
 
     public void validatePassword(String password, String passwordCheck) {
@@ -119,11 +123,8 @@ public class UserService {
             changeUser.changeProfileImage(imageUrl);
         }
 
+        // TODO: 하나의 업데이트 창에서 모두 변경하는 것이 아니기 때문에 추후 분리
         changeUser.changeNickname(dto.getNickname());
-
-        if (changeUser.checkFirstLogin()) {
-            changeUser.changeUserStatus(UserStatus.NORMAL);
-        }
 
         changeUser.changeGoalWeight(dto.getGoalWeight());
 
@@ -135,6 +136,37 @@ public class UserService {
                     dto.getCarbs(),
                     dto.getProtein(),
                     dto.getFat()));
+
+        return UserServiceDtoFactory.userInfoResponseDto(changeUser);
+    }
+
+    @Transactional
+    public UserInfoResponseDto fillSocialUserInfo(ChangeUserInfoRequestDto dto) {
+        User changeUser = findByUsername(dto.getUsername());
+
+        String imageUrl = null;
+        if (dto.getProfileImage() != null) {
+            imageUrl = storageService.uploadMultipartFile(
+                  List.of(dto.getProfileImage()), "profile/").get(0);
+            changeUser.changeProfileImage(imageUrl);
+        }
+
+        changeUser.changeNickname(dto.getNickname());
+
+        changeUser.changeGoalWeight(dto.getGoalWeight());
+
+        changeUser.changeFastingTime(new FastingTime(
+              dto.getStartFasting(), dto.getEndFasting()));
+
+        changeUser.changeNutrition(
+              new Nutrition(dto.getKcal(),
+                    dto.getCarbs(),
+                    dto.getProtein(),
+                    dto.getFat()));
+
+        if (changeUser.isFirstLogin()) {
+            changeUser.changeUserStatus(UserStatus.NORMAL);
+        }
 
         return UserServiceDtoFactory.userInfoResponseDto(changeUser);
     }
@@ -214,5 +246,30 @@ public class UserService {
               new Nutrition(dto.getKcal(), dto.getCarbs(), dto.getProtein(), dto.getFat()));
 
         return UserServiceDtoFactory.userInfoResponseDto(user);
+    }
+
+    @Transactional
+    public UserInfoResponseDto changeFastingTime(ChangeFastingTimeRequestDto dto) {
+        User user = findByUsername(dto.getUsername());
+
+        user.changeFastingTime(
+              new FastingTime(dto.getStartFasting(), dto.getEndFasting())
+        );
+
+        return UserServiceDtoFactory.userInfoResponseDto(user);
+    }
+
+    public boolean checkDuplicateSignupInput(CheckDuplicateSignupInputDto dto) {
+        switch (dto.getKey()) {
+            case "username":
+                return validateUsername(dto.getValue());
+
+            case "email":
+                return validateEmail(dto.getValue());
+            case "nickname":
+                return validateNickname(dto.getValue());
+            default:
+                throw new IllegalArgumentException("잘못된 값입니다");
+        }
     }
 }

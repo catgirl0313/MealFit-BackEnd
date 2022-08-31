@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 import com.mealfit.bodyInfo.repository.BodyInfoRepository;
 import com.mealfit.common.factory.UserFactory;
 import com.mealfit.common.storageService.StorageService;
-import com.mealfit.exception.user.DuplicatedSignUpException;
+import com.mealfit.exception.user.DuplicatedUserException;
 import com.mealfit.exception.user.NoUserException;
 import com.mealfit.exception.user.PasswordCheckException;
 import com.mealfit.user.application.EmailService;
@@ -24,6 +24,7 @@ import com.mealfit.user.application.dto.UserServiceDtoFactory;
 import com.mealfit.user.application.dto.request.ChangeNutritionRequestDto;
 import com.mealfit.user.application.dto.request.ChangeUserInfoRequestDto;
 import com.mealfit.user.application.dto.request.ChangeUserPasswordRequestDto;
+import com.mealfit.user.application.dto.request.CheckDuplicateSignupInputDto;
 import com.mealfit.user.application.dto.request.FindPasswordRequestDto;
 import com.mealfit.user.application.dto.request.FindUsernameRequestDto;
 import com.mealfit.user.application.dto.request.SendEmailRequestDto;
@@ -73,7 +74,7 @@ public class UserServiceTest {
     private BodyInfoRepository bodyInfoRepository;
 
     User testUser = UserFactory.mockUser("username", "password123",
-          "nickname", "test@gmail.com", "https://github.com/testImage.jpg",
+          "nickname1", "test@gmail.com", "https://github.com/testImage.jpg",
           70, LocalTime.of(10, 0), LocalTime.of(12, 0),
           2000, 200, 120, 50,
           UserStatus.NORMAL);
@@ -93,13 +94,16 @@ public class UserServiceTest {
 
                 // given
                 String duplicatedUsername = "test";
+                CheckDuplicateSignupInputDto dto =
+                      UserServiceDtoFactory.checkDuplicateSignupInput("username", duplicatedUsername);
+
                 given(userRepository.existsByUsername(duplicatedUsername)).willReturn(true);
 
                 // when
 
                 // then
-                assertThatThrownBy(() -> userService.validateUsername(duplicatedUsername))
-                      .isInstanceOf(DuplicatedSignUpException.class)
+                assertThatThrownBy(() -> userService.checkDuplicateSignupInput(dto))
+                      .isInstanceOf(DuplicatedUserException.class)
                       .hasMessage(DUPLICATION_USERNAME);
             }
 
@@ -109,10 +113,12 @@ public class UserServiceTest {
 
                 // given
                 String notDuplicatedUsername = "test1";
+                CheckDuplicateSignupInputDto dto =
+                      UserServiceDtoFactory.checkDuplicateSignupInput("username", notDuplicatedUsername);
 
                 // then
                 assertThatNoException().isThrownBy(
-                      () -> userService.validateUsername(notDuplicatedUsername));
+                      () -> userService.checkDuplicateSignupInput(dto));
             }
         }
 
@@ -125,15 +131,16 @@ public class UserServiceTest {
             void nickname_duplicate_fail() {
 
                 //given
-                String savedNickname = "nickname";
-                String duplicateNickname = "nickname";
+                String duplicateNickname = "nickname1";
+                CheckDuplicateSignupInputDto dto =
+                      UserServiceDtoFactory.checkDuplicateSignupInput("nickname", duplicateNickname);
 
                 // when
-                given(userRepository.existsByNickname(savedNickname)).willReturn(true);
+                given(userRepository.existsByNickname(duplicateNickname)).willReturn(true);
 
                 // then
-                assertThatThrownBy(() -> userService.validateNickname(duplicateNickname))
-                      .isInstanceOf(DuplicatedSignUpException.class)
+                assertThatThrownBy(() -> userService.checkDuplicateSignupInput(dto))
+                      .isInstanceOf(DuplicatedUserException.class)
                       .hasMessage(DUPLICATION_NICKNAME);
             }
 
@@ -141,11 +148,13 @@ public class UserServiceTest {
             @Test
             void nickname_NOT_duplicate_success() {
                 // given
-                String notDuplicateNickname = "nickname";
+                String notDuplicateNickname = "nickname12";
+                CheckDuplicateSignupInputDto dto =
+                      UserServiceDtoFactory.checkDuplicateSignupInput("nickname", notDuplicateNickname);
 
                 // then
                 assertThatNoException().isThrownBy(
-                      () -> userService.validateNickname(notDuplicateNickname));
+                      () -> userService.checkDuplicateSignupInput(dto));
             }
         }
 
@@ -158,13 +167,15 @@ public class UserServiceTest {
             void email_duplicate_fail() {
                 // given
                 String duplicateEmail = "test@gmail.com";
+                CheckDuplicateSignupInputDto dto =
+                      UserServiceDtoFactory.checkDuplicateSignupInput("email", duplicateEmail);
 
                 // when
                 when(userRepository.existsByEmail(duplicateEmail)).thenReturn(true);
 
                 // then
-                assertThatThrownBy(() -> userService.validateEmail(duplicateEmail))
-                      .isInstanceOf(DuplicatedSignUpException.class)
+                assertThatThrownBy(() -> userService.checkDuplicateSignupInput(dto))
+                      .isInstanceOf(DuplicatedUserException.class)
                       .hasMessage(DUPLICATION_EMAIL);
             }
 
@@ -174,10 +185,12 @@ public class UserServiceTest {
 
                 // given
                 String notDuplicateEmail = "test1@gmail.com";
+                CheckDuplicateSignupInputDto dto =
+                      UserServiceDtoFactory.checkDuplicateSignupInput("nickname", notDuplicateEmail);
 
                 // then
                 assertThatNoException().isThrownBy(
-                      () -> userService.validateEmail(notDuplicateEmail));
+                      () -> userService.checkDuplicateSignupInput(dto));
             }
         }
 
@@ -252,7 +265,7 @@ public class UserServiceTest {
                   .email("test@gmail.com")
                   .password("qwe123123")
                   .passwordCheck("qwe123123")
-                  .nickname("nickname")
+                  .nickname("nickname1")
                   .profileImage(new MockMultipartFile("testImage", "hello".getBytes()))
                   .currentWeight(90.0)
                   .goalWeight(70.0)
@@ -392,8 +405,8 @@ public class UserServiceTest {
                     String loginUsername = "socialUser";
 
                     User socialUser = UserFactory.mockSocialUser(loginUsername,
-                          "social_nickname",
-                          "social@gmail.com", ProviderType.KAKAO, UserStatus.FIRST_LOGIN);
+                          null, null,
+                          ProviderType.KAKAO, UserStatus.FIRST_LOGIN);
 
                     ChangeUserInfoRequestDto requestDto = UserFactory.mockChangeUserInfoRequestDto(
                           loginUsername,
@@ -408,7 +421,7 @@ public class UserServiceTest {
                           List.of("https://github.com/testImage.jpg"));
 
                     // when
-                    UserInfoResponseDto responseDto = userService.changeUserInfo(requestDto);
+                    UserInfoResponseDto responseDto = userService.fillSocialUserInfo(requestDto);
 
                     // then
                     // 나중에 일치시킬 수 있다면 usingRecursiveComparison() 사용도 나쁘지 않다.

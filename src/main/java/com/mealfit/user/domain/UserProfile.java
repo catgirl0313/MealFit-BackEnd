@@ -3,7 +3,6 @@ package com.mealfit.user.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +22,6 @@ public class UserProfile {
     @Setter
     private String profileImage;
 
-    @Builder
     public UserProfile(String nickname, String email, String profileImage) {
         this.nickname = nickname;
         this.email = email;
