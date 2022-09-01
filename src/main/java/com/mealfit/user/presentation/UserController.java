@@ -120,12 +120,12 @@ public class UserController {
     /**
      * 이메일 인증
      */
-    @GetMapping("/validate")
-    public ResponseEntity<String> checkEmail(String username, String authKey) {
-        EmailAuthRequestDto requestDto = UserServiceDtoFactory.emailAuthRequestDto(username,
-              authKey);
+    @GetMapping("/verify")
+    public ResponseEntity<String> checkEmail(String username, String code) {
+        EmailAuthRequestDto requestDto = UserServiceDtoFactory
+              .emailAuthRequestDto(username, code);
 
-        emailService.authEmail(requestDto);
+        emailService.verifyEmail(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
               .body("이메일이 성공적으로 인증되었습니다.");

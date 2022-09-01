@@ -26,7 +26,7 @@ public class FindPasswordEmail implements SendingEmailStrategy {
                   .append("<p>아래 링크를 클릭하시면 비밀번호 변경 페이지로 이동합니다.</p>")
                   .append("<a href='")
                   .append(url)
-                  .append("/user/validate?username=")
+                  .append("/user/password?username=")
                   .append(username)
                   .append("&authKey=")
                   .append(authKey)

@@ -25,6 +25,10 @@ public enum ErrorCode implements ErrorModel {
     RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "C003", "Resource not found"),
     EXPIRED_CODE(HttpStatus.BAD_REQUEST, "C004", "Expired Code"),
 
+    // EMAIL
+    LIMIT_EMAIL_SEND(HttpStatus.BAD_REQUEST, "E001", "한계치 초과!"),
+    BAD_VERIFY_CODE(HttpStatus.BAD_GATEWAY, "E002", "잘못된 인증 코드"),
+
     // AWS
     AWS_ERROR(HttpStatus.BAD_REQUEST, "A001", "aws client error"),
 
