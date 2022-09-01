@@ -3,13 +3,13 @@ package com.mealfit.common.email;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-public class SignUpEmail implements SendingEmailStrategy {
+public class VerifyEmail implements SendingEmailStrategy {
 
     private final String url;
     private final String username;
     private final String authKey;
 
-    public SignUpEmail(String url, String username, String authKey) {
+    public VerifyEmail(String url, String username, String authKey) {
         this.url = url;
         this.username = username;
         this.authKey = authKey;
@@ -26,9 +26,9 @@ public class SignUpEmail implements SendingEmailStrategy {
                   .append("<p>아래 링크를 클릭하시면 이메일 인증이 완료됩니다.</p>")
                   .append("<a href='")
                   .append(url)
-                  .append("/user/validate?username=")
+                  .append("/user/verify?username=")
                   .append(username)
-                  .append("&authKey=")
+                  .append("&code=")
                   .append(authKey)
                   .append("' target='_blenk'>이메일 인증 확인</a>")
 

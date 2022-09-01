@@ -14,22 +14,21 @@ import com.mealfit.user.application.dto.request.ChangeUserPasswordRequestDto;
 import com.mealfit.user.application.dto.request.CheckDuplicateSignupInputDto;
 import com.mealfit.user.application.dto.request.FindPasswordRequestDto;
 import com.mealfit.user.application.dto.request.FindUsernameRequestDto;
-import com.mealfit.user.application.dto.request.SendEmailRequestDto;
 import com.mealfit.user.application.dto.request.SendEmailRequestDto.EmailType;
 import com.mealfit.user.application.dto.request.UserSignUpRequestDto;
 import com.mealfit.user.application.dto.response.UserInfoResponseDto;
+import com.mealfit.user.domain.EmailEvent;
 import com.mealfit.user.domain.FastingTime;
 import com.mealfit.user.domain.Nutrition;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserRepository;
 import com.mealfit.user.domain.UserStatus;
-import com.mealfit.user.infrastructure.EmailEventListener;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,15 +40,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final EmailService emailService;
     private final StorageService storageService;
     private final PasswordEncoder passwordEncoder;
     private final BodyInfoRepository bodyInfoRepository;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
           "^(?=.*?[a-zA-Z])(?=.*?[0-9]).{8,}$");
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
-    @EventListener(value = EmailEventListener.class)
     public UserInfoResponseDto signup(UserSignUpRequestDto dto) {
         validateSignUpDto(dto);
 
@@ -63,11 +61,13 @@ public class UserService {
             user.changeProfileImage(profileUrl.get(0));
         }
 
-        // 분리하고 싶었으나 트랜잭션 전파때문에 어쩔 수 없이 한곳에 묶음.
-        SendEmailRequestDto sendEmailDto = UserServiceDtoFactory.sendEmailRequestDto(
-              dto.getUsername(), dto.getRedirectURL(), dto.getEmail(), EmailType.VALID_NEW_ACCOUNT);
-
         User saveEntity = userRepository.save(user);
+
+        EmailEvent emailEvent = new EmailEvent(dto.getUsername(),
+              dto.getRedirectURL(),
+              dto.getEmail(),
+              EmailType.VERIFY);
+        publisher.publishEvent(emailEvent);
 
         bodyInfoRepository.save(BodyInfo.createBodyInfo(saveEntity.getId(), dto.getCurrentWeight(),
               0, LocalDate.now()));
@@ -206,11 +206,12 @@ public class UserService {
 
         String maskedUsername = maskingUsername(user.getLoginInfo().getUsername());
 
-        SendEmailRequestDto sendEmailRequestDto = UserServiceDtoFactory.sendEmailRequestDto(
-              maskedUsername, dto.getRedirectUrl(), dto.getSendingEmail(),
-              EmailType.FIND_USERNAME);
+        EmailEvent emailEvent = new EmailEvent(maskedUsername,
+              dto.getRedirectUrl(),
+              dto.getSendingEmail(),
+              EmailType.VERIFY);
 
-        emailService.sendEmail(sendEmailRequestDto);
+        publisher.publishEvent(emailEvent);
     }
 
     private String maskingUsername(String username) {
@@ -225,12 +226,12 @@ public class UserService {
             throw new IllegalArgumentException("잘못된 이메일입니다.");
         }
 
-        SendEmailRequestDto sendEmailRequestDto = UserServiceDtoFactory.sendEmailRequestDto(
-              dto.getUsername(), dto.getRedirectUrl(), dto.getSendingEmail(),
-              EmailType.FIND_PASSWORD);
+        EmailEvent emailEvent = new EmailEvent(dto.getUsername(),
+              dto.getRedirectUrl(),
+              dto.getSendingEmail(),
+              EmailType.VERIFY);
 
-
-        emailService.sendEmail(sendEmailRequestDto);
+        publisher.publishEvent(emailEvent);
     }
 
     private User findByUsername(String username) {
