@@ -38,7 +38,7 @@ public class Post extends BaseEntity {
     private String profileImage;
 
     @Column(nullable = false)
-    private String nickName;
+    private String nickname;
 
     @Column
     private String content;
@@ -54,20 +54,16 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PostImage> images = new ArrayList<>();
 
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
-
     public Post(String content) {
         this.content = content;
         this.likeIt = 0;
         this.view = 0;
     }
 
-    public void settingUserInfo(Long userId, String profileImage, String nickName) {
+    public void settingUserInfo(Long userId, String profileImage, String nickname) {
         this.userId = userId;
         this.profileImage = profileImage;
-        this.nickName = nickName;
+        this.nickname = nickname;
     }
 
     public void addPostImages(List<PostImage> images) {
@@ -93,8 +89,6 @@ public class Post extends BaseEntity {
         this.content = content;
     }
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -113,22 +107,26 @@ public class Post extends BaseEntity {
     }
 
     @Builder
-    public Post(Long id, Long userId, String profileImage, String nickName, String content,
+    public Post(Long id, Long userId, String profileImage, String nickname, String content,
                 int view,
                 int likeIt, List<PostImage> images) {
         this.id = id;
         this.userId = userId;
         this.profileImage = profileImage;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.content = content;
         this.view = view;
         this.likeIt = likeIt;
         this.images = images;
     }
 
+    public List<String> getImageUrls() {
+        List<String> imageUrls = new ArrayList<>();
 
-    // Post에서 Comment에 대한 정보 넣기.
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
+        for (PostImage image : this.images) {
+            imageUrls.add(image.getUrl());
+        }
+
+        return imageUrls;
     }
 }

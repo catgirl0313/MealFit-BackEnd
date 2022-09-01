@@ -1,11 +1,10 @@
-package com.mealfit.post.repository;
+package com.mealfit.post.domain;
 
-import com.mealfit.post.domain.Post;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface PostRepository  extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByUserIdOrderByCreatedAtDesc(Long userId);
 

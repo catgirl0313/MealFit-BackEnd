@@ -1,28 +1,25 @@
-package com.mealfit.post.dto;
+package com.mealfit.post.presentation.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-
-public class PostResponseDto {
+public class PostResponse {
 
     private Long postId;
 
-    UserDto userDto;
+    private String nickname;
+
+    private String profileImage;
 
     private String content;
 
@@ -30,7 +27,7 @@ public class PostResponseDto {
 
     private int view;
 
-    private List<String> image;
+    private List<String> images;
 
     private Boolean liked;
 
@@ -42,4 +39,19 @@ public class PostResponseDto {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updatedAt;
 
+    @Builder
+    public PostResponse(Long postId, String nickname, String profileImage, String content, int like,
+          int view, List<String> images, Boolean liked, LocalDateTime createdAt,
+          LocalDateTime updatedAt) {
+        this.postId = postId;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.content = content;
+        this.like = like;
+        this.view = view;
+        this.images = images;
+        this.liked = liked;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }

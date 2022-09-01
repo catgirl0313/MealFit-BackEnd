@@ -6,14 +6,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberDto {
+public class WriterDto {
+
     private String nickname;
-    private String profile;
+    private String profileImage;
 
-    public MemberDto(String nickname, String profile) {
+    public WriterDto(String nickname, String profileImage) {
         this.nickname = nickname;
-        this.profile = profile;
-
-
+        this.profileImage = profileImage;
     }
 }

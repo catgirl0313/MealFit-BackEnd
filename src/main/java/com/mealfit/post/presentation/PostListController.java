@@ -1,9 +1,8 @@
-package com.mealfit.post.controller;
+package com.mealfit.post.presentation;
 
 
-import com.mealfit.post.dto.PostResponseDto;
-import com.mealfit.post.dto.PostsResponseDto;
-import com.mealfit.post.service.PostReadService;
+import com.mealfit.post.presentation.dto.response.PostResponse;
+import com.mealfit.post.application.PostReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class PostListController {
+
     private final PostReadService postReadService;
 
     public static final int DEFAULT_PAGE_SIZE = 12;
@@ -27,22 +27,21 @@ public class PostListController {
 
     @GetMapping("/post")
     // sort = "id", direction = Sort.Direction.DESC 아이디로 내림차순 정렬
-    public ResponseEntity<Slice<PostsResponseDto>> readAll(
-            @RequestParam(defaultValue = "" + Long.MAX_VALUE) Long lastId,
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = DEFAULT_PAGE_SIZE) Pageable pageable) {
+    public ResponseEntity<Slice<PostResponse>> readAll(
+          @RequestParam(defaultValue = "" + Long.MAX_VALUE) Long lastId,
+          @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = DEFAULT_PAGE_SIZE) Pageable pageable) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(postReadService.getReadAll( pageable, lastId));
+              .body(postReadService.getReadAll(pageable, lastId));
     }
 
 
-
-//상세페이지 조회
+    //상세페이지 조회
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostResponseDto> readOne(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse> readOne(@PathVariable Long postId) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(postReadService.getReadOne(postId));
+              .body(postReadService.getReadOne(postId));
     }
 //
 //    @PostMapping("/post/{postId}/likeIt")

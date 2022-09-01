@@ -1,4 +1,4 @@
-package com.mealfit.post.dto;
+package com.mealfit.post.presentation.dto.request;
 
 
 
@@ -10,11 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@ToString
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostRequestDto {
+public class PostRequest {
 
     @NotBlank
     private String content;

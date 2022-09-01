@@ -45,7 +45,7 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OidcUser {
         return user.getUserProfile().getNickname();
     }
 
-    //계정이 만료되지 않았는지 리턴턴
+    //계정이 만료되지 않았는지 리턴
     @Override
     public boolean isAccountNonExpired() {
         return true;

@@ -36,5 +36,4 @@ public class PostImage {
     public PostImage(String url) {
         this.url = url;
     }
-
 }
