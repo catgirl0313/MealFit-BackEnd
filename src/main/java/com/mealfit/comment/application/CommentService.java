@@ -5,7 +5,7 @@ import com.mealfit.comment.application.dto.request.UpdateCommentRequestDto;
 import com.mealfit.comment.domain.Comment;
 import com.mealfit.comment.presentation.dto.response.CommentResponse;
 import com.mealfit.comment.domain.CommentRepository;
-import com.mealfit.post.repository.PostRepository;
+import com.mealfit.post.domain.PostRepository;
 import com.mealfit.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;

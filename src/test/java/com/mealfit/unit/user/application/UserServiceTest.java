@@ -31,6 +31,7 @@ import com.mealfit.user.application.dto.request.SendEmailRequestDto;
 import com.mealfit.user.application.dto.request.SendEmailRequestDto.EmailType;
 import com.mealfit.user.application.dto.request.UserSignUpRequestDto;
 import com.mealfit.user.application.dto.response.UserInfoResponseDto;
+import com.mealfit.user.domain.EmailEvent;
 import com.mealfit.user.domain.ProviderType;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserRepository;
@@ -703,7 +704,7 @@ public class UserServiceTest {
                 userService.findPassword(requestDto);
 
                 verify(emailService, times(1))
-                      .sendEmail(any(SendEmailRequestDto.class));
+                      .sendEmail(any(EmailEvent.class));
             }
         }
 

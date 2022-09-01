@@ -93,7 +93,7 @@ public class EmailService {
         user.changeUserStatus(UserStatus.FIRST_LOGIN);
     }
 
-    @Scheduled(cron = "0 0 0 * * * *")
+    @Scheduled(cron = "0 0 0 * * * ")
     public void clearLimitStorage() {
         limitStorage.clear();
     }

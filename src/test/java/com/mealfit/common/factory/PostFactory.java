@@ -1,9 +1,8 @@
 package com.mealfit.common.factory;
 
 import com.mealfit.post.domain.Post;
-import com.mealfit.post.dto.PostRequestDto;
-import com.mealfit.post.dto.PostResponseDto;
-import com.mealfit.post.dto.UserDto;
+import com.mealfit.post.presentation.dto.request.PostRequest;
+import com.mealfit.post.presentation.dto.response.PostResponse;
 import com.mealfit.user.domain.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class PostFactory {
               .id(1L)
               .content("mocking content")
               .userId(user.getId())
-              .nickName(user.getUserProfile().getNickname())
+              .nickname(user.getUserProfile().getNickname())
               .profileImage(user.getUserProfile().getProfileImage())
               .likeIt(0)
               .view(0)
@@ -49,35 +48,37 @@ public class PostFactory {
               .build();
     }
 
-    public static PostRequestDto createMockPostRequestDto() {
-        PostRequestDto postRequestDto = new PostRequestDto();
-        postRequestDto.setContent("mocking content");
-        postRequestDto.setPostImageList(new ArrayList<>());
-        return postRequestDto;
+    public static PostRequest createMockPostRequestDto() {
+        PostRequest postRequest = new PostRequest();
+        postRequest.setContent("mocking content");
+        postRequest.setPostImageList(new ArrayList<>());
+        return postRequest;
     }
 
-    public static PostResponseDto createMockPostResponseDto() {
-        return PostResponseDto.builder()
+    public static PostResponse createMockPostResponseDto() {
+        return PostResponse.builder()
               .postId(1L)
-              .userDto(new UserDto("testUser", "profileImgUrl"))
+              .nickname("testUser")
+              .profileImage("http://testImage.t/profile")
               .content("mocking content")
               .like(0)
               .view(0)
-              .image(new ArrayList<>())
+              .images(new ArrayList<>())
               .createdAt(LocalDateTime.now())
               .updatedAt(LocalDateTime.now())
               .liked(null)
               .build();
     }
 
-    public static List<PostResponseDto> createMockPostResponseDtoList() {
-        PostResponseDto dto = PostResponseDto.builder()
+    public static List<PostResponse> createMockPostResponseDtoList() {
+        PostResponse dto = PostResponse.builder()
               .postId(1L)
-              .userDto(new UserDto("testUser", "http://testImage.t/profile"))
+              .nickname("testUser")
+              .profileImage("http://testImage.t/profile")
               .content("mocking content")
               .like(0)
               .view(0)
-              .image(new ArrayList<>())
+              .images(new ArrayList<>())
               .createdAt(LocalDateTime.now())
               .updatedAt(LocalDateTime.now())
               .liked(null)

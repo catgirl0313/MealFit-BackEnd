@@ -28,7 +28,4 @@ public class LikeIt extends BaseEntity {
 
     @Column(nullable = false)
     private Long postId;
-
-
-
 }
