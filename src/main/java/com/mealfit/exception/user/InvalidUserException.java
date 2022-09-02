@@ -4,7 +4,7 @@ import com.mealfit.exception.wrapper.ErrorCode;
 
 public class InvalidUserException extends UserException {
 
-    private static final ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
+    private static final ErrorCode errorCode = ErrorCode.INVALID_CODE;
 
     public InvalidUserException(String message) {
         super(errorCode, message);
