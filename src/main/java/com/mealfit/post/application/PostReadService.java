@@ -6,6 +6,7 @@ import com.mealfit.post.domain.PostReadRepository;
 import com.mealfit.post.presentation.dto.response.PostResponse;
 import com.mealfit.user.domain.User;
 import com.mealfit.user.domain.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -60,6 +61,8 @@ public class PostReadService {
     //전체 게시물 조회
 
     private Page<PostResponse> postToPostsResponseDtos(Page<Post> postSlice) {
+        List<Post> posts = postSlice.getContent();
+
         return postSlice.map(post ->
               PostResponse.builder()
                     .postId(post.getId())
